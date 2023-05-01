@@ -18,11 +18,18 @@ entity Slova {
     count: Integer;
     translations : Association to many Translations on translations.slovo = $self;
     siblings : Association to many Slova on siblings.etymology = $self.etymology;
+    sentences : Composition of many { key sent : Association to Sentences }
 }
 
 entity Forms : conllu.Features {
     key form : String;
     key lemma : Association to Slova;
+}
+
+entity Sentences {
+    key hash : String;
+    text : String;
+    tokens: String;
 }
 
 entity Etymology {

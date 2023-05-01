@@ -67,6 +67,11 @@ annotate UserService.Slova with @UI: {
             $Type : 'UI.ReferenceFacet',
             Target: 'forms/@UI.LineItem',
             Label : '{i18n>forms}'
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target: 'sentences/@UI.LineItem',
+            Label : '{i18n>sentences}'
         }
     ],
     FieldGroup #External: {Data: [
@@ -113,6 +118,18 @@ annotate UserService.Forms with @UI: {
         {Value: VerbForm},
         {Value: PronType},
         {Value: Reflex}
+    ]
+};
+
+annotate UserService.Slova.sentences with @UI: {
+    HeaderInfo: {
+        TypeName      : '{i18n>Sentence}',
+        TypeNamePlural: '{i18n>Sentences}',
+        Title         : {Value: sent.hash},
+        Description   : {Value: sent.text}
+    },
+    LineItem  : [
+        {Value: sent.text}
     ]
 };
 
