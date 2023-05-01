@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>flp</title>
+
+    <script>
+        window["sap-ushell-config"] = {
+            "defaultRenderer": "fiori2",
+            "renderers": {
+                "fiori2": {
+                    "componentData": {
+                        "config": {
+                            "rootIntent": "Shell-Home",
+                            "search": "hidden"
+                        }
+                    }
+                }
+            },
+            "services": {
+                "LaunchPage": {
+                    "adapter": {
+                        "config": {
+                            "groups": [{
+                                "id": "home_group",
+                                "title": "hidden empty group that goes first",
+                                "tiles": []
+                            },{
+                                "id": "admin_group",
+                                "title": "Admin",
+                                "isPreset": true,
+                                "isVisible": true,
+                                "isGroupLocked": true,
+                                "tiles": [{
+                                    "id": "admin_slova",
+                                    "title": "Slova",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_10",
+                                        "title": "Slova",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#slova-manage"
+                                    }
+                                },{
+                                    "id": "admin_etymology",
+                                    "title": "Etymology",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_11",
+                                        "title": "Etymology",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#etymology-manage"
+                                    }
+                                },{
+                                    "id": "admin_translations",
+                                    "title": "Translations",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_12",
+                                        "title": "Translations",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#translations-manage"
+                                    }
+                                }]
+                            },{
+                                "id": "browse_group",
+                                "title": "Browse",
+                                "isPreset": true,
+                                "isVisible": true,
+                                "isGroupLocked": true,
+                                "tiles": [{
+                                    "id": "browse_slova",
+                                    "title": "Slova",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_20",
+                                        "title": "Slova",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#slova-browse"
+                                    }
+                                },{
+                                    "id": "configure_user",
+                                    "title": "User",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_21",
+                                        "title": "User",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#user-configure"
+                                    }
+                                }]
+                            },{
+                                "id": "learn_group",
+                                "title": "Learn",
+                                "isPreset": true,
+                                "isVisible": true,
+                                "isGroupLocked": true,
+                                "tiles": [{
+                                    "id": "browse_cards",
+                                    "title": "Cards",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_30",
+                                        "title": "Cards",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#cards-browse"
+                                    }
+                                },{
+                                    "id": "browse_translations",
+                                    "title": "Translations",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_31",
+                                        "title": "Translations",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#translations-browse"
+                                    }
+                                }]
+                            }]
+                        }
+                    }
+                },
+                "NavTargetResolution": {
+                    "config": {
+                        "enableClientSideTargetResolution": true
+                    }
+                },
+                "ClientSideTargetResolution": {
+                    "adapter": {
+                        "config": {
+                            "inbounds": {
+                                "admin_slova": {
+                                    "semanticObject": "slova",
+                                    "action": "manage",
+                                    "title": "Slova",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=admin_slova",
+                                        "url": "/$fiori-preview/AdminService/Slova/app"
+                                    }
+                                },
+                                "browse_slova": {
+                                    "semanticObject": "slova",
+                                    "action": "browse",
+                                    "title": "Slova",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=browse_slova",
+                                        "url": "/$fiori-preview/UserService/Slova/app"
+                                    }
+                                },
+                                "admin_etymology": {
+                                    "semanticObject": "etymology",
+                                    "action": "manage",
+                                    "title": "Etymology",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=admin_etymology",
+                                        "url": "/$fiori-preview/AdminService/Etymology/app"
+                                    }
+                                },
+                                "admin_translations": {
+                                    "semanticObject": "translations",
+                                    "action": "manage",
+                                    "title": "Translations",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=admin_translations",
+                                        "url": "/$fiori-preview/AdminService/Translations/app"
+                                    }
+                                },
+                                "browse_translations": {
+                                    "semanticObject": "translations",
+                                    "action": "browse",
+                                    "title": "Translations",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=browse_translations",
+                                        "url": "/$fiori-preview/MyService/Translations/app"
+                                    }
+                                },
+                                "browse_cards": {
+                                    "semanticObject": "cards",
+                                    "action": "browse",
+                                    "title": "Cards",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=browse_cards",
+                                        "url": "/$fiori-preview/MyService/Cards/app"
+                                    }
+                                },
+                                "configure_user": {
+                                    "semanticObject": "user",
+                                    "action": "configure",
+                                    "title": "User",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=configure_user",
+                                        "url": "/$fiori-preview/UserService/Users/app"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        window["sap-ui-config"] = {
+            "xx-bootTask": function(fnCallback){
+                sap.ui.require(["sap/ushell/services/Container"], function(tools) {
+                    sap.ushell.bootstrap("local").done(fnCallback);
+                });
+            }
+        };
+    </script>
+
+    <script id="sap-ui-bootstrap" 
+        _src="/resources/sap-ui-core.js"
+        src="https://ui5.sap.com/resources/sap-ui-core.js"
+        data-sap-ui-libs="sap.m, sap.ui.layout, sap.ushell, sap.collaboration, sap.fe.templates"
+        data-sap-ui-compatVersion="edge"
+        data-sap-ui-theme="sap_fiori_3"
+        data-sap-ui-logLevel="error"
+        data-sap-ui-resourceroots='{ "flplocal": "./" }'
+        data-sap-ui-oninit="module:flplocal/init"
+        data-sap-ui-frameOptions="allow" >
+    </script>
+
+</head>
+<body class="sapUiBody" id="content"></body>
+</html>

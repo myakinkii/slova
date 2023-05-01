@@ -1,0 +1,89 @@
+const cds = require('@sap/cds')
+const definitionFinder = require('./lib/definitionFinder')
+
+class BaseService extends cds.ApplicationService {
+
+    async checkCreateProfile(req){
+        await this.getProfile(req.user.id)
+    }
+
+    async getProfile(userId) {
+        const { Users } = cds.entities("ru.dev4hana.slova")
+        let profile = await this.read(Users, { id: userId })
+        if (!profile) {
+            profile = { id: userId, defaultLang_code: 'en' }
+            await this.create(Users).entries(profile)
+        }
+        return profile
+    }
+
+    async getDefinition(data, req) {
+        if (!data || Array.isArray(data)) return
+        const lang = data.lang
+        const profile = await this.getProfile(req.user.id)
+        const userLang = profile.defaultLang_code
+        let definitionUrl = data.definition
+        if (!definitionUrl) definitionUrl = await definitionFinder.get(lang, data.morphem)
+        if (!definitionUrl) return
+        const googleTranslateBaseUrl = 'https://translate.google.com/translate'
+        data.definition = `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
+    }
+
+    async getTranslations(slovo, author, lang) {
+        const { Translations } = this.entities
+        let where = {
+            slovo_morphem: slovo.morphem,
+            slovo_pos: slovo.pos,
+            slovo_lang: slovo.lang
+        }
+        if (author) where.author_id = author
+        if (lang) where.lang_code = lang
+        return this.read(Translations, ['ID']).where(where)
+    }
+
+    async addTranslation(req) {
+        const { Translations } = this.entities
+        const slovo = req.params[0]
+        const translation = req.data.value
+        const profile = await this.getProfile(req.user.id)
+
+        const translations = await this.getTranslations(slovo, profile.id, profile.defaultLang_code)
+        if (translations.length > 0) return req.error(400, 'TRANSLATION_ALREADY_EXISTS')
+
+        return this.create(Translations).entries({
+            slovo: slovo,
+            author_id: profile.id,
+            lang_code: profile.defaultLang_code,
+            value: translation
+        })
+    }
+
+    async makeCard(req) {
+        const { Cards } = this.entities
+        const slovo = req.params[0]
+        const profile = await this.getProfile(req.user.id)
+
+        const translations = await this.getTranslations(slovo, profile.id, profile.defaultLang_code)
+        if (translations.length == 0) return req.error(400, 'NO_TRANSLATION_FOUND')
+
+        return this.create(Cards).entries({
+            slovo: slovo,
+            user_id: profile.id,
+            translation: translations[0]
+        })
+    }
+
+    async guessCard(req) {
+        const { CardGuesses } = this.entities
+        const card = req.params[0]
+        const guess = req.data.value
+        return this.create(CardGuesses).entries({
+            card: card,
+            guess: guess,
+            now: '$now'
+        })
+    }
+
+}
+
+module.exports = { BaseService }

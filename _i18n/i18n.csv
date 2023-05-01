@@ -1,0 +1,11 @@
+key;en
+lang;Language
+pos;Part of speech
+morphem;Morphem
+count;Occurences
+forms;Forms
+definition;Definition
+translation;Translation
+author;Author
+user.makeCard;Make Card
+user.addTranslation;Translate
