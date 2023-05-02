@@ -27,6 +27,9 @@ service UserService {
     @readonly
     entity Sentences as projection on db.Sentences;
 
+    @readonly
+    entity Tokens as projection on db.Tokens;
+
     entity Translations @(restrict: [
         {
             grant: ['READ'],

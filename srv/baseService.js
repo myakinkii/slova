@@ -29,6 +29,17 @@ class BaseService extends cds.ApplicationService {
         data.definition = `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
     }
 
+    async getGoogleTranslate(data, req) {
+        if (!data || Array.isArray(data)) return
+        const lang = data["up__lang"]
+        const profile = await this.getProfile(req.user.id)
+        const userLang = profile.defaultLang_code
+        const text = data.sent?.text
+        if (!text) return
+        const googleTranslateBaseUrl = 'https://translate.google.com/'
+        data.translation = `${googleTranslateBaseUrl}?text=${encodeURIComponent(text)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
+    }
+
     async getTranslations(slovo, author, lang) {
         const { Translations } = this.entities
         let where = {

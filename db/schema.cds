@@ -18,7 +18,7 @@ entity Slova {
     count: Integer;
     translations : Association to many Translations on translations.slovo = $self;
     siblings : Association to many Slova on siblings.etymology = $self.etymology;
-    sentences : Composition of many { key sent : Association to Sentences }
+    sentences : Composition of many { key sent : Association to Sentences; translation : String; }
 }
 
 entity Forms : conllu.Features {
@@ -28,8 +28,17 @@ entity Forms : conllu.Features {
 
 entity Sentences {
     key hash : String;
+    lang : Association to Languages;
     text : String;
-    tokens: String;
+    tokens: Composition of many Tokens on tokens.sentence = $self;
+}
+
+entity Tokens {
+    key sentence : Association to Sentences;
+    key index : Integer;
+    form : String;
+    lemma : String;
+    pos : String;
 }
 
 entity Etymology {

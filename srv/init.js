@@ -21,7 +21,20 @@ const parseConllu = (lang, set) => {
         },{})
         const hash = crypto.createHash('md5').update(comments.text).digest("hex")
         if (sentences[hash]) return prev // yes we can have duplicate sentences
-        sentences[hash] = { hash:hash, text:comments.text, tokens:JSON.stringify([]) }
+        sentences[hash] = { 
+            hash : hash, 
+            lang_code : lang,
+            text : comments.text, 
+            tokens : cur.tokens.map( (t,i) => {
+                return { 
+                    sentence_hash: hash,
+                    index: i,
+                    lemma: t.lemma,
+                    form: t.form,
+                    pos: t.upostag
+                }
+            })
+        }
         cur.tokens.forEach(function (t) {
             const lemma = t.lemma
             const form = t.form && t.form.toLowerCase()

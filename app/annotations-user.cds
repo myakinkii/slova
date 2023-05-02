@@ -1,4 +1,3 @@
-
 annotate UserService.Slova with @(
     Capabilities.DeleteRestrictions: {Deletable: false},
     Capabilities.InsertRestrictions: {Insertable: false},
@@ -122,14 +121,40 @@ annotate UserService.Forms with @UI: {
 };
 
 annotate UserService.Slova.sentences with @UI: {
-    HeaderInfo: {
+    HeaderInfo         : {
         TypeName      : '{i18n>Sentence}',
         TypeNamePlural: '{i18n>Sentences}',
-        Title         : {Value: sent.hash},
-        Description   : {Value: sent.text}
+        Title         : {Value: sent.text},
+        Description   : {Value: sent.hash}
     },
-    LineItem  : [
-        {Value: sent.text}
+    LineItem           : [{Value: sent.text}],
+    Facets             : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: 'sent/tokens/@UI.LineItem',
+        // Label : '{i18n>Tokens}'
+    }],
+    HeaderFacets        : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: '@UI.FieldGroup#Translation',
+    }],
+    FieldGroup #Translation: {Data: [{
+        Label: '{i18n>translation}',
+        Value: translation,
+        Url  : translation,
+        $Type: 'UI.DataFieldWithUrl'
+    }]},
+};
+
+annotate UserService.Tokens with @UI: {
+    HeaderInfo         : {
+        TypeName      : '{i18n>Token}',
+        TypeNamePlural: '{i18n>Tokens}'
+    },
+    LineItem           : [
+        {Value: index},
+        {Value: form},
+        {Value: lemma},
+        {Value: pos}
     ]
 };
 
