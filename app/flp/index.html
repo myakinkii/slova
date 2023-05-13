@@ -66,6 +66,17 @@
                                         "icon": "sap-icon://Fiori2/F0001",
                                         "targetURL": "#translations-manage"
                                     }
+                                },{
+                                    "id": "admin_import",
+                                    "title": "Import",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_13",
+                                        "title": "Import",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#import-perform"
+                                    }
                                 }]
                             },{
                                 "id": "browse_group",
@@ -234,6 +245,20 @@
                                         "applicationType": "SAPUI5",
                                         "additionalInformation": "SAPUI5.Component=configure_user",
                                         "url": "/$fiori-preview/UserService/Users/app"
+                                    }
+                                },
+                                "admin_import": {
+                                    "semanticObject": "import",
+                                    "action": "perform",
+                                    "title": "Import",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=admin_import",
+                                        "url": "/$fiori-preview/ImportService/Import/app"
                                     }
                                 }
                             }

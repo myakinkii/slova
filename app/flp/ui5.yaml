@@ -39,3 +39,8 @@ server:
     mountPath: /learn
     configuration:
       baseUri: "http://localhost:4004/learn/"
+  - name: ui5-middleware-simpleproxy
+    afterMiddleware: compression
+    mountPath: /import
+    configuration:
+      baseUri: "http://localhost:4004/import/"

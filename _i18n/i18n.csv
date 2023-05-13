@@ -9,3 +9,5 @@ translation;Translation
 author;Author
 user.makeCard;Make Card
 user.addTranslation;Translate
+import.parseInput;Parse
+import.mergeResults;Import

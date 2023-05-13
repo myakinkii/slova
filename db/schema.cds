@@ -76,3 +76,39 @@ entity Translations : cuid, managed {
     value : String;
     likes : Composition of many { key user : Association to Users }
 }
+
+entity Import : managed, cuid {
+    lang : Association to Languages;
+    text : LargeString;
+    words : Composition of many ImportWords on words.import = $self;
+    sentences : Composition of many ImportSentences on sentences.import = $self;
+}
+
+entity ImportWords {
+    key import : Association to Import;
+    key morphem : String;
+    key lang : conllu.Languages;
+    key pos : conllu.PartsOfSpeech;
+    occurence: String;
+    count: Integer;
+    forms : Composition of many ImportForms on forms.lemma = $self;
+    sentences : Composition of many { key sent : Association to ImportSentences }
+}
+
+entity ImportForms : conllu.Features {
+    key form : String;
+    key lemma : Association to ImportWords;
+}
+
+entity ImportSentences {
+    key import : Association to Import;
+    key hash : String;
+    text : String;
+    translation : String;
+    tokens: Composition of many {
+        key index : Integer;
+        form : String;
+        lemma : String;
+        pos : String;
+    }
+}
