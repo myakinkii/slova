@@ -44,6 +44,7 @@ aspect Features : {
     PronType : PronType;
     Reflex : Reflex;
     NumType : NumType;
+    NumForm: NumForm;
     Definite : Definite;
     Degree : Degree;
     Poss : Poss;
@@ -51,6 +52,7 @@ aspect Features : {
     Abbr : Abbr;
     Polarity : Polarity;
     Typo : Typo;
+    Foreign : Foreign;
 }
 
 type ![Case] : String enum {
@@ -138,6 +140,11 @@ type NumType : String enum {
     Sets = 'sets';
 }
 
+type NumForm : String enum {
+    Digit = 'digit';
+    Word = 'word';
+}
+
 type Definite : String enum {
     Ind = 'indefinite';
     Def = 'definite';
@@ -168,5 +175,9 @@ type Polarity : String enum {
 }
 
 type Typo : String enum {
+    Yes = 'yes';
+}
+
+type Foreign : String enum {
     Yes = 'yes';
 }
