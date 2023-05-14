@@ -54,6 +54,10 @@ annotate ImportService.Import with {
         ValueList.entity: 'Voices',
         Common.ValueListWithFixedValues
     );
+    verbForm   @(
+        ValueList.entity: 'VerbForms',
+        Common.ValueListWithFixedValues
+    );
 }
 
 annotate ImportService.Import with @UI: {
@@ -176,7 +180,8 @@ annotate ImportService.Import with @UI: {
     ]},
     FieldGroup #FeatsOther: {Data: [
         {Value: voice_code},
-        {Value: degree_code}
+        {Value: degree_code},
+        {Value: verbForm_code}
     ]},
 };
 

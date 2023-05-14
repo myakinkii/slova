@@ -116,8 +116,11 @@ type Person : String enum {
 
 type VerbForm : String enum {
     Inf = 'infinitive';
-    Part = 'participl';
-    Fin = 'finite'
+    Fin = 'finite';
+    Part = 'participle';
+    Conv = 'converb';
+    Ger = 'gerund';
+    Sup = 'supine';
 }
 
 type PronType : String enum {

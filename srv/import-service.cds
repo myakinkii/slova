@@ -21,7 +21,7 @@ service ImportService {
 
         @(
             cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {TargetProperties: ['_it/text','_it/indx','_it/lemma','_it/pos_code','_it/feats','_it/case_code','_it/gender_code','_it/number_code','_it/person_code','_it/tense_code','_it/aspect_code','_it/mood_code','_it/voice_code','_it/degree_code' ]}
+            Common.SideEffects             : {TargetProperties: ['_it/text','_it/indx','_it/lemma','_it/pos_code','_it/feats','_it/case_code','_it/gender_code','_it/number_code','_it/person_code','_it/tense_code','_it/aspect_code','_it/mood_code','_it/voice_code','_it/degree_code','_it/verbForm_code' ]}
         )
         action addWord();
     };
@@ -55,4 +55,6 @@ service ImportService {
     entity Voices as projection on db.Voices;
     @readonly
     entity Degrees as projection on db.Degrees;
+    @readonly
+    entity VerbForms as projection on db.VerbForms;
 }

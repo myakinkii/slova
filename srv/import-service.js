@@ -44,10 +44,11 @@ class ImportService extends BaseService {
         if (data.mood_code) data.feats.push(`Mood=${data.mood_code}`)
         if (data.voice_code) data.feats.push(`Voice=${data.voice_code}`)
         if (data.degree_code) data.feats.push(`Degree=${data.degree_code}`)
+        if (data.degree_code) data.feats.push(`VerbForm=${data.verbForm_code}`)
         await cds.update(Import.drafts,pars.ID).with({
             indx: data.indx+1, lemma: tokens[data.indx].toLowerCase(),
             pos_code: '', feats: '', 
-            case_code: '', gender_code: '', number_code: '', person_code: '', tense_code: '', aspect_code: '', mood_code: '', voice_code: '', degree_code: '', 
+            case_code: '', gender_code: '', number_code: '', person_code: '', tense_code: '', aspect_code: '', mood_code: '', voice_code: '', degree_code: '', verbForm_code: '',
             text: `${data.text||''}` + `${data.indx}\t${data.form}\t${data.lemma}\t${data.pos_code}\t_\t${data.feats.join('|')}\n`
         })
     }

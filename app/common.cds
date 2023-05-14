@@ -46,4 +46,5 @@ annotate db.Import with {
     mood @Common.Label: '{i18n>mood}';
     voice @Common.Label: '{i18n>voice}';
     degree @Common.Label: '{i18n>degree}';
+    verbForm @Common.Label: '{i18n>verbForm}';
 }

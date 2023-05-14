@@ -21,6 +21,7 @@ entity Moods : CodeList {};
 
 entity Degrees : CodeList {};
 entity Voices : CodeList {};
+entity VerbForms : CodeList {};
 
 entity Slova {
     key morphem : String;
@@ -109,6 +110,7 @@ entity Import : managed, cuid {
     mood : Association to Moods;
     voice : Association to Voices;
     degree : Association to Degrees;
+    verbForm : Association to VerbForms;
     words : Composition of many ImportWords on words.import = $self;
     sentences : Composition of many ImportSentences on sentences.import = $self;
 }
