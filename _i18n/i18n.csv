@@ -11,3 +11,20 @@ user.makeCard;Make Card
 user.addTranslation;Translate
 import.parseInput;Parse
 import.mergeResults;Import
+sent;sentence
+indx;index
+lemma;lemma
+pos;Part of Speech
+features;feats
+feats.noun;nouns
+feats.verb;verbs
+feats.other;other/shared
+case;Case
+gender;Gender
+number;Number
+person;Person
+tense;Tense
+aspect;Aspect
+mood;Mood
+voice;Voice
+degree;Degree

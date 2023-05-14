@@ -29,3 +29,21 @@ annotate db.Users with {
     name @Common.Label: '{i18n>name}';
     defaultLang @Common.Label: '{i18n>lang}';
 }
+
+annotate db.Import with {
+    lang @Common.Label: '{i18n>lang}';
+    sent @Common.Label: '{i18n>sent}';
+    indx @Common.Label: '{i18n>indx}';
+    lemma @Common.Label: '{i18n>lemma}';
+    pos @Common.Label: '{i18n>pos}';
+    feats @Common.Label: '{i18n>feats}';
+    ![case] @Common.Label: '{i18n>case}';
+    number @Common.Label: '{i18n>number}';
+    gender @Common.Label: '{i18n>gender}';
+    person @Common.Label: '{i18n>person}';
+    tense @Common.Label: '{i18n>tense}';
+    aspect @Common.Label: '{i18n>aspect}';
+    mood @Common.Label: '{i18n>mood}';
+    voice @Common.Label: '{i18n>voice}';
+    degree @Common.Label: '{i18n>degree}';
+}

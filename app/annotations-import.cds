@@ -13,18 +13,61 @@ annotate ImportService.Import with {
     text @UI.MultiLineText;
 }
 
+annotate ImportService.Import with {
+    pos     @(
+        ValueList.entity: 'PartsOfSpeech',
+        Common.ValueListWithFixedValues
+    );
+    ![case] @(
+        ValueList.entity: 'Cases',
+        Common.ValueListWithFixedValues
+    );
+    gender  @(
+        ValueList.entity: 'Genders',
+        Common.ValueListWithFixedValues
+    );
+    number  @(
+        ValueList.entity: 'Numbers',
+        Common.ValueListWithFixedValues
+    );
+    person  @(
+        ValueList.entity: 'Persons',
+        Common.ValueListWithFixedValues
+    );
+    tense   @(
+        ValueList.entity: 'Tenses',
+        Common.ValueListWithFixedValues
+    );
+    aspect  @(
+        ValueList.entity: 'Aspects',
+        Common.ValueListWithFixedValues
+    );
+    mood    @(
+        ValueList.entity: 'Moods',
+        Common.ValueListWithFixedValues
+    );
+    degree  @(
+        ValueList.entity: 'Degrees',
+        Common.ValueListWithFixedValues
+    );
+    voice   @(
+        ValueList.entity: 'Voices',
+        Common.ValueListWithFixedValues
+    );
+}
+
 annotate ImportService.Import with @UI: {
-    HeaderInfo      : {
+    HeaderInfo            : {
         TypeName      : '{i18n>Import}',
         TypeNamePlural: '{i18n>Imports}',
         Title         : {Value: lang_code},
         Description   : {Value: ID}
     },
-    LineItem        : [
+    LineItem              : [
         {Value: createdBy},
         {Value: lang_code}
     ],
-    Identification  : [
+    Identification        : [
         {
             $Type : 'UI.DataFieldForAction',
             Action: 'ImportService.parseInput',
@@ -36,7 +79,48 @@ annotate ImportService.Import with @UI: {
             Label : '{i18n>import.mergeResults}'
         }
     ],
-    Facets          : [
+    Facets                : [
+        {
+            $Type        : 'UI.CollectionFacet',
+            Label        : '{i18n>Config}',
+            ID           : 'ConfigFacet',
+            ![@UI.Hidden]: IsActiveEntity,
+            Facets       : [
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    Target: '@UI.FieldGroup#Sentence',
+                    Label : '{i18n>newSentence}'
+                },
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    Target: '@UI.FieldGroup#Word',
+                    Label : '{i18n>newWord}'
+                },
+            ]
+        },
+        {
+            $Type        : 'UI.CollectionFacet',
+            Label        : '{i18n>features}',
+            ID           : 'FeatsFacet',
+            ![@UI.Hidden]: IsActiveEntity,
+            Facets       : [
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    Target: '@UI.FieldGroup#FeatsNoun',
+                    Label : '{i18n>feats.noun}'
+                },
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    Target: '@UI.FieldGroup#FeatsOther',
+                    Label : '{i18n>feats.other}'
+                },
+                {
+                    $Type : 'UI.ReferenceFacet',
+                    Target: '@UI.FieldGroup#FeatsVerb',
+                    Label : '{i18n>feats.verb}'
+                }
+            ]
+        },
         {
             $Type : 'UI.ReferenceFacet',
             Target: '@UI.FieldGroup#Text',
@@ -55,23 +139,61 @@ annotate ImportService.Import with @UI: {
             ![@UI.Hidden]: HasDraftEntity
         }
     ],
-    FieldGroup #Text: {Data: [{Value: text}]},
+    FieldGroup #Text      : {Data: [{Value: text}]},
+    FieldGroup #Sentence  : {Data: [
+        {
+            $Type            : 'UI.DataFieldForAction',
+            Action           : 'ImportService.addSentence',
+            Label            : '{i18n>addSentence}',
+            ![@UI.Emphasized]: false,
+            Inline           : true
+        },
+        {Value: sent}
+    ]},
+    FieldGroup #Word      : {Data: [
+        {
+            $Type            : 'UI.DataFieldForAction',
+            Action           : 'ImportService.addWord',
+            Label            : '{i18n>addWord}',
+            ![@UI.Emphasized]: false,
+            Inline           : true
+        },
+        {Value: indx},
+        {Value: lemma},
+        {Value: pos_code},
+        {Value: feats}
+    ]},
+    FieldGroup #FeatsNoun : {Data: [
+        {Value: case_code},
+        {Value: gender_code},
+        {Value: number_code},
+    ]},
+    FieldGroup #FeatsVerb : {Data: [
+        {Value: person_code},
+        {Value: tense_code},
+        {Value: aspect_code},
+        {Value: mood_code},
+    ]},
+    FieldGroup #FeatsOther: {Data: [
+        {Value: voice_code},
+        {Value: degree_code}
+    ]},
 };
 
 annotate ImportService.Sentences with @UI: {
-    HeaderInfo: {
+    HeaderInfo             : {
         TypeName      : '{i18n>Sentence}',
         TypeNamePlural: '{i18n>Sentences}',
         Title         : {Value: text},
         Description   : {Value: hash}
     },
-    LineItem  : [{Value: text}],
-    Facets    : [{
+    LineItem               : [{Value: text}],
+    Facets                 : [{
         $Type : 'UI.ReferenceFacet',
         Target: 'tokens/@UI.LineItem',
         Label : '{i18n>Tokens}'
     }],
-    HeaderFacets        : [{
+    HeaderFacets           : [{
         $Type : 'UI.ReferenceFacet',
         Target: '@UI.FieldGroup#Translation',
     }],
@@ -97,28 +219,28 @@ annotate ImportService.Sentences.tokens with @UI: {
 };
 
 annotate ImportService.Slova.sentences with @UI: {
-    HeaderInfo         : {
+    HeaderInfo: {
         TypeName      : '{i18n>Sentence}',
         TypeNamePlural: '{i18n>Sentences}',
         Title         : {Value: sent.text},
         Description   : {Value: sent.hash}
     },
-    LineItem           : [{Value: sent.text}]
+    LineItem  : [{Value: sent.text}]
 };
 
 annotate ImportService.Slova with @UI: {
-    LineItem            : [
+    LineItem  : [
         {Value: pos},
         {Value: morphem},
         {Value: count}
     ],
-    HeaderInfo          : {
+    HeaderInfo: {
         TypeName      : '{i18n>Slovo}',
         TypeNamePlural: '{i18n>Slova}',
         Title         : {Value: morphem},
         Description   : {Value: occurence}
     },
-    Facets              : [
+    Facets    : [
         {
             $Type : 'UI.ReferenceFacet',
             Target: 'forms/@UI.LineItem',

@@ -2,10 +2,25 @@ using { managed, cuid, sap } from '@sap/cds/common';
 using { ru.dev4hana.slova.conllu as conllu } from './conllu';
 namespace ru.dev4hana.slova;
 
-entity Languages {
+aspect CodeList : {
     key code: String;
     name: String;
 }
+
+entity Languages : CodeList {};
+entity PartsOfSpeech : CodeList {};
+
+entity Cases : CodeList {};
+entity Numbers : CodeList {};
+entity Genders : CodeList {};
+entity Persons : CodeList {};
+
+entity Tenses : CodeList {};
+entity Aspects : CodeList {};
+entity Moods : CodeList {};
+
+entity Degrees : CodeList {};
+entity Voices : CodeList {};
 
 entity Slova {
     key morphem : String;
@@ -80,6 +95,20 @@ entity Translations : cuid, managed {
 entity Import : managed, cuid {
     lang : Association to Languages;
     text : LargeString;
+    sent : String;
+    indx : Integer;
+    lemma : String;
+    pos : Association to PartsOfSpeech;
+    feats : String;
+    ![case] : Association to Cases;
+    gender : Association to Genders;
+    number : Association to Numbers;
+    person : Association to Persons;
+    tense : Association to Tenses;
+    aspect : Association to Aspects;
+    mood : Association to Moods;
+    voice : Association to Voices;
+    degree : Association to Degrees;
     words : Composition of many ImportWords on words.import = $self;
     sentences : Composition of many ImportSentences on sentences.import = $self;
 }
