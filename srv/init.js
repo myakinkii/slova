@@ -7,10 +7,10 @@ const IMPORT_POS = process.env.IMPORT_POS?.split(',') || ['VERB', 'NOUN', 'PRON'
 const SET_CHUNKS = ['train', 'dev', 'test'] // sets in order of precedence (usually 80/10/10 % of treebank size)
 
 module.exports = (db) => {
-    const { Slova, Sentences, Etymology, Users } = db.entities('ru.dev4hana.slova')
+    const { Stat, Slova, Sentences, Etymology, Users } = db.entities('ru.dev4hana.slova')
 
-    let sentences = {}, words = [] // references to data
-    CONLLU_SETS.forEach( set => { IMPORT_POS.reduce( getParser(set, sentences), words) })
+    let sentences = {}, stat = [], words = [] // references to data
+    CONLLU_SETS.forEach( set => { IMPORT_POS.reduce( getParser(set, sentences, stat), words) })
     sentences = Object.values(sentences)
     LOG.debug(`got ${words.length} words and ${sentences.length} sentences`)
 
@@ -26,10 +26,11 @@ module.exports = (db) => {
         INSERT.into(Slova).entries(words),
         INSERT.into(Etymology).entries(etymology),
         INSERT.into(Users).entries(users),
-        INSERT.into(Sentences).entries(sentences)
+        INSERT.into(Sentences).entries(sentences),
+        INSERT.into(Stat).entries(stat)
     ])
 
-    function getParser(setName, sentencesRef){
+    function getParser(setName, sentencesRef, statRef){
         const lang = setName.split('_')[0]
         let dataSet = null
         for (const chunk of SET_CHUNKS){
@@ -38,6 +39,7 @@ module.exports = (db) => {
                 LOG.debug('parsing conllu set', setName, chunk)
                 dataSet = parseConllu(lang, data)
                 Object.assign(sentencesRef, dataSet.sentences)
+                statRef.push.apply(statRef,Object.values(dataSet.stat))
                 break;
             } catch (err) {
                 LOG.debug(`${setName} ${chunk} error`, err.message)

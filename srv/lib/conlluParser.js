@@ -4,18 +4,15 @@ const crypto = require('crypto')
 const prepareWords = (lang, src, pos, target) => {
     const data = src[pos]
     if(!data) return target // no such part of speech in input
-    const stat = data['_']
-    delete data['_']
     // LOG.debug('prepare words for', pos)
     // LOG.debug(stat)
     for (let w in data) {
-        const fraction = (data[w].count / stat.tokens * 100).toFixed(1)
         const word = {
             morphem: w,
             lang: lang,
             pos: pos,
-            occurence: `${fraction}% - ${data[w].count} occs of ${stat.tokens} for ${pos} (${stat.total})`,
-            count: data[w].count,
+            occurence : data[w].tokens, // we will patch it later in handler
+            count: data[w].tokens,
             forms: []
         }
         data[w].forms.forEach((form) => {
@@ -34,6 +31,7 @@ const parseConllu = (lang, data) => {
     // LOG.debug('parsing conllu set', set)
     c.serial = data
     const sentences = {}
+    const stat = {}
     const voc = c.sentences.reduce(function (prev, cur) {
         if (cur.tokens.length==0) return prev
         const comments = cur.comments.reduce( (prev,cur) => {
@@ -65,24 +63,28 @@ const parseConllu = (lang, data) => {
                 // LOG.debug('comments', cur.comments)
                 return
             }
-            if (!prev[t.upostag]) prev[t.upostag] = { "_": { total: 0, tokens: 0 } }
-            if (!prev[t.upostag][lemma]) {
-                prev[t.upostag]["_"].total++
-                prev[t.upostag][lemma] = { lemma: lemma, forms: new Set(), feats: {}, count: 0, sentences:{} }
+            const pos = t.upostag
+            if (!prev[pos]) {
+                prev[pos]={}
+                stat[pos] = { lang: lang, pos: pos, lemmas: 0, tokens: 0 }
             }
-            prev[t.upostag][lemma].sentences[hash]=true
-            prev[t.upostag][lemma].forms.add(form)
+            if (!prev[pos][lemma]) {
+                stat[pos].lemmas++
+                prev[pos][lemma] = { lemma: lemma, forms: new Set(), feats: {}, tokens: 0, sentences:{} }
+            }
+            prev[pos][lemma].sentences[hash]=true
+            prev[pos][lemma].forms.add(form)
             const feats = t.feats && t.feats.split("|").map(f => { const kv = f.split("="); return { k: kv[0], v: kv[1] } })
-            if (feats) prev[t.upostag][lemma].feats[form] = feats.reduce((prev, cur) => {
+            if (feats) prev[pos][lemma].feats[form] = feats.reduce((prev, cur) => {
                 prev[cur.k] = cur.v
                 return prev
             }, {})
-            prev[t.upostag][lemma].count++
-            prev[t.upostag]["_"].tokens++
+            prev[pos][lemma].tokens++
+            stat[pos].tokens++
         })
         return prev
     }, {})
-    return { words:voc, sentences:sentences }
+    return { words:voc, sentences:sentences, stat:stat }
 }
 
 module.exports = { parseConllu, prepareWords }

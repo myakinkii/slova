@@ -16,6 +16,14 @@ class BaseService extends cds.ApplicationService {
         }
         return profile
     }
+    
+    async addOccurence(data, req) {
+        if (!data || Array.isArray(data)) return
+        const { Stat } = cds.entities("ru.dev4hana.slova")
+        const stat = await cds.read(Stat,{pos:data.pos, lang:data.lang})
+        const fraction = (data.occurence / stat.tokens * 100).toFixed(1)
+        data.occurence = `${fraction}% - ${data.occurence} occs of ${stat.tokens} for ${data.pos} (${stat.lemmas})`
+    }
 
     async getDefinition(data, req) {
         if (!data || Array.isArray(data)) return

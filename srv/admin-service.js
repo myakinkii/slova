@@ -5,6 +5,7 @@ class AdminService extends BaseService {
 
     async init() {
         this.after('READ', 'Slova', this.getDefinition)
+        this.after('READ', 'Slova', this.addOccurence)
         await super.init()
     }
 

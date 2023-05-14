@@ -23,6 +23,13 @@ entity Degrees : CodeList {};
 entity Voices : CodeList {};
 entity VerbForms : CodeList {};
 
+entity Stat {
+    key lang : conllu.Languages;
+    key pos : conllu.PartsOfSpeech;
+    lemmas : Integer;
+    tokens : Integer;    
+}
+
 entity Slova {
     key morphem : String;
     key lang : conllu.Languages;
