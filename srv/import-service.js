@@ -1,7 +1,8 @@
-const {parseConllu, prepareWords} = require('./lib/conlluParser')
+const {parseConllu, prepareWords, performMerge } = require('./lib/conlluParser')
 
 const cds = require('@sap/cds')
 const { BaseService } = require('./baseService')
+const e = require('express')
 
 const IMPORT_POS = process.env.IMPORT_POS?.split(',') || ['VERB', 'NOUN', 'PRON', 'ADJ', 'ADV'] // parts of speech to import
 
@@ -72,11 +73,91 @@ class ImportService extends BaseService {
         return { ID:pars.ID }
     }
 
-    async performImport(req) {
+    async getImportData(importId){
         const { Import } = this.entities
-        const data = await cds.read(Import, req.params[0].ID).columns( i => { i.ID, i.sentences (s => { s`.*` } )})
-        console.log(data)
-        // will do some magic to merge data here
+
+        return cds.read(Import, importId).columns( i => { 
+            i.ID, 
+            i.words ( w => { 
+                w`.*`, 
+                w.forms(f => { f`.*` }),
+                w.sentences(s => { s`.*` })
+            }),
+            i.sentences(s => { s`.*`, s.tokens( t => { t`.*` }) })
+        })
+    }
+
+    async getExistingDataFor(newData){
+        const { Slova } = cds.entities("ru.dev4hana.slova")
+        const existingData = {}
+        
+        return Promise.all(newData.words.map( w => {
+            const { morphem, pos, lang } = w
+            const key = `${morphem}_${pos}_${lang}` // we use same key im performMerge
+            return new Promise( (resolve,reject) => {
+                cds.read(Slova,{ morphem, pos, lang }).columns( w => { 
+                    w`.*`, 
+                    w.forms(f => { f`.*` }),
+                    w.sentences(s => { s.sent_hash })
+                }).then( re => { existingData[key]=re; resolve() }, err => { existingData[key]={}; resolve()} )
+            })
+        })).then( () => existingData)
+    }
+
+    async getExistingStatFor(newStat){
+        const { Stat } = cds.entities("ru.dev4hana.slova")
+        const existingStat = {}
+        
+        return Promise.all(Object.keys(newStat).map( key => {
+            // here we assume that statkey = `${pos}_${lang}` in performMerge
+            const [pos, lang] = key.split("_")
+            return new Promise( (resolve,reject) => {
+                cds.read(Stat,{ pos, lang }).then( re => { existingStat[key]=re; resolve() }, err => { existingStat[key]={}; resolve()} )
+            })
+        })).then( () => existingStat)
+    }
+
+    makeQueriesFrom(result){
+        const { Slova, Sentences, Stat } = cds.entities("ru.dev4hana.slova")
+        const queries = []
+
+        Object.values(result.update.words).forEach( upd => {
+            const { morphem, pos, lang } = upd
+            queries.push( UPDATE(Slova,{ morphem, pos, lang }).with(upd) )
+        })
+
+        if (Object.keys(result.insert.sentences).length>0){
+            queries.push( INSERT.into(Sentences).entries(Object.values(result.insert.sentences)) )
+        }
+        if (Object.keys(result.insert.words).length>0){
+            queries.push( INSERT.into(Slova).entries(Object.values(result.insert.words)) )
+        }
+
+        if (queries.length) {
+            queries.push( UPSERT.into(Stat).entries(Object.values(result.stat)) )
+        }
+
+        return queries
+    }
+
+    async performImport(req) {
+
+        const newData = await this.getImportData(req.params[0].ID)
+        const existingData = await this.getExistingDataFor(newData)
+
+        const result = performMerge(newData, existingData)
+
+        const existingStat = await this.getExistingStatFor(result.stat)
+        for (let k in existingStat){
+            // here we also assume that k is statkey = `${pos}_${lang}` from performMerge
+            if (existingStat[k]) {
+                result.stat[k].lemmas += existingStat[k].lemmas
+                result.stat[k].tokens += existingStat[k].tokens
+            }
+        }
+        // basically this stuff above is insert or update with increment depending on data we merge
+
+        return cds.run(this.makeQueriesFrom(result))
     }
 
     async getGoogleTranslate(data, req) {

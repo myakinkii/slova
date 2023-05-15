@@ -1,6 +1,84 @@
 var conllu = require('conllu')
 const crypto = require('crypto')
 
+const performMerge = (newData, existingData) => {
+    const insert = { words:{}, sentences:{} }
+    const update = { words:{} }
+    const stat = {}
+    newData.words.forEach( w => {
+
+        const { morphem, pos, lang } = w
+
+        const key = `${morphem}_${pos}_${lang}` // have deps to this key #refactor
+        const statkey = `${pos}_${lang}` // have deps to this key #refactor
+
+        if (!stat[statkey]) stat[statkey] = { lang:lang, pos:pos, tokens:0, lemmas:0 }
+
+        const existing = existingData[key] // word we already have
+
+        if (!existing){ // simply add new stuff
+
+            w.sentences.forEach(s => { 
+                if (insert.sentences[s.sent_hash]) return // already added now
+                const sent = newData.sentences.find( ss => ss.hash==s.sent_hash )
+                insert.sentences[s.sent_hash] = {
+                    lang_code: lang,
+                    hash : sent.hash,
+                    text : sent.text,
+                    tokens : sent.tokens.map( ({ up__hash, up__import_ID, ...rest}) => rest )
+                }
+            })
+
+            insert.words[key] = {
+                morphem, pos, lang,
+                count : w.count, occurence : w.count,
+                forms : w.forms.map( ({ lemma_import_ID, ...rest}) => rest ),
+                sentences : w.sentences.map( s => ({ sent_hash : s.sent_hash }) )
+            }
+
+            stat[statkey].lemmas += 1
+            stat[statkey].tokens += w.count
+
+        } else { // figure out what to update
+
+            let skip = true // maybe it is a complete duplicate
+            
+            w.sentences.forEach(s => { 
+                if ( existing.sentences.find( e => e.sent_hash==s.sent_hash)) return // already known before
+                if (insert.sentences[s.sent_hash]) return // already added now
+                const sent = newData.sentences.find( ss => ss.hash==s.sent_hash )
+                insert.sentences[s.sent_hash] = {
+                    lang_code: lang,
+                    hash : sent.hash,
+                    text : sent.text,
+                    tokens : sent.tokens.map( ({ up__hash, up__import_ID, ...rest}) => rest )
+                }
+                existing.sentences.push({ sent_hash : s.sent_hash}) // also update word
+                skip = false
+            })
+
+            w.forms.forEach(({ lemma_import_ID, ...f}) => { 
+                if ( existing.forms.find( e => e.form==f.form)) return // already known before
+                existing.forms.push(f)
+                skip = false
+            })
+
+            if (skip) return // to avoid incorrectly incrementing stats 
+
+            update.words[key] = {
+                morphem, pos, lang,
+                count : existing.count + w.count,
+                occurence : existing.count + w.count,
+                forms : existing.forms,
+                sentences : existing.sentences
+            }
+
+            stat[statkey].tokens += w.count
+        }
+    })
+    return { insert, update, stat }
+}
+
 const prepareWords = (lang, src, pos, target) => {
     const data = src[pos]
     if(!data) return target // no such part of speech in input
@@ -87,4 +165,4 @@ const parseConllu = (lang, data) => {
     return { words:voc, sentences:sentences, stat:stat }
 }
 
-module.exports = { parseConllu, prepareWords }
+module.exports = { parseConllu, prepareWords, performMerge }
