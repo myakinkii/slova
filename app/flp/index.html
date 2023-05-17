@@ -66,17 +66,6 @@
                                         "icon": "sap-icon://Fiori2/F0001",
                                         "targetURL": "#translations-manage"
                                     }
-                                },{
-                                    "id": "admin_import",
-                                    "title": "Import",
-                                    "size": "1x1",
-                                    "tileType": "sap.ushell.ui.tile.StaticTile",
-                                    "properties": {
-                                        "chipId": "catalogTile_13",
-                                        "title": "Import",
-                                        "icon": "sap-icon://Fiori2/F0001",
-                                        "targetURL": "#import-perform"
-                                    }
                                 }]
                             },{
                                 "id": "browse_group",
@@ -105,6 +94,17 @@
                                         "title": "User",
                                         "icon": "sap-icon://Fiori2/F0001",
                                         "targetURL": "#user-configure"
+                                    }
+                                },{
+                                    "id": "data_import",
+                                    "title": "Import",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_22",
+                                        "title": "Import",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#data-import"
                                     }
                                 }]
                             },{
@@ -247,9 +247,9 @@
                                         "url": "/$fiori-preview/UserService/Users/app"
                                     }
                                 },
-                                "admin_import": {
-                                    "semanticObject": "import",
-                                    "action": "perform",
+                                "data_import": {
+                                    "semanticObject": "data",
+                                    "action": "import",
                                     "title": "Import",
                                     "signature": {
                                         "parameters": {},
@@ -257,7 +257,7 @@
                                     },
                                     "resolutionResult": {
                                         "applicationType": "SAPUI5",
-                                        "additionalInformation": "SAPUI5.Component=admin_import",
+                                        "additionalInformation": "SAPUI5.Component=data_import",
                                         "url": "/$fiori-preview/ImportService/Import/app"
                                     }
                                 }
