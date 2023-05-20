@@ -89,6 +89,7 @@ class BaseService extends cds.ApplicationService {
         return this.create(Cards).entries({
             slovo: slovo,
             user_id: profile.id,
+            count: 0,
             translation: translations[0]
         })
     }

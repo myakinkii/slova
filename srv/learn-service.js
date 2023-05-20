@@ -16,7 +16,7 @@ class MyService extends BaseService {
         const card = req.params[0]
         const guess = req.data.value
 
-        await this.update(Cards,card).set({ seen: true, random : Math.floor((Math.random()*1000)) })
+        await this.update(Cards,card).set({ count: { '+=':1 }, seen: true, random : Math.floor((Math.random()*1000)) })
 
         const unseen = await cds.read(Cards, ['Count(*) as count']).where({ 
             user_id : req.user.id, and: { seen: { '!=' : true }, or: { random : null } }

@@ -85,6 +85,7 @@ entity Cards : managed {
     key translation : Association to Translations;
     seen : Boolean;
     random : Integer;
+    count : Integer;
     history : Composition of many CardGuesses on history.card = $self
 }
 

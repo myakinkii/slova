@@ -1,0 +1,26 @@
+<mvc:View
+    id="application-product"
+    height="100%"
+    controllerName="customCards.Main"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:l="sap.ui.layout"
+    xmlns:macros="sap.fe.macros">
+    <Page title="{i18n>myCardsTitle}">
+        <l:HorizontalLayout id="TileContainerExpanded" allowWrapping="true" content="{/Cards}" class="sapUiMediumMargin">
+            <GenericTile class="sapUiTinyMarginEnd sapUiTinyMarginTop tileLayout"
+                header="{slovo_morphem}"
+                subheader="{slovo_pos}"
+                press="onPressed">
+                <TileContent footer="{how}">
+                    <NumericContent withMargin="false" value="{count}" valueColor="Good" indicator="Up" />
+                </TileContent>
+            </GenericTile>
+        </l:HorizontalLayout>
+        <Panel headerText="Fiori Elements table" expandable="true" expanded="false" class="sapUiMediumMarginTop">
+            <macros:FilterBar metaPath="/Cards/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar" liveMode="true" />
+            <macros:Table metaPath="/Cards/@com.sap.vocabularies.UI.v1.LineItem" id="macroTable" filterBar="FilterBar" />
+        </Panel>
+
+    </Page>
+</mvc:View>

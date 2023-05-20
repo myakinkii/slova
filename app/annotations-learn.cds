@@ -54,6 +54,11 @@ annotate MyService.Cards with @UI: {
             $Function: 'odata.concat'
         }}}
     },
+    SelectionFields        : [
+        slovo_lang,
+        slovo_pos,
+        slovo_morphem
+    ],
     LineItem               : [
         // {Value: slovo.lang},
         // {Value: slovo.morphem  },
