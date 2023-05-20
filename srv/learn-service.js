@@ -36,7 +36,7 @@ class MyService extends BaseService {
     async applyFilter(req) {
         req.query.where({ seen: { '!=' : true} })
         req.query.orderBy('random')
-        req.query.limit(DISPLAY_CARDS)
+        // req.query.limit(DISPLAY_CARDS)
     }
 
 }
