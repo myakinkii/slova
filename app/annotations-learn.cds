@@ -1,4 +1,3 @@
-
 annotate MyService.Translations with @odata.draft.enabled;
 
 annotate MyService.Translations with @(
@@ -27,9 +26,10 @@ annotate MyService.Translations with @UI: {
         }}}
     },
     LineItem               : [
-        {Value: author_id},
         {Value: lang_code},
-        {Value: value}
+        {Value: slovo_lang},
+        {Value: slovo_morphem},
+        {Value: slovo_pos},
     ],
     FieldGroup #Translation: {Data: [{Value: value}]},
     Facets                 : [{

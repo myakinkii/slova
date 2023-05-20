@@ -32,6 +32,14 @@ service MyService {
         slovo.morphem || ' (' || slovo.pos || ')'     as what : String,
         slovo.lang || ' -> ' || translation.lang.code as how  : String
     } actions {
+
+        @(
+            cds.odata.bindingparameter.name: '_it',
+            Common.SideEffects             : {TargetEntities: [
+                '/MyService.EntityContainer/Cards',
+                '_it/history'
+            ]}
+        )
         action guessCard(value : String);
     };
 

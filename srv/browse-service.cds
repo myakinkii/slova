@@ -9,7 +9,7 @@ service UserService {
 
     @readonly
     entity Slova     as projection on db.Slova actions {
-        action makeCard()                     returns Cards;
+        action makeCard();
 
         @(
             cds.odata.bindingparameter.name: '_it',
@@ -28,7 +28,7 @@ service UserService {
     entity Sentences as projection on db.Sentences;
 
     @readonly
-    entity Tokens as projection on db.Tokens;
+    entity Tokens    as projection on db.Tokens;
 
     entity Translations @(restrict: [
         {
@@ -50,21 +50,5 @@ service UserService {
         to   : 'authenticated-user',
         where: 'id = $user'
     }])              as projection on db.Users;
-
-    entity Cards @(restrict: [{
-        grant: [
-            'READ',
-            'WRITE',
-            'guessCard'
-        ],
-        to   : 'authenticated-user',
-        where: 'user_id = $user'
-    }])              as projection on db.Cards {
-        *,
-        slovo.morphem || ' (' || slovo.pos || ')'          as what : String,
-        slovo.lang || ' -> ' || translation.lang.code as how  : String
-    } actions {
-        action guessCard(value : String);
-    };
 
 }

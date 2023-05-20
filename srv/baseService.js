@@ -78,7 +78,8 @@ class BaseService extends cds.ApplicationService {
     }
 
     async makeCard(req) {
-        const { Cards } = this.entities
+        // const { Cards } = this.entities
+        const { Cards } = cds.entities("ru.dev4hana.slova")
         const slovo = req.params[0]
         const profile = await this.getProfile(req.user.id)
 
@@ -91,18 +92,6 @@ class BaseService extends cds.ApplicationService {
             translation: translations[0]
         })
     }
-
-    async guessCard(req) {
-        const { CardGuesses } = this.entities
-        const card = req.params[0]
-        const guess = req.data.value
-        return this.create(CardGuesses).entries({
-            card: card,
-            guess: guess,
-            now: '$now'
-        })
-    }
-
 }
 
 module.exports = { BaseService }

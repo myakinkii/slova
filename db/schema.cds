@@ -83,6 +83,8 @@ entity Cards : managed {
     key user : Association to Users;
     key slovo : Association to Slova;
     key translation : Association to Translations;
+    seen : Boolean;
+    random : Integer;
     history : Composition of many CardGuesses on history.card = $self
 }
 
