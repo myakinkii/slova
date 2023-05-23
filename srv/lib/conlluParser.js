@@ -45,13 +45,14 @@ const performMerge = (newData, existingData) => {
             
             w.sentences.forEach(s => { 
                 if ( existing.sentences.find( e => e.sent_hash==s.sent_hash)) return // already known before
-                if (insert.sentences[s.sent_hash]) return // already added now
                 const sent = newData.sentences.find( ss => ss.hash==s.sent_hash )
-                insert.sentences[s.sent_hash] = {
-                    lang_code: lang,
-                    hash : sent.hash,
-                    text : sent.text,
-                    tokens : sent.tokens.map( ({ up__hash, up__import_ID, ...rest}) => rest )
+                if (!insert.sentences[sent.hash]) {
+                    insert.sentences[sent.hash] = {
+                        lang_code: lang,
+                        hash : sent.hash,
+                        text : sent.text,
+                        tokens : sent.tokens.map( ({ up__hash, up__import_ID, ...rest}) => rest )
+                    }
                 }
                 existing.sentences.push({ sent_hash : s.sent_hash}) // also update word
                 skip = false
