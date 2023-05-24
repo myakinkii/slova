@@ -11,6 +11,7 @@ class ImportService extends BaseService {
     async init() {
         this.on('addSentence', this.addSentence)
         this.on('addWord', this.addWord)
+        this.on('askHelp', this.askHelp)
         this.on('parseInput', this.parseInput)
         this.on('mergeResults', this.performImport)
         this.after('READ', 'Sentences', this.getGoogleTranslate)
@@ -26,6 +27,17 @@ class ImportService extends BaseService {
             indx: 1, lemma: tokens[0].toLowerCase(),
             pos_code: '', feats: '',
             text: `${data.text||''}\n` + `# text = ${data.sent}\n`
+        })
+    }
+
+    async askHelp(entity, pars) {
+        const { Import } = this.entities
+        const ID = pars.ID
+        const data = await cds.read(Import.drafts, ID)
+        const stanzaTokens = await this.callExternalParser(data.sent, data.lang_code)
+        const conlluTokens = stanzaTokens.map( t => `${t.index}\t${t.word}\t${t.lemma}\t${t.upos}\t_\t${t.feats}` )
+        await cds.update(Import.drafts,pars.ID).with({
+            text: `${data.text||''}` + `${conlluTokens.join("\n")}\n`
         })
     }
 

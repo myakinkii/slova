@@ -1,5 +1,6 @@
 const cds = require('@sap/cds')
 const definitionFinder = require('./lib/definitionFinder')
+const externalParser = require('./lib/externalParser')
 
 class BaseService extends cds.ApplicationService {
 
@@ -46,6 +47,10 @@ class BaseService extends cds.ApplicationService {
         if (!text) return
         const googleTranslateBaseUrl = 'https://translate.google.com/'
         data.translation = `${googleTranslateBaseUrl}?text=${encodeURIComponent(text)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
+    }
+
+    async callExternalParser(sentence,lang) {
+        return externalParser.get(lang, sentence)
     }
 
     async getTranslations(slovo, author, lang) {

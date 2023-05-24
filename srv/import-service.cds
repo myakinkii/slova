@@ -1,7 +1,10 @@
 using {ru.dev4hana.slova as db} from '../db/schema';
 
 @path    : '/import'
-@requires: ['authenticated-user', 'admin-user']
+@requires: [
+    'authenticated-user',
+    'admin-user'
+]
 service ImportService {
 
     entity Import @(restrict: [
@@ -10,6 +13,7 @@ service ImportService {
                 'READ',
                 'WRITE',
                 'parseInput',
+                'askHelp',
                 'addSentence',
                 'addWord'
             ],
@@ -36,6 +40,12 @@ service ImportService {
         action parseInput();
 
         action mergeResults();
+
+        @(
+            cds.odata.bindingparameter.name: '_it',
+            Common.SideEffects             : {TargetProperties: ['_it/text']}
+        )
+        action askHelp();
 
         @(
             cds.odata.bindingparameter.name: '_it',

@@ -143,7 +143,16 @@ annotate ImportService.Import with @UI: {
             ![@UI.Hidden]: HasDraftEntity
         }
     ],
-    FieldGroup #Text      : {Data: [{Value: text}]},
+    FieldGroup #Text      : {Data: [
+        {
+            $Type            : 'UI.DataFieldForAction',
+            Action           : 'ImportService.askHelp',
+            Label            : '{i18n>askHelp}',
+            ![@UI.Emphasized]: false,
+            Inline           : false
+        },        
+        {Value: text}
+    ]},
     FieldGroup #Sentence  : {Data: [
         {
             $Type            : 'UI.DataFieldForAction',
