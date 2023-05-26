@@ -9,7 +9,8 @@
     "@sap/cds": ">=5",
     "axios": "^1.3.4",
     "conllu": "^0.1.2",
-    "express": "^4"
+    "express": "^4",
+    "python-shell": "^5.0.0"
   },
   "devDependencies": {
     "cds-swagger-ui-express": "^0.6.0",
