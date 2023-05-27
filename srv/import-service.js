@@ -35,8 +35,9 @@ class ImportService extends BaseService {
         const ID = pars.ID
         const data = await cds.read(Import.drafts, ID)
         const stanzaTokens = await this.callExternalParser(data.sent, data.lang_code)
-        const conlluTokens = stanzaTokens.map( t => `${t.id||t.index}\t${t.text||t.word}\t${t.lemma}\t${t.upos}\t_\t${t.feats}` )
+        const conlluTokens = stanzaTokens.map( t => `${t.id||t.index}\t${t.text||t.word}\t${t.lemma}\t${t.upos}\t_\t${t.feats||'_'}` )
         await cds.update(Import.drafts,pars.ID).with({
+            sent: '', indx : '', lemma:'',
             text: `${data.text||''}` + `${conlluTokens.join("\n")}\n`
         })
     }

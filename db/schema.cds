@@ -105,6 +105,7 @@ entity Translations : cuid, managed {
 
 entity Import : managed, cuid {
     lang : Association to Languages;
+    name : String;
     text : LargeString;
     sent : String;
     indx : Integer;

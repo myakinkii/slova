@@ -32,6 +32,7 @@ annotate db.Users with {
 
 annotate db.Import with {
     lang @Common.Label: '{i18n>lang}';
+    name @Common.Label: '{i18n>name}';
     sent @Common.Label: '{i18n>sent}';
     indx @Common.Label: '{i18n>indx}';
     lemma @Common.Label: '{i18n>lemma}';

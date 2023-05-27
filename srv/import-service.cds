@@ -43,7 +43,12 @@ service ImportService {
 
         @(
             cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {TargetProperties: ['_it/text']}
+            Common.SideEffects             : {TargetProperties: [
+                '_it/text',
+                '_it/sent',
+                '_it/indx',
+                '_it/lemma'
+            ]}
         )
         action askHelp();
 

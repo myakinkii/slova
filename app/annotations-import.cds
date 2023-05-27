@@ -65,7 +65,7 @@ annotate ImportService.Import with @UI: {
         TypeName      : '{i18n>Import}',
         TypeNamePlural: '{i18n>Imports}',
         Title         : {Value: lang_code},
-        Description   : {Value: ID}
+        Description   : {Value: name}
     },
     LineItem              : [
         {Value: createdBy},
@@ -85,6 +85,10 @@ annotate ImportService.Import with @UI: {
     ],
     Facets                : [
         {
+            $Type : 'UI.ReferenceFacet',
+            Target: '@UI.FieldGroup#Text',
+            Label : '{i18n>input}'
+        },{
             $Type        : 'UI.CollectionFacet',
             Label        : '{i18n>Config}',
             ID           : 'ConfigFacet',
@@ -124,11 +128,6 @@ annotate ImportService.Import with @UI: {
                     Label : '{i18n>feats.verb}'
                 }
             ]
-        },
-        {
-            $Type : 'UI.ReferenceFacet',
-            Target: '@UI.FieldGroup#Text',
-            Label : '{i18n>input}'
         },
         {
             $Type        : 'UI.ReferenceFacet',
