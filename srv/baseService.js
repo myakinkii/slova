@@ -32,7 +32,7 @@ class BaseService extends cds.ApplicationService {
         const profile = await this.getProfile(req.user.id)
         const userLang = profile.defaultLang_code
         let definitionUrl = data.definition
-        if (!definitionUrl) definitionUrl = await definitionFinder.get(lang, data.morphem)
+        if (!definitionUrl) definitionUrl = await definitionFinder.get(lang, data.morphem).catch( ()=>{} )
         if (!definitionUrl) return
         const googleTranslateBaseUrl = 'https://translate.google.com/translate'
         data.definition = `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
