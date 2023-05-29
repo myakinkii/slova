@@ -69,6 +69,7 @@ annotate ImportService.Import with @UI: {
     },
     LineItem              : [
         {Value: createdBy},
+        {Value: name},
         {Value: lang_code}
     ],
     Identification        : [
