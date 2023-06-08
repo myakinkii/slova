@@ -7,12 +7,14 @@
     <title>Cards</title>
 
     <script id="sap-ui-bootstrap" 
-        _src="/resources/sap-ui-core.js"
-        src="https://ui5.sap.com/resources/sap-ui-core.js"
-        data-sap-ui-libs="sap.m, sap.ui.layout, sap.ushell, sap.collaboration, sap.fe.templates"
+        src="./resources/sap-ui-core.js"
+        data-sap-ui-libs="sap.m, sap.ushell, sap.fe.templates"
         data-sap-ui-compatVersion="edge"
         data-sap-ui-theme="sap_fiori_3"
         data-sap-ui-logLevel="error"
+        data-sap-ui-xx-viewCache="false"
+        data-sap-ui-xx-cache-use="false"
+        data-sap-ui-flexibilityServices = '[{"connector": "LocalStorageConnector"}]'
         data-sap-ui-resourceroots='{ "customCards": "./" }'
         data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
         data-sap-ui-frameOptions="allow" >
@@ -20,5 +22,5 @@
 
 </head>
 <body class="sapUiBody sapUiSizeCompact" id="content">
-    <div data-sap-ui-component data-name="customCards" data-height="100%" style="height:100%" ></div>
+    <div data-sap-ui-component data-name="customCards" data-settings='{ "componentData": { "mobile":true } }' data-height="100%" style="height:100%" ></div>
 </html>

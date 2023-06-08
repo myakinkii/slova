@@ -58,11 +58,10 @@
 					"synchronizationMode": "None",
 					"operationMode": "Server",
 					"autoExpandSelect": true,
-					"earlyRequests": true
+					"earlyRequests": false
 				}
 			}
 		},
-
 		"routing": {
 			"routes": [
 				{

@@ -1,0 +1,14 @@
+{
+  "name": "cards",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Component.js",
+  "scripts": {
+    "ui5:build": "ui5 build --all --include-task generateLibraryPreload --exclude-task generateBundle generateFlexChangesBundle generateComponentPreload createDebugFiles",
+    "cap:sync": "cap sync",
+    "cap:run": "cap run",
+    "cap:open": "cap open"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -8,6 +8,9 @@ gen/
 node_modules/
 target/
 
+#ui5 build
+dist/
+
 test/conllu
 test/reports
 
