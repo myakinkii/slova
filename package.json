@@ -9,6 +9,7 @@
     "@sap/cds": ">=5",
     "axios": "^1.3.4",
     "conllu": "^0.1.2",
+    "cors": "^2.8.5",
     "express": "^4",
     "python-shell": "^5.0.0"
   },
