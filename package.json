@@ -1,8 +1,8 @@
 {
-  "name": "slova",
+  "name": "slova.cc",
   "version": "1.0.0",
-  "description": "A simple CAP project.",
-  "repository": "<Add your repository here>",
+  "description": "A simple CAP project about words",
+  "repository": "https://github.com/myakinkii/slova",
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
