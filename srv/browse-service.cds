@@ -1,4 +1,4 @@
-using {ru.dev4hana.slova as db} from '../db/schema';
+using {cc.slova.model as db} from '../db/schema';
 
 @path    : '/browse'
 @requires: 'authenticated-user'

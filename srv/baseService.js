@@ -9,7 +9,7 @@ class BaseService extends cds.ApplicationService {
     }
 
     async getProfile(userId) {
-        const { Users } = cds.entities("ru.dev4hana.slova")
+        const { Users } = cds.entities("cc.slova.model")
         let profile = await this.read(Users, { id: userId })
         if (!profile) {
             profile = { id: userId, defaultLang_code: 'en' }
@@ -20,7 +20,7 @@ class BaseService extends cds.ApplicationService {
     
     async addOccurence(data, req) {
         if (!data || Array.isArray(data)) return
-        const { Stat } = cds.entities("ru.dev4hana.slova")
+        const { Stat } = cds.entities("cc.slova.model")
         const stat = await cds.read(Stat,{pos:data.pos, lang:data.lang})
         const fraction = (data.occurence / stat.tokens * 100).toFixed(1)
         data.occurence = `${fraction}% - ${data.occurence} occs of ${stat.tokens} for ${data.pos} (${stat.lemmas})`
@@ -84,7 +84,7 @@ class BaseService extends cds.ApplicationService {
 
     async makeCard(req) {
         // const { Cards } = this.entities
-        const { Cards } = cds.entities("ru.dev4hana.slova")
+        const { Cards } = cds.entities("cc.slova.model")
         const slovo = req.params[0]
         const profile = await this.getProfile(req.user.id)
 

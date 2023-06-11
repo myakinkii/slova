@@ -101,7 +101,7 @@ class ImportService extends BaseService {
     }
 
     async getExistingDataFor(newData){
-        const { Slova } = cds.entities("ru.dev4hana.slova")
+        const { Slova } = cds.entities("cc.slova.model")
         const existingData = {}
         
         return Promise.all(newData.words.map( w => {
@@ -118,7 +118,7 @@ class ImportService extends BaseService {
     }
 
     async getExistingStatFor(newStat){
-        const { Stat } = cds.entities("ru.dev4hana.slova")
+        const { Stat } = cds.entities("cc.slova.model")
         const existingStat = {}
         
         return Promise.all(Object.keys(newStat).map( key => {
@@ -131,7 +131,7 @@ class ImportService extends BaseService {
     }
 
     makeQueriesFrom(result){
-        const { Slova, Sentences, Stat } = cds.entities("ru.dev4hana.slova")
+        const { Slova, Sentences, Stat } = cds.entities("cc.slova.model")
         const queries = []
 
         Object.values(result.update.words).forEach( upd => {

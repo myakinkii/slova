@@ -7,7 +7,7 @@ const IMPORT_POS = process.env.IMPORT_POS?.split(',') || ['VERB', 'NOUN', 'PRON'
 const SET_CHUNKS = ['train', 'dev', 'test'] // sets in order of precedence (usually 80/10/10 % of treebank size)
 
 module.exports = (db) => {
-    const { Stat, Slova, Sentences, Etymology, Users } = db.entities('ru.dev4hana.slova')
+    const { Stat, Slova, Sentences, Etymology, Users } = db.entities('cc.slova.model')
 
     let sentences = {}, stat = [], words = [] // references to data
     CONLLU_SETS.forEach( set => { IMPORT_POS.reduce( getParser(set, sentences, stat), words) })
