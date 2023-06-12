@@ -12,3 +12,6 @@ POS tags and Features follow this guide https://universaldependencies.org/guidel
 
 ## to enable stanza syntax parsing
 follow `./srv/lib/stanza/README.md`
+
+## to enable openapi text generation
+just add your OPENAI_API_KEY to `.env` as you would expect
