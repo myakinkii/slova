@@ -12,6 +12,7 @@ class ImportService extends BaseService {
         this.on('addSentence', this.addSentence)
         this.on('addWord', this.addWord)
         this.on('askHelp', this.askHelp)
+        this.on('generateInput', this.generateInput)
         this.on('parseInput', this.parseInput)
         this.on('mergeResults', this.performImport)
         this.after('READ', 'Sentences', this.getGoogleTranslate)
@@ -28,6 +29,14 @@ class ImportService extends BaseService {
             pos_code: '', feats: '',
             text: `${data.text||''}\n` + `# text = ${data.sent}\n`
         })
+    }
+
+    async generateInput(entity, pars) {
+        const { Import } = this.entities
+        const ID = pars.ID
+        const data = await cds.read(Import.drafts, ID)
+        const chatGptResponse = await this.callExternalGenerator(data.lang_code, data.textSize_code, data.textType_code, data.textLocation_code, data.textModifier_code, )
+        await cds.update(Import.drafts,pars.ID).with({ input : chatGptResponse.replaceAll('\n\n','\n') })
     }
 
     async askHelp(entity, pars) {

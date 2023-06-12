@@ -10,10 +10,55 @@ annotate ImportService.Import with @(
 );
 
 annotate ImportService.Import with {
+    input @UI.MultiLineText;
     text @UI.MultiLineText;
 }
 
+annotate ImportService.TextSizes with {
+    code @(Common: {Text: {
+        $value                : name,
+        ![@UI.TextArrangement]: #TextOnly
+    }})
+};
+
+annotate ImportService.TextTypes with {
+    code @(Common: {Text: {
+        $value                : name,
+        ![@UI.TextArrangement]: #TextOnly
+    }})
+};
+
+annotate ImportService.TextLocations with {
+    code @(Common: {Text: {
+        $value                : name,
+        ![@UI.TextArrangement]: #TextOnly
+    }})
+};
+
+annotate ImportService.TextModifiers with {
+    code @(Common: {Text: {
+        $value                : name,
+        ![@UI.TextArrangement]: #TextOnly
+    }})
+};
+
 annotate ImportService.Import with {
+    textSize     @(
+        ValueList.entity: 'TextSizes',
+        Common.ValueListWithFixedValues
+    );
+    textType     @(
+        ValueList.entity: 'TextTypes',
+        Common.ValueListWithFixedValues
+    );
+    textLocation     @(
+        ValueList.entity: 'TextLocations',
+        Common.ValueListWithFixedValues
+    );
+    textModifier     @(
+        ValueList.entity: 'TextModifiers',
+        Common.ValueListWithFixedValues
+    );
     pos     @(
         ValueList.entity: 'PartsOfSpeech',
         Common.ValueListWithFixedValues
@@ -87,8 +132,12 @@ annotate ImportService.Import with @UI: {
     Facets                : [
         {
             $Type : 'UI.ReferenceFacet',
-            Target: '@UI.FieldGroup#Text',
+            Target: '@UI.FieldGroup#Input',
             Label : '{i18n>input}'
+        },{
+            $Type : 'UI.ReferenceFacet',
+            Target: '@UI.FieldGroup#Text',
+            Label : '{i18n>output}'
         },{
             $Type        : 'UI.CollectionFacet',
             Label        : '{i18n>Config}',
@@ -143,6 +192,20 @@ annotate ImportService.Import with @UI: {
             ![@UI.Hidden]: HasDraftEntity
         }
     ],
+    FieldGroup #Input      : {Data: [
+        {
+            $Type            : 'UI.DataFieldForAction',
+            Action           : 'ImportService.generateInput',
+            Label            : '{i18n>generateInput}',
+            ![@UI.Emphasized]: false,
+            Inline           : false
+        },
+        {Value: input},
+        {Value: textSize_code},
+        {Value: textType_code},
+        {Value: textModifier_code},
+        {Value: textLocation_code}
+    ]},
     FieldGroup #Text      : {Data: [
         {
             $Type            : 'UI.DataFieldForAction',
@@ -150,7 +213,7 @@ annotate ImportService.Import with @UI: {
             Label            : '{i18n>askHelp}',
             ![@UI.Emphasized]: false,
             Inline           : false
-        },        
+        },
         {Value: text}
     ]},
     FieldGroup #Sentence  : {Data: [

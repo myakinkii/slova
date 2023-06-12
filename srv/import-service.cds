@@ -13,6 +13,7 @@ service ImportService {
                 'READ',
                 'WRITE',
                 'parseInput',
+                'generateInput',
                 'askHelp',
                 'addSentence',
                 'addWord'
@@ -54,6 +55,12 @@ service ImportService {
 
         @(
             cds.odata.bindingparameter.name: '_it',
+            Common.SideEffects             : {TargetProperties: ['_it/input']}
+        )
+        action generateInput();
+
+        @(
+            cds.odata.bindingparameter.name: '_it',
             Common.SideEffects             : {TargetProperties: [
                 '_it/text',
                 '_it/sent',
@@ -87,6 +94,18 @@ service ImportService {
         )
         action addWord();
     };
+
+    @readonly
+    entity TextTypes     as projection on db.TextTypes;
+
+    @readonly
+    entity TextSizes     as projection on db.TextSizes;
+
+    @readonly
+    entity TextLocations as projection on db.TextLocations;
+
+    @readonly
+    entity TextModifiers as projection on db.TextModifiers;
 
     @readonly
     entity Sentences     as projection on db.ImportSentences;

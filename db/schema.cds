@@ -24,6 +24,10 @@ entity Moods : CodeList {};
 entity Degrees : CodeList {};
 entity Voices : CodeList {};
 entity VerbForms : CodeList {};
+entity TextSizes : CodeList {};
+entity TextLocations : CodeList {};
+entity TextTypes : CodeList {};
+entity TextModifiers : CodeList {};
 
 entity Stat {
     key lang   : conllu.Languages;
@@ -119,28 +123,33 @@ entity Translations : cuid, managed {
 }
 
 entity Import : managed, cuid {
-    lang      : Association to Languages;
-    name      : String;
-    text      : LargeString;
-    sent      : String;
-    indx      : Integer;
-    lemma     : String;
-    pos       : Association to PartsOfSpeech;
-    feats     : String;
-    ![case]   : Association to Cases;
-    gender    : Association to Genders;
-    number    : Association to Numbers;
-    person    : Association to Persons;
-    tense     : Association to Tenses;
-    aspect    : Association to Aspects;
-    mood      : Association to Moods;
-    voice     : Association to Voices;
-    degree    : Association to Degrees;
-    verbForm  : Association to VerbForms;
-    words     : Composition of many ImportWords
-                    on words.import = $self;
-    sentences : Composition of many ImportSentences
-                    on sentences.import = $self;
+    lang         : Association to Languages;
+    name         : String;
+    textType     : Association to TextTypes;
+    textSize     : Association to TextSizes;
+    textModifier : Association to TextModifiers;
+    textLocation : Association to TextLocations;
+    input        : LargeString;
+    text         : LargeString;
+    sent         : String;
+    indx         : Integer;
+    lemma        : String;
+    pos          : Association to PartsOfSpeech;
+    feats        : String;
+    ![case]      : Association to Cases;
+    gender       : Association to Genders;
+    number       : Association to Numbers;
+    person       : Association to Persons;
+    tense        : Association to Tenses;
+    aspect       : Association to Aspects;
+    mood         : Association to Moods;
+    voice        : Association to Voices;
+    degree       : Association to Degrees;
+    verbForm     : Association to VerbForms;
+    words        : Composition of many ImportWords
+                       on words.import = $self;
+    sentences    : Composition of many ImportSentences
+                       on sentences.import = $self;
 }
 
 entity ImportWords {
