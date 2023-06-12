@@ -81,7 +81,7 @@ class ImportService extends BaseService {
         const ID = pars.ID
         const data = await cds.read(Import, ID)
         const lang = data.lang_code
-        const results = parseConllu(lang, data.text)
+        const results = parseConllu(lang, data.text || '')
         let words = IMPORT_POS.reduce( (prev,cur) => {
             return prepareWords(lang, results.words, cur, prev)
         },[])
