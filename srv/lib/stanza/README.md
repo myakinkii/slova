@@ -1,5 +1,5 @@
-### To setup [stanza](https://stanfordnlp.github.io/stanza/http:// "stanza")
-in `SOME_DIR` create a [virtual env](http://https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-virtual-environments "virtual env"):
+### To setup [stanza](https://stanfordnlp.github.io/stanza/ "stanza")
+in `SOME_DIR` create a [virtual env](https://packaging.python.org/en/latest/tutorials/installing-packages/#creating-virtual-environments "virtual env"):
 ```
 python3 -m venv ./
 source ./bin/activate
@@ -16,7 +16,7 @@ in `.env`:
 ```
 LOCAL_STANZA=/FULL_PATH_TO_THAT_SOME_DIR
 ```
-[PythonShell](http://https://www.npmjs.com/package/python-shell "PythonShell") will use it as `pythonPath`
+[PythonShell](https://www.npmjs.com/package/python-shell "PythonShell") will use it as `pythonPath`
 
 ### parse.py
 Just does pretty simple stuff by taking one sentence as input each time and stdout'ing the found tokens
