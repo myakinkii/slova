@@ -135,6 +135,17 @@
                                         "icon": "sap-icon://Fiori2/F0001",
                                         "targetURL": "#translations-browse"
                                     }
+                                },{
+                                    "id": "browse_workbook",
+                                    "title": "Workbook",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_32",
+                                        "title": "Workbook",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#workbook-browse"
+                                    }
                                 }]
                             }]
                         }
@@ -231,6 +242,20 @@
                                         "applicationType": "SAPUI5",
                                         "additionalInformation": "SAPUI5.Component=browse_cards",
                                         "url": "/$fiori-preview/MyService/Cards/app"
+                                    }
+                                },
+                                "browse_workbook": {
+                                    "semanticObject": "workbook",
+                                    "action": "browse",
+                                    "title": "Workbook",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=browse_workbook",
+                                        "url": "/$fiori-preview/WorkBookService/Slova/app"
                                     }
                                 },
                                 "configure_user": {
