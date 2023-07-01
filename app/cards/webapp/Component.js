@@ -9,11 +9,20 @@ sap.ui.define(["sap/fe/core/AppComponent","sap/ui/model/odata/v4/ODataModel",], 
         
         init: function () {
             var compData = this.getComponentData()
-            if (compData && compData.mobile) this.setModel(this.createOdataModel(prompt('user'),'secret'))
+            if (compData && compData.mobile) this.setModel(this.createOdataModel(this.getAuth()))
             Component.prototype.init.apply(this, arguments);
         },
 
-        createOdataModel:function(user,password){
+        getAuth:function(){
+            var auth = window.localStorage.getItem("auth")
+            if (!auth) {
+                var user = prompt('user')
+                auth = btoa(user+":"+user)
+            }
+            return auth
+        },
+
+        createOdataModel:function(auth){
             var svcUrl = this.getManifestEntry("sap.app").dataSources.mainService.uri
             var host = window.localStorage.getItem("backend") || 'http://localhost:4004'
             return new ODataModel({
@@ -22,7 +31,7 @@ sap.ui.define(["sap/fe/core/AppComponent","sap/ui/model/odata/v4/ODataModel",], 
                 "operationMode": "Server",
                 "autoExpandSelect": true,
                 "earlyRequests": false,
-                "httpHeaders" : { "Authorization" : "Basic " + btoa(user+":"+password) }
+                "httpHeaders" : { "Authorization" : "Basic " + auth }
             })
         }
 
