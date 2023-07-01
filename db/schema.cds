@@ -86,7 +86,9 @@ entity Etymology {
 }
 
 entity Users {
-    key id           : String;
+    key id           : String(36); // hyphenated guid must fit
+        pwd          : String(32); // md5 hash must fit
+        pin          : Integer; // to restore creds
         defaultLang  : Association to Languages;
         name         : String;
         cards        : Association to many Cards

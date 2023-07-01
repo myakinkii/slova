@@ -24,6 +24,7 @@
   "cds": {
     "requires": {
       "auth": {
+        "impl": "srv/custom-auth.js",
         "kind": "mocked",
         "users": {
           "admin": {

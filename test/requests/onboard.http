@@ -1,0 +1,47 @@
+@serviceUrl = http://localhost:4004/onboard
+@contentType = application/json
+@username = vas
+
+
+###
+# @name generateUser
+POST {{serviceUrl}}/generateUser
+Content-Type: {{contentType}}
+
+{}
+
+###
+# @name claimUser
+@id = {{generateUser.response.body.id}}
+@pwd = {{generateUser.response.body.pwd}}
+POST {{serviceUrl}}/claimUser
+Content-Type: {{contentType}}
+
+{
+  "id": "{{id}}",
+  "pwd": "{{pwd}}",
+  "name" : "{{username}}"
+}
+
+
+###
+# @name generatePin
+@newpwd = {{claimUser.response.body.value}}
+POST {{serviceUrl}}/generatePin
+Content-Type: {{contentType}}
+
+{
+  "id": "{{id}}",
+  "pwd": "{{newpwd}}"
+}
+
+
+###
+@pin = {{generatePin.response.body.value}}
+POST {{serviceUrl}}/fetchCreds
+Content-Type: {{contentType}}
+
+{
+  "name": "{{username}}",
+  "pin": "{{pin}}"
+}

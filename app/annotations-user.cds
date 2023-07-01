@@ -244,23 +244,25 @@ annotate UserService.Users with @odata.draft.enabled;
 annotate UserService.Users with @UI: {
     LineItem          : [
         {Value: id},
+        {Value: name},
         {Value: defaultLang_code}
     ],
     HeaderInfo        : {
         TypeName      : '{i18n>User}',
         TypeNamePlural: '{i18n>Users}',
         Title         : {Value: id},
-        Description   : {Value: defaultLang.name}
+        Description   : {Value: name}
     },
     HeaderFacets      : [{
         $Type : 'UI.ReferenceFacet',
         Target: '@UI.FieldGroup#Params',
+        Label : '{i18n>Params}'
     }],
     FieldGroup #Params: {Data: [
-        {
-            Label: '{i18n>name}',
-            Value: name
-        },
+        // {
+        //     Label: '{i18n>name}',
+        //     Value: name
+        // },
         {
             Label: '{i18n>lang}',
             Value: defaultLang_code

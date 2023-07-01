@@ -297,6 +297,8 @@
                 sap.ui.require(["sap/ushell/services/Container"], function(tools) {
                     sap.ushell.bootstrap("local").done(fnCallback);
                 });
+                var auth = window.localStorage.getItem("auth")
+                if (auth) $.ajaxSetup({ headers: { Authorization: 'Basic '+auth } })
             }
         };
     </script>
