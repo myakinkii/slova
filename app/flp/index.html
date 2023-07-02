@@ -296,9 +296,20 @@
             "xx-bootTask": function(fnCallback){
                 sap.ui.require(["sap/ushell/services/Container"], function(tools) {
                     sap.ushell.bootstrap("local").done(fnCallback);
+                    sap.ui.core.Component.create({name:"flpPlugin"})
                 });
                 var auth = window.localStorage.getItem("auth")
-                if (auth) $.ajaxSetup({ headers: { Authorization: 'Basic '+auth } })
+                // flpPlugin can put something here ^ (but actually anyting else as well)
+                // maybe it must also belong to it, but I liked it to be clear that we hack $.ajax in index.html
+                if (auth) {
+                    try {
+                        var creds = JSON.parse(auth);
+                        if (!creds.id) return
+                        $.ajaxSetup({ headers: { Authorization: 'Basic '+btoa(creds.id+":"+(creds.pwd||creds.id)) } });
+                    } catch(e){
+                        console.log('invalid json',auth)
+                    }
+                }
             }
         };
     </script>
@@ -311,7 +322,7 @@
         data-sap-ui-theme="sap_fiori_3"
         data-sap-ui-logLevel="error"
         data-sap-ui-flexibilityServices = '[{"connector": "LocalStorageConnector"}]'
-        data-sap-ui-resourceroots='{ "flplocal": "./" }'
+        data-sap-ui-resourceroots='{ "flplocal": "./", "flpPlugin": "../plugin" }'
         data-sap-ui-oninit="module:flplocal/init"
         data-sap-ui-frameOptions="allow" >
     </script>

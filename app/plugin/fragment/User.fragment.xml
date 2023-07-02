@@ -1,0 +1,36 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
+    <Dialog showHeader="false" type="Message" >
+        <content>
+            <Panel expandable="false" expanded="true">
+                <headerToolbar>
+                    <Toolbar>
+                        <Button icon="sap-icon://add" press="generateUser"/>
+                        <ToolbarSpacer/>
+                        <Title text="{auth>/user}" />
+                        <ToolbarSpacer/>
+                        <Button icon="sap-icon://delete" press="clearAuthData"/>
+                    </Toolbar>
+                </headerToolbar>
+                <FlexBox justifyContent="Center">
+                    <items>
+                        <core:HTML content='&lt;div style=&quot;width:100%;height:250px;&quot; id=&quot;qrcode&quot;&gt; &lt;/div&gt;'/>
+                    </items>
+                </FlexBox>
+                <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
+                    <Toolbar>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>fetchCreds}" press="fetchCreds"/>
+                        <ToolbarSpacer/>
+                    </Toolbar>
+                    <Label text="{i18n>userName}" />
+                    <Input value="{auth>/user}" />
+                    <Label text="{i18n>userPin}" />
+                    <Input value="{auth>/pin}" />
+                </f:SimpleForm>
+            </Panel>
+        </content>
+        <endButton>
+            <Button text="{i18n>btnClose}" press="closeDlg" />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
