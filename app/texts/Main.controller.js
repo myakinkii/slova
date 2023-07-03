@@ -29,7 +29,10 @@ sap.ui.define([
                 index    : ctx.index,
                 lemma    : ctx.lemma,
                 pos      : ctx.pos,
-                feats    : ctx.feats
+                feats    : Object.entries(ctx.features).reduce(function(prev,cur){
+                    prev.push(cur[0]+"="+cur[1])
+                    return prev
+                },[]).join("|")
             })
             action.execute().then(function(){ src.getBindingContext().refresh() })
         },
