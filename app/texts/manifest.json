@@ -1,0 +1,163 @@
+{
+    "_version": "1.12.0",
+    "sap.app": {
+        "id": "cc.slova.textEditor",
+        "type": "application",
+        "i18n": {
+            "bundleUrl": "i18n/i18n.properties",
+            "supportedLocales": [
+                ""
+            ],
+            "fallbackLocale": ""
+        },
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "sourceTemplate": {
+            "id": "fpm_Explorer:CustomPage",
+            "version": "1.113.0",
+            "toolsId": "54987ca5-59cb-4cc9-9ed6-2eda73b383cb"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/texts/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "odataVersion": "4.0"
+                }
+            }
+        }
+    },
+    "sap.ui5": {
+        "dependencies": {
+            "minUI5Version": "1.111.0",
+            "libs": {
+                "sap.ui.core": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleUrl": "i18n/i18n.properties"
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleUrl": "i18n/i18n.properties"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": false
+                }
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "style.css"
+                }
+            ]
+        },
+        "routing": {
+            "routes": [
+                {
+                    "pattern": ":?query:",
+                    "name": "listReport",
+                    "target": "listReport"
+                },
+                {
+                    "pattern": "/Texts({key}):?query:",
+                    "name": "customPage",
+                    "target": "customPage"
+                },
+                {
+                    "pattern": "/Texts({key})/sentences({sent}):?query:",
+                    "name": "sentencesPage",
+                    "target": "sentencesPage"
+                },
+                {
+                    "pattern": "/Texts({key})/words({word}):?query:",
+                    "name": "wordsPage",
+                    "target": "wordsPage"
+                }
+            ],
+            "targets": {
+                "listReport": {
+                    "type": "Component",
+                    "id": "listReport",
+                    "name": "sap.fe.templates.ListReport",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Texts",
+                            "initialLoad": true,
+                            "navigation": {
+                                "Texts": {
+                                    "detail": {
+                                        "route": "customPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "customPage": {
+                    "type": "Component",
+                    "id": "Main",
+                    "_name": "sap.fe.templates.ObjectPage",
+                    "name": "sap.fe.core.fpm",
+                    "options": {
+                        "settings": {
+                            "viewName": "cc.slova.textEditor.Main",
+                            "entitySet": "Texts",
+                            "navigation": {
+                                "sentences": {
+                                    "detail": {
+                                        "route": "sentencesPage"
+                                    }
+                                },
+                                "words": {
+                                    "detail": {
+                                        "route": "wordsPage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "sentencesPage": {
+                    "type": "Component",
+                    "id": "tokensPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Sentences"
+                        }
+                    }
+                },
+                "wordsPage": {
+                    "type": "Component",
+                    "id": "wordsPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Slova"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

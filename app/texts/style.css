@@ -1,0 +1,31 @@
+.linkPOS_disabled {
+    color: black !important;
+}
+
+.linkPOS_VERB {
+    color: blue !important;
+}
+
+.linkPOS_AUX {
+    color: darkblue !important;
+}
+
+.linkPOS_NOUN {
+    color: red !important;
+}
+
+.linkPOS_ADJ {
+    color: orange !important;
+}
+
+.linkPOS_ADV {
+    color: brown !important;
+}
+
+.linkPOS_PRON {
+    color: forestgreen !important;
+}
+
+.linkPOS_DET {
+    color: forestgreen !important;
+}
