@@ -14,6 +14,8 @@ service TextsService {
 
     action syncToken(token : Token);
 
+    action getDefinition(lang:String, lemma:String) returns String;
+
     @readonly
     entity Texts         as projection on db.Import where createdBy = 'admin' order by
         name asc;

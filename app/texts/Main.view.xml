@@ -7,11 +7,11 @@
     xmlns:f="sap.ui.layout.form"
     xmlns:l="sap.ui.layout"
     xmlns:macros="sap.fe.macros">
-    <Page title="{createdBy} / {name}">
+    <Page title="{createdBy} / {name} [{lang_code}]">
         <customHeader>
             <Toolbar>
                 <ToolbarSpacer />
-                <Title text="{createdBy} / {name}" />
+                <Title text="{createdBy} / {name} [{lang_code}]" />
                 <ToolbarSpacer />
                 <ToggleButton icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
             </Toolbar>
@@ -47,7 +47,8 @@
                     </Toolbar>
 
                     <Label text="{i18n>lemma}" />
-                    <Input value="{ui>lemma}" />
+                    <Input value="{ui>lemma}" showValueHelp="true" 
+                        valueHelpIconSrc="sap-icon://education" valueHelpRequest="getDefinition"/>
                     <Label text="{i18n>pos}" />
                     <ComboBox selectedKey="{ui>pos}" showSecondaryValues= "true" items="{/PartsOfSpeech}">
                         <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>

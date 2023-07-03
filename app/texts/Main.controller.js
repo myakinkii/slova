@@ -18,6 +18,19 @@ sap.ui.define([
             this.getView().setModel(uiModel,"ui")
         },
 
+        getDefinition:function(e){
+            var src = e.getSource() // input field
+            var lemma = src.getValue()
+            var lang = src.getBindingContext().getProperty("lang_code")
+            var odata = src.getModel()
+            var action = odata.bindContext("/getDefinition(...)");
+            action.setParameter("lang", lang).setParameter("lemma", lemma)
+            action.execute().then(function(){
+                var url = action.getBoundContext().getObject()
+                if (url.value) sap.m.URLHelper.redirect(url.value, true)
+            })
+        },
+
         syncChanges:function(e){
             var src = e.getSource()
             var odata = src.getModel()
@@ -34,7 +47,9 @@ sap.ui.define([
                     return prev
                 },[]).join("|")
             })
-            action.execute().then(function(){ src.getBindingContext().refresh() })
+            action.execute().then(function(){ 
+                src.getBindingContext().refresh()
+            })
         },
 
         showWordPopover:function(e){

@@ -1,4 +1,5 @@
 const {parseConllu, prepareWords, performMerge } = require('./lib/conlluParser')
+const definitionFinder = require('./lib/definitionFinder')
 
 const cds = require('@sap/cds')
 const { BaseService } = require('./baseService')
@@ -9,7 +10,18 @@ class TextsService extends BaseService {
 
     async init() {
         this.on('syncToken', this.syncAndReparseConllu)
+        this.on('getDefinition', this.getDefinitionUrl)
         await super.init()
+    }
+
+    async getDefinitionUrl(req, next) {
+        const {lang, lemma} = req.data
+        // const profile = await this.getProfile(req.user.id)
+        const userLang = "auto" //profile.defaultLang_code
+        let definitionUrl = await definitionFinder.get(lang, lemma).catch( ()=>{} )
+        if (!definitionUrl) return ''
+        const googleTranslateBaseUrl = 'https://translate.google.com/translate'
+        return `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
     }
 
     async syncAndReparseConllu(req, next) {
