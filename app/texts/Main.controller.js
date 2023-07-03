@@ -43,7 +43,7 @@ sap.ui.define([
                 lemma    : ctx.lemma,
                 pos      : ctx.pos,
                 feats    : Object.entries(ctx.features).reduce(function(prev,cur){
-                    prev.push(cur[0]+"="+cur[1])
+                    if( cur[1] ) prev.push(cur[0]+"="+cur[1])
                     return prev
                 },[]).join("|")
             })
