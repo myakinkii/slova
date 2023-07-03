@@ -8,17 +8,18 @@
     xmlns:l="sap.ui.layout"
     xmlns:macros="sap.fe.macros">
     <Page title="{createdBy} / {name}">
+        <customHeader>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Title text="{createdBy} / {name}" />
+                <ToolbarSpacer />
+                <ToggleButton icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
+            </Toolbar>
+        </customHeader>    
         <l:DynamicSideContent showSideContent="{ui>/showSidePanel}">
             <l:mainContent>
                 <Panel headerText="Text" expandable="false" expanded="true" class="sapUiMediumMarginTop" 
                     content="{path:'sentences',sorter: { path: 'index', descending: false} }">
-                    <headerToolbar>
-                        <Toolbar>
-                            <Title text="Text" />
-                            <ToolbarSpacer />
-                            <ToggleButton icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
-                        </Toolbar>
-                    </headerToolbar>    
                 <content>
                     <l:HorizontalLayout class="sapUiContentPadding" 
                         content="{path:'tokens',sorter: { path: 'index', descending: false} }">
