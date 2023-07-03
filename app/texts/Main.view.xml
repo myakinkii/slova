@@ -3,27 +3,102 @@
     controllerName="cc.slova.textEditor.Main"
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
     xmlns:l="sap.ui.layout"
     xmlns:macros="sap.fe.macros">
     <Page title="{createdBy} / {name}">
-        <Panel headerText="Text" expandable="false" expanded="true" class="sapUiMediumMarginTop" 
-            content="{path:'sentences',sorter: { path: 'index', descending: false} }">
-        <content>
-        	<l:HorizontalLayout class="sapUiContentPadding" 
-                content="{path:'tokens',sorter: { path: 'index', descending: false} }">
-                <l:content>
-                    <Link text="{parts:[{path:'form'},{path:'pos'}],formatter:'cc.slova.textEditor.globalFormatter.linkFormat'}" press="showWordPopover" />
-                </l:content>
-            </l:HorizontalLayout>
-        </content>
-        </Panel>
-        <Panel headerText="Sentences" expandable="true" expanded="false" class="sapUiMediumMarginTop">
-            <macros:FilterBar metaPath="sentences/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarSent" liveMode="true" />
-            <macros:Table metaPath="sentences/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableSent" filterBar="FilterBarSent" />
-        </Panel>
-        <Panel headerText="Words" expandable="true" expanded="false" class="sapUiMediumMarginTop">
-            <macros:FilterBar metaPath="words/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarWord" liveMode="true" />
-            <macros:Table metaPath="words/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableWord" filterBar="FilterBarWord" />
-        </Panel>            
+        <l:DynamicSideContent showSideContent="{ui>/showSidePanel}">
+            <l:mainContent>
+                <Panel headerText="Text" expandable="false" expanded="true" class="sapUiMediumMarginTop" 
+                    content="{path:'sentences',sorter: { path: 'index', descending: false} }">
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="Text" />
+                            <ToolbarSpacer />
+                            <ToggleButton icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
+                        </Toolbar>
+                    </headerToolbar>    
+                <content>
+                    <l:HorizontalLayout class="sapUiContentPadding" 
+                        content="{path:'tokens',sorter: { path: 'index', descending: false} }">
+                        <l:content>
+                            <Link text="{parts:[{path:'form'},{path:'pos'}],formatter:'cc.slova.textEditor.globalFormatter.linkFormat'}" press="showWordPopover" />
+                        </l:content>
+                    </l:HorizontalLayout>
+                </content>
+                </Panel>
+                <Panel headerText="Sentences" expandable="true" expanded="false" class="sapUiMediumMarginTop">
+                    <macros:FilterBar metaPath="sentences/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarSent" liveMode="true" />
+                    <macros:Table metaPath="sentences/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableSent" filterBar="FilterBarSent" />
+                </Panel>
+                <Panel headerText="Words" expandable="true" expanded="false" class="sapUiMediumMarginTop">
+                    <macros:FilterBar metaPath="words/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarWord" liveMode="true" />
+                    <macros:Table metaPath="words/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableWord" filterBar="FilterBarWord" />
+                </Panel>
+            </l:mainContent>
+            <l:sideContent>
+                <f:SimpleForm binding="{ui>/token}" editable="true" layout="ResponsiveGridLayout">
+                    <Toolbar>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>syncChanges}" press="syncChanges"/>
+                        <ToolbarSpacer/>
+                    </Toolbar>
+
+                    <Label text="{i18n>lemma}" />
+                    <Input value="{ui>lemma}" />
+                    <Label text="{i18n>pos}" />
+                    <ComboBox selectedKey="{ui>pos}" showSecondaryValues= "true" items="{/PartsOfSpeech}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+
+                    <Title class="sapUiSmallMarginTop" text="{i18n>nomminalFeatures}" />
+                    <Label text="{i18n>Case}" />
+                    <ComboBox selectedKey="{ui>features/Case}" showSecondaryValues= "true" items="{/Cases}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>Gender}" />
+                    <ComboBox selectedKey="{ui>features/Gender}" showSecondaryValues= "true" items="{/Genders}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>Number}" />
+                    <ComboBox selectedKey="{ui>features/Number}" showSecondaryValues= "true" items="{/Numbers}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+
+                    <Title class="sapUiSmallMarginTop" text="{i18n>verbalFeatures}" />
+                    <Label text="{i18n>Person}" />
+                    <ComboBox selectedKey="{ui>features/Person}" showSecondaryValues= "true" items="{/Persons}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>Tense}" />
+                    <ComboBox selectedKey="{ui>features/Tense}" showSecondaryValues= "true" items="{/Tenses}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>Aspect}" />
+                    <ComboBox selectedKey="{ui>features/Aspect}" showSecondaryValues= "true" items="{/Aspects}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>Mood}" />
+                    <ComboBox selectedKey="{ui>features/Mood}" showSecondaryValues= "true" items="{/Moods}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+
+                    <Title class="sapUiSmallMarginTop" text="{i18n>otherFeatures}" />
+                    <Label text="{i18n>Voice}" />
+                    <ComboBox selectedKey="{ui>features/Voice}" showSecondaryValues= "true" items="{/Voices}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>Degree}" />
+                    <ComboBox selectedKey="{ui>features/Degree}" showSecondaryValues= "true" items="{/Degrees}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>VerbForm}" />
+                    <ComboBox selectedKey="{ui>features/VerbForm}" showSecondaryValues= "true" items="{/VerbForms}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                </f:SimpleForm>
+            </l:sideContent>
+        </l:DynamicSideContent>
     </Page>
 </mvc:View>

@@ -2,7 +2,6 @@ const {parseConllu, prepareWords, performMerge } = require('./lib/conlluParser')
 
 const cds = require('@sap/cds')
 const { BaseService } = require('./baseService')
-const e = require('express')
 
 const IMPORT_POS = process.env.IMPORT_POS?.split(',') || ['VERB', 'NOUN', 'PRON', 'ADJ', 'ADV'] // parts of speech to import
 
