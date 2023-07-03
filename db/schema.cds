@@ -64,6 +64,7 @@ entity Forms : conllu.Features {
 entity Sentences {
     key hash   : String;
         lang   : Association to Languages;
+        index  : Integer;
         text   : String;
         tokens : Composition of many Tokens
                      on tokens.sentence = $self;
@@ -75,6 +76,7 @@ entity Tokens {
         form     : String;
         lemma    : String;
         pos      : String;
+        feats    : String;
 }
 
 entity Etymology {
@@ -176,6 +178,8 @@ entity ImportForms : conllu.Features {
 entity ImportSentences {
     key import      : Association to Import;
     key hash        : String;
+        lang        : Association to Languages;
+        index       : Integer;
         text        : String;
         translation : String;
         tokens      : Composition of many {
@@ -183,5 +187,7 @@ entity ImportSentences {
                               form  : String;
                               lemma : String;
                               pos   : String;
+                              feats : String;
+                              sentence_hash:String;
                       }
 }

@@ -108,7 +108,8 @@ service ImportService {
     entity TextModifiers as projection on db.TextModifiers;
 
     @readonly
-    entity Sentences     as projection on db.ImportSentences;
+    entity Sentences     as projection on db.ImportSentences order by
+        index asc;
 
     @readonly
     entity Slova         as projection on db.ImportWords;

@@ -111,7 +111,7 @@ const parseConllu = (lang, data) => {
     c.serial = data
     const sentences = {}
     const stat = {}
-    const voc = c.sentences.reduce(function (prev, cur) {
+    const voc = c.sentences.reduce(function (prev, cur, index) {
         if (cur.tokens.length==0) return prev
         const comments = cur.comments.reduce( (prev,cur) => {
             const arr = cur.split(" = ")
@@ -122,6 +122,7 @@ const parseConllu = (lang, data) => {
         if (!sentences[hash]) {
             sentences[hash] = { 
                 hash : hash, 
+                index: index,
                 lang_code : lang,
                 text : comments.text, 
                 tokens : cur.tokens.map( (t,i) => {
@@ -130,7 +131,8 @@ const parseConllu = (lang, data) => {
                         index: i,
                         lemma: t.lemma,
                         form: t.form,
-                        pos: t.upostag
+                        pos: t.upostag,
+                        feats: t.feats
                     }
                 })
             }
@@ -156,6 +158,9 @@ const parseConllu = (lang, data) => {
             prev[pos][lemma].forms.add(form)
             const feats = t.feats && t.feats.split("|").map(f => { const kv = f.split("="); return { k: kv[0], v: kv[1] } })
             if (feats) prev[pos][lemma].feats[form] = feats.reduce((prev, cur) => {
+                if (cur.k=='Gender[psor]' || cur.k=='Number[psor]'){ // this is hardcore stuff for pronouns
+                    return prev // skip it for now
+                }
                 prev[cur.k] = cur.v
                 return prev
             }, {})
