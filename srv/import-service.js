@@ -13,6 +13,7 @@ class ImportService extends BaseService {
         this.on('addWord', this.addWord)
         this.on('askHelp', this.askHelpHandler)
         this.on('generateInput', this.generateInputHandler)
+        this.on('parseText', this.parseTextHandler)
         this.on('parseInput', this.parseInputHandler)
         this.on('mergeResults', this.performImportHandler)
         this.after('READ', 'Sentences', this.getGoogleTranslate)
@@ -31,6 +32,21 @@ class ImportService extends BaseService {
         return this.importHandler.askHelp(ID, Import)
     }
 
+    async parseTextHandler(req,next){
+        const { ID } = req.params[0]
+        const { Import } = this.entities
+        const data = await cds.read(Import.drafts, ID)
+        const input = data.input.split("\n")
+        for (const sent of input){
+            const text = await cds.read(Import.drafts, ID).columns('text')
+            await cds.update(Import.drafts, ID).with({
+                sent: sent,
+                text: `${text.text||''}\n` + `# text = ${sent}\n`
+            })
+            await this.importHandler.askHelp(ID, Import)
+        }
+    }
+
     async parseInputHandler (req, next) {
         const { ID } = req.params[0]
         const { Import } = this.entities
@@ -47,7 +63,7 @@ class ImportService extends BaseService {
         const ID = pars.ID
         const data = await cds.read(Import.drafts, ID)
         const tokens = data.sent.split(" ")
-        await cds.update(Import.drafts,pars.ID).with({
+        await cds.update(Import.drafts, ID).with({
             indx: 1, lemma: tokens[0].toLowerCase(),
             pos_code: '', feats: '',
             text: `${data.text||''}\n` + `# text = ${data.sent}\n`
@@ -71,7 +87,7 @@ class ImportService extends BaseService {
         if (data.voice_code) data.feats.push(`Voice=${data.voice_code}`)
         if (data.degree_code) data.feats.push(`Degree=${data.degree_code}`)
         if (data.degree_code) data.feats.push(`VerbForm=${data.verbForm_code}`)
-        await cds.update(Import.drafts,pars.ID).with({
+        await cds.update(Import.drafts, ID).with({
             indx: data.indx+1, lemma: tokens[data.indx]?.toLowerCase() || '',
             pos_code: '', feats: '', 
             case_code: '', gender_code: '', number_code: '', person_code: '', tense_code: '', aspect_code: '', mood_code: '', voice_code: '', degree_code: '', verbForm_code: '',

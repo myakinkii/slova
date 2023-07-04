@@ -200,6 +200,13 @@ annotate ImportService.Import with @UI: {
             ![@UI.Emphasized]: false,
             Inline           : false
         },
+        {
+            $Type            : 'UI.DataFieldForAction',
+            Action           : 'ImportService.parseText',
+            Label            : '{i18n>parseText}',
+            ![@UI.Emphasized]: false,
+            Inline           : false
+        },
         {Value: input},
         {Value: textSize_code},
         {Value: textType_code},

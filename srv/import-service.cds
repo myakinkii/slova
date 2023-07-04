@@ -13,6 +13,7 @@ service ImportService {
                 'READ',
                 'WRITE',
                 'parseInput',
+                'parseText',
                 'generateInput',
                 'askHelp',
                 'addSentence',
@@ -39,6 +40,21 @@ service ImportService {
             ]}
         )
         action parseInput();
+
+        @(
+            cds.odata.bindingparameter.name: '_it',
+            Common.SideEffects             : {
+                TargetEntities  : [
+                    '_it/sentences',
+                    '_it/words'
+                ],
+                TargetProperties: [
+                    '_it/text',
+                    '_it/input'
+                ]
+            }
+        )
+        action parseText();
 
         action mergeResults();
 
