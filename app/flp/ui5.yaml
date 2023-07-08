@@ -49,3 +49,13 @@ server:
     mountPath: /workbook
     configuration:
       baseUri: "http://localhost:4004/workbook/"
+  - name: ui5-middleware-simpleproxy
+    afterMiddleware: compression
+    mountPath: /texts
+    configuration:
+      baseUri: "http://localhost:4004/texts/"
+  - name: ui5-middleware-simpleproxy
+    afterMiddleware: compression
+    mountPath: /plugin
+    configuration:
+      baseUri: "http://localhost:4004/plugin/"
