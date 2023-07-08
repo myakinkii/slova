@@ -1,21 +1,44 @@
 sap.ui.define([
     "sap/fe/core/PageController", 
     "sap/ui/core/Fragment", 
-    "sap/ui/model/json/JSONModel", 
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast",
+    "sap/ui/core/BusyIndicator",
     "./globalFormatter"
-], function (PageController, Fragment, JSONModel) {
+], function (PageController, Fragment, JSONModel, MessageToast, BusyIndicator) {
     "use strict";
 
     return PageController.extend("cc.slova.textEditor.Main", {
 
         onInit: function () {
             PageController.prototype.onInit.apply(this);
-            var uiModel = new JSONModel({ showSidePanel:false })
+            var uiModel = new JSONModel({ showSidePanel:true, selectedTab:"input" })
             this.popoverPromise = Fragment.load({ name: "cc.slova.textEditor.WordPopover", controller: this })
             this.popoverPromise.then(function(popover){
                 popover.setModel(uiModel,"ui")
             })
             this.getView().setModel(uiModel,"ui")
+            // document.addEventListener("selectionchange",this.onSelectText.bind(this))
+        },
+
+        onSelectText:function(e){
+            var text = this.getView().byId("inputText").getSelectedText()
+            console.log(text)
+        },
+
+        parseText:function(e){
+            var src = e.getSource()
+            var odata = src.getModel()
+            var action = odata.bindContext("TextsService.parseText(...)", src.getBindingContext() );
+            BusyIndicator.show(100)
+            action.execute().then(function(){
+                BusyIndicator.hide();
+                src.getBindingContext().refresh()
+            }).catch(function(err){
+                // console.log(err)
+                BusyIndicator.hide();
+                MessageToast.show(err.message)
+            })
         },
 
         getDefinition:function(e){
@@ -47,8 +70,14 @@ sap.ui.define([
                     return prev
                 },[]).join("|")
             })
-            action.execute().then(function(){ 
+            BusyIndicator.show(100);
+            action.execute().then(function(){
+                BusyIndicator.hide();
                 src.getBindingContext().refresh()
+            }).catch(function(err){
+                // console.log(err)
+                BusyIndicator.hide();
+                MessageToast.show(err.message)
             })
         },
 

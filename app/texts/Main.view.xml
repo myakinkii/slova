@@ -11,35 +11,56 @@
         <customHeader>
             <Toolbar>
                 <ToolbarSpacer />
-                <Title text="{createdBy} / {name} [{lang_code}]" />
+                <Title text="{createdBy} [{lang_code}]" />
+                <Input width="15rem" value="{name}" />
+                <Input width="5rem" value="{lang_code}" />
                 <ToolbarSpacer />
                 <ToggleButton icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
             </Toolbar>
         </customHeader>    
         <l:DynamicSideContent showSideContent="{ui>/showSidePanel}">
             <l:mainContent>
-                <Panel headerText="Text" expandable="false" expanded="true" class="sapUiMediumMarginTop" 
-                    content="{path:'sentences',sorter: { path: 'index', descending: false} }">
-                <content>
-                    <l:HorizontalLayout class="sapUiContentPadding" 
-                        content="{path:'tokens',sorter: { path: 'index', descending: false} }">
-                        <l:content>
-                            <Link text="{parts:[{path:'form'},{path:'pos'}],formatter:'cc.slova.textEditor.globalFormatter.linkFormat'}" press="showWordPopover" />
-                        </l:content>
-                    </l:HorizontalLayout>
-                </content>
-                </Panel>
-                <Panel headerText="Sentences" expandable="true" expanded="false" class="sapUiMediumMarginTop">
-                    <macros:FilterBar metaPath="sentences/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarSent" liveMode="true" />
-                    <macros:Table metaPath="sentences/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableSent" filterBar="FilterBarSent" />
-                </Panel>
-                <Panel headerText="Words" expandable="true" expanded="false" class="sapUiMediumMarginTop">
-                    <macros:FilterBar metaPath="words/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarWord" liveMode="true" />
-                    <macros:Table metaPath="words/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableWord" filterBar="FilterBarWord" />
-                </Panel>
+                <IconTabBar selectedKey="{ui>/selectedTab}">
+                    <items>
+                    <IconTabFilter text="Input" key="input">
+                    <TextArea id="inputText" width="100%" rows="20" value="{input}"/>
+                    </IconTabFilter>
+                    <IconTabFilter text="Output" key="output">
+                        <Panel _headerText="Text" expandable="false" expanded="true" _class="sapUiMediumMarginTop" 
+                            content="{path:'sentences', sorter: { path: 'index', descending: false} }">
+                            <content>
+                                <l:HorizontalLayout class="sapUiContentPadding" 
+                                    content="{path:'tokens',sorter: { path: 'index', descending: false} }">
+                                    <l:content>
+                                        <Link text="{parts:[{path:'form'},{path:'pos'}],formatter:'cc.slova.textEditor.globalFormatter.linkFormat'}" press="showWordPopover" />
+                                    </l:content>
+                                </l:HorizontalLayout>
+                            </content>
+                        </Panel>
+                        <Panel headerText="Sentences" expandable="true" expanded="false" class="sapUiMediumMarginTop">
+                            <macros:FilterBar metaPath="sentences/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarSent" liveMode="true" />
+                            <macros:Table metaPath="sentences/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableSent" filterBar="FilterBarSent" />
+                        </Panel>
+                        <Panel headerText="Words" expandable="true" expanded="false" class="sapUiMediumMarginTop">
+                            <macros:FilterBar metaPath="words/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarWord" liveMode="true" />
+                            <macros:Table metaPath="words/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableWord" filterBar="FilterBarWord" />
+                        </Panel>
+                    </IconTabFilter>
+                    </items>
+                </IconTabBar>
             </l:mainContent>
             <l:sideContent>
-                <f:SimpleForm binding="{ui>/token}" editable="true" layout="ResponsiveGridLayout">
+                <f:SimpleForm visible="{= ${ui>/selectedTab}==='input' }" binding="{ui>/token}" editable="true" layout="ResponsiveGridLayout">
+                    <Toolbar>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>parseText}" press="parseText"/>
+                        <ToolbarSpacer/>
+                    </Toolbar>
+
+                    <Label text="{i18n>propmt}" />
+                    <Input value="č ć dž đ š ž" />
+                </f:SimpleForm>
+                <f:SimpleForm visible="{= ${ui>/selectedTab}==='output' }" binding="{ui>/token}" editable="true" layout="ResponsiveGridLayout">
                     <Toolbar>
                         <ToolbarSpacer/>
                         <Button text="{i18n>syncChanges}" press="syncChanges"/>
