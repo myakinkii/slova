@@ -129,11 +129,13 @@ entity Translations : cuid, managed {
 entity Import : managed, cuid {
     lang         : Association to Languages;
     name         : String;
+    status       : Integer default 0;
+    publishDate  : DateTime;
     textType     : Association to TextTypes;
     textSize     : Association to TextSizes;
     textModifier : Association to TextModifiers;
     textLocation : Association to TextLocations;
-    input        : LargeString;
+    input        : String;
     text         : LargeString;
     sent         : String;
     indx         : Integer;
@@ -183,11 +185,11 @@ entity ImportSentences {
         text        : String;
         translation : String;
         tokens      : Composition of many {
-                          key index : Integer;
-                              form  : String;
-                              lemma : String;
-                              pos   : String;
-                              feats : String;
-                              sentence_hash:String;
+                          key index         : Integer;
+                              form          : String;
+                              lemma         : String;
+                              pos           : String;
+                              feats         : String;
+                              sentence_hash : String;
                       }
 }
