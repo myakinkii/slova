@@ -50,6 +50,7 @@ sap.ui.define([
                 auth = JSON.parse(window.localStorage.getItem("auth") || '{}') 
             }
             if (!auth.user) auth.user = authModel.getProperty("/user")
+            if (!auth.id) auth.id = auth.pwd = auth.user
             authModel.setData(auth)
             window.localStorage.setItem("auth",JSON.stringify(auth))
             var self=this;
