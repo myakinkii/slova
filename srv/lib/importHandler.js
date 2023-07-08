@@ -70,7 +70,14 @@ class ImportHandler {
         }
         // basically this stuff above is insert or update with increment depending on data we merge
 
+        await this.setImportData(ID,{ status:9, publishDate: '$now' })
         return this.cdsRef.run(this.makeQueriesFrom(result))
+    }
+
+
+    async setImportData(ID,data){
+        const { Import } = this.cdsRef.entities("cc.slova.model")
+        return this.cdsRef.update(Import, ID).with(data)
     }
 
     async getImportData(ID){
