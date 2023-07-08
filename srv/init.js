@@ -40,7 +40,7 @@ module.exports = async (db) => {
                 LOG.debug(`importing [${lang}] ${file}`)
                 const {results} = await importText(lang, dir, file)
                 const ID = results[0].values[7] // omg this is ugly
-                await importHandler.parseInput(ID, Import)
+                await importHandler.parseInput(ID)
                 const result = await importHandler.performImport(ID)
                 const stat = result.length && result[result.length-1].reduce( (prev,cur) => {
                     const [lang, pos, tokens, lemmas] = cur.values

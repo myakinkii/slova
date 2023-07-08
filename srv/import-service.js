@@ -23,13 +23,20 @@ class ImportService extends BaseService {
     async generateInputHandler(req, next) {
         const { ID } = req.params[0]
         const { Import } = this.entities
-        return this.importHandler.generateInput(ID, Import)
+        const data = await cds.read(Import.drafts, ID)
+        const chatGptResponse = await this.importHandler.callExternalGenerator(data.lang_code, data.textSize_code, data.textType_code, data.textLocation_code, data.textModifier_code, )
+        return cds.update(Import.drafts, ID).with({ input : chatGptResponse.replaceAll('\n\n','\n') })
     }
 
     async askHelpHandler(req, next) {
         const { ID } = req.params[0]
         const { Import } = this.entities
-        return this.importHandler.askHelp(ID, Import)
+        const data = await cds.read(Import.drafts, ID)
+        const conlluTokens = await this.importHandler.parseSentence(data.sent, data.lang_code)
+        return cds.update(Import.drafts, ID).with({
+            sent: '', indx : '', lemma:'',
+            text: `${data.text||''}` + `${conlluTokens}\n`
+        })
     }
 
     async parseTextHandler(req,next){
@@ -37,20 +44,17 @@ class ImportService extends BaseService {
         const { Import } = this.entities
         const data = await cds.read(Import.drafts, ID)
         const input = data.input.split("\n")
-        for (const sent of input){
-            const text = await cds.read(Import.drafts, ID).columns('text')
-            await cds.update(Import.drafts, ID).with({
-                sent: sent,
-                text: `${text.text||''}\n` + `# text = ${sent}\n`
-            })
-            await this.importHandler.askHelp(ID, Import)
-        }
+        if (!data.input) return
+        const results = await Promise.all(input.map( sent => this.importHandler.parseSentence(sent, data.lang_code)))
+        const text = results.reduce( (prev, cur, index) => {
+            return prev += `# text = ${input[index]}\n` + cur + '\n\n'
+        },'\n')
+        await cds.update(Import.drafts, ID).with({text})
     }
 
     async parseInputHandler (req, next) {
         const { ID } = req.params[0]
-        const { Import } = this.entities
-        return this.importHandler.parseInput(ID, Import)
+        return this.importHandler.parseInput(ID)
     }
 
     async performImportHandler(req, next) {

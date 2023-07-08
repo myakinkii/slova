@@ -20,23 +20,14 @@ class ImportHandler {
         return externalGenerator.get(lang, textSize || 'small', textType || 'text', location || 'shop', modifier || 'typical')
     }
 
-    async generateInput(ID, Import) {
-        const data = await this.cdsRef.read(Import.drafts, ID)
-        const chatGptResponse = await this.callExternalGenerator(data.lang_code, data.textSize_code, data.textType_code, data.textLocation_code, data.textModifier_code, )
-        return this.cdsRef.update(Import.drafts, ID).with({ input : chatGptResponse.replaceAll('\n\n','\n') })
-    }
-
-    async askHelp(ID, Import) {
-        const data = await this.cdsRef.read(Import.drafts || Import, ID)
-        const stanzaTokens = await this.callExternalParser(data.sent, data.lang_code)
+    async parseSentence(sentence, lang) {
+        const stanzaTokens = await this.callExternalParser(sentence, lang)
         const conlluTokens = stanzaTokens.map( t => `${t.id||t.index}\t${t.text||t.word}\t${t.lemma}\t${t.upos}\t_\t${t.feats||'_'}` )
-        return this.cdsRef.update(Import.drafts || Import, ID).with({
-            sent: '', indx : '', lemma:'',
-            text: `${data.text||''}` + `${conlluTokens.join("\n")}\n`
-        })
+        return conlluTokens.join("\n")
     }
 
-    async parseInput(ID, Import ) {
+    async parseInput(ID ) {
+        const { Import } = this.cdsRef.entities("cc.slova.model")
         const data = await this.cdsRef.read(Import, ID)
         const lang = data.lang_code
         const results = parseConllu(lang, data.text || '')

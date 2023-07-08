@@ -39,17 +39,14 @@ class TextsService extends BaseService {
         const { Import } = cds.entities("cc.slova.model")
         const data = await cds.read(Import, ID)
         if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
-        await cds.update(Import, ID).with({text:''})
+        if (!data.input) return
         const input = data.input.split("\n")
-        for (const sent of input){
-            const text = await cds.read(Import, ID).columns('text')
-            await cds.update(Import, ID).with({
-                sent: sent,
-                text: `${text.text||''}\n` + `# text = ${sent}\n`
-            })
-            await this.importHandler.askHelp(ID, Import)
-        }
-        await this.importHandler.parseInput(ID, Import)
+        const results = await Promise.all(input.map( sent => this.importHandler.parseSentence(sent, data.lang_code)))
+        const text = results.reduce( (prev, cur, index) => {
+            return prev += `# text = ${input[index]}\n` + cur + '\n\n'
+        },'\n')
+        await cds.update(Import, ID).with({text})
+        await this.importHandler.parseInput(ID)
     }
 
     async syncAndReparseConllu(req, next) {
