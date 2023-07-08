@@ -10,6 +10,11 @@ annotate TextsService.Texts with @UI: {
         lang_code
     ],
     LineItem       : [
+         {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'TextsService.EntityContainer/createText',
+            Label : '{i18n>createText}',
+        },
         {Value: createdBy},
         {Value: name},
         {Value: lang_code}

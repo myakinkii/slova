@@ -27,10 +27,10 @@ class ImportHandler {
     }
 
     async askHelp(ID, Import) {
-        const data = await this.cdsRef.read(Import.drafts, ID)
+        const data = await this.cdsRef.read(Import.drafts || Import, ID)
         const stanzaTokens = await this.callExternalParser(data.sent, data.lang_code)
         const conlluTokens = stanzaTokens.map( t => `${t.id||t.index}\t${t.text||t.word}\t${t.lemma}\t${t.upos}\t_\t${t.feats||'_'}` )
-        return this.cdsRef.update(Import.drafts, ID).with({
+        return this.cdsRef.update(Import.drafts || Import, ID).with({
             sent: '', indx : '', lemma:'',
             text: `${data.text||''}` + `${conlluTokens.join("\n")}\n`
         })
@@ -84,7 +84,8 @@ class ImportHandler {
         const { Import } = this.cdsRef.entities("cc.slova.model")
 
         return this.cdsRef.read(Import, ID).columns( i => { 
-            i.ID, 
+            i.ID,
+            i.createdBy,
             i.words ( w => { 
                 w`.*`, 
                 w.forms(f => { f`.*` }),

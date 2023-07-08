@@ -11,6 +11,8 @@ class TextsService extends BaseService {
     async init() {
         this.importHandler = new ImportHandler(cds)
         this.on('syncToken', this.syncAndReparseConllu)
+        this.on('parseText', this.parseTextHandler)
+        this.on('createText', this.createTextHandler)
         this.on('getDefinition', this.getDefinitionUrl)
         await super.init()
     }
@@ -25,10 +27,36 @@ class TextsService extends BaseService {
         return `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
     }
 
+    async createTextHandler(req,next){
+        if (req.user.id == 'anonymous') throw new Error('FORBIDDEN')
+        const profile = await this.getProfile(req.user.id)
+        const { Import } = cds.entities("cc.slova.model")
+        return cds.create(Import).entries({ name: '$now', text: '', lang_code: profile.defaultLang_code, createdBy: profile.id })
+    }
+
+    async parseTextHandler(req,next){
+        const ID = req.params[0]
+        const { Import } = cds.entities("cc.slova.model")
+        const data = await cds.read(Import, ID)
+        if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
+        await cds.update(Import, ID).with({text:''})
+        const input = data.input.split("\n")
+        for (const sent of input){
+            const text = await cds.read(Import, ID).columns('text')
+            await cds.update(Import, ID).with({
+                sent: sent,
+                text: `${text.text||''}\n` + `# text = ${sent}\n`
+            })
+            await this.importHandler.askHelp(ID, Import)
+        }
+        await this.importHandler.parseInput(ID, Import)
+    }
+
     async syncAndReparseConllu(req, next) {
         const { Import } = cds.entities("cc.slova.model")
         const { token } = req.data
         const importData = await this.importHandler.getImportData(token.importId)
+        if (req.user.id != importData.createdBy) throw new Error('FORBIDDEN')
         const text = this.importHandler.mergeAndCreateConllu(token, importData.sentences)
         await cds.update(Import, token.importId).with({text})
         await this.importHandler.parseInput(token.importId, Import)

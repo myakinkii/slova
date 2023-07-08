@@ -1,6 +1,7 @@
 using {cc.slova.model as db} from '../db/schema';
 
-@path: '/texts'
+@path    : '/texts'
+@requires: 'authenticated-user'
 service TextsService {
 
     type Token {
@@ -13,12 +14,44 @@ service TextsService {
     }
 
     action syncToken(token : Token);
+    action getDefinition(lang : String, lemma : String) returns String;
 
-    action getDefinition(lang:String, lemma:String) returns String;
+    @(Common.SideEffects: {TargetEntities: ['/TextsService.EntityContainer/Texts']})
+    action createText();
 
-    @readonly
-    entity Texts         as projection on db.Import where createdBy = 'admin' order by
-        name asc;
+    entity Texts @(restrict: [
+        {
+            grant: ['READ'],
+            to   : 'authenticated-user',
+            where: 'createdBy = $user or status = 9'
+        },
+        {
+            grant: [
+                'WRITE',
+                'parseText'
+            ],
+            to   : 'authenticated-user',
+            where: 'createdBy = $user'
+        }
+    ])                   as projection on db.Import order by
+        name asc
+    actions {
+
+        @(
+            cds.odata.bindingparameter.name: '_it',
+            Common.SideEffects             : {
+                TargetEntities  : [
+                    '_it/sentences',
+                    '_it/words'
+                ],
+                TargetProperties: [
+                    '_it/text',
+                    '_it/input'
+                ]
+            }
+        )
+        action parseText();
+    };
 
     @readonly
     entity Sentences     as projection on db.ImportSentences order by
