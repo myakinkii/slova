@@ -7,20 +7,39 @@
     xmlns:l="sap.ui.layout"
     xmlns:macros="sap.fe.macros">
     <Page title="{i18n>myCardsTitle}">
-        <l:HorizontalLayout id="TileContainerExpanded" allowWrapping="true" content="{/Cards}" class="sapUiMediumMargin">
-            <GenericTile class="sapUiTinyMarginEnd sapUiTinyMarginTop tileLayout"
-                header="{slovo_morphem}"
-                subheader="{slovo_pos}"
-                press="onPressed">
-                <TileContent footer="{how}">
-                    <NumericContent withMargin="false" value="{count}" valueColor="Good" indicator="Up" />
-                </TileContent>
-            </GenericTile>
-        </l:HorizontalLayout>
+    <content>
+        <FacetFilter width="100%" id="idFacetFilter" type="Light" showPersonalization="true" showReset="true" reset="clearFilter">
+            <lists>
+                <FacetFilterList title="POS" key="pos" mode="MultiSelect" listClose="setFilter" items="{/PartsOfSpeech}" >
+                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                </FacetFilterList>
+                <FacetFilterList title="LANG" key="lang" mode="MultiSelect" listClose="setFilter" items="{/Langs}" >
+                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                </FacetFilterList>
+            </lists>
+        </FacetFilter >            
+        <Carousel id="idCarousel" pageIndicatorPlacement="Top" loop="true" pages="{/Slova}" _class="sapUiMediumMargin">
+            <pages>
+                <FlexBox height="100%" alignItems="Center" justifyContent="Center">
+                    <GenericTile header="{morphem}" subheader="{pos}" press="onPressed">
+                        <TileContent _footer="{how}">
+                            <NumericContent withMargin="false" value="{count}" valueColor="Good" indicator="Up" />
+                        </TileContent>
+                    </GenericTile>
+                </FlexBox>
+            </pages>
+        </Carousel>
         <Panel headerText="Fiori Elements table" expandable="true" expanded="false" class="sapUiMediumMarginTop">
-            <macros:FilterBar metaPath="/Cards/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar" liveMode="true" />
-            <macros:Table metaPath="/Cards/@com.sap.vocabularies.UI.v1.LineItem" id="macroTable" filterBar="FilterBar" />
+            <macros:FilterBar metaPath="/Slova/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar" liveMode="true" />
+            <macros:Table metaPath="/Slova/@com.sap.vocabularies.UI.v1.LineItem" id="macroTable" filterBar="FilterBar" />
         </Panel>
-
+    </content>
+    <footer>
+        <Toolbar >
+            <ToolbarSpacer />
+                <Button text="skip" />
+            <ToolbarSpacer />
+        </Toolbar >
+    </footer>
     </Page>
 </mvc:View>

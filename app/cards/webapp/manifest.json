@@ -18,7 +18,7 @@
 		},
 		"dataSources": {
 			"mainService": {
-				"uri": "/learn/",
+				"uri": "/workbook/",
 				"type": "OData",
 				"settings": {
 					"annotations": [],
@@ -70,12 +70,12 @@
 					"target": "customPage"
 				},
 				{
-					"pattern": "/Cards({key}):?query:",
+					"pattern": "/Slova({key}):?query:",
 					"name": "objectPage",
 					"target": "objectPage"
 				},
 				{
-					"pattern": "/Cards({key})/history({key2}):?query:",
+					"pattern": "/Slova({key})/history({key2}):?query:",
 					"name": "historyPage",
 					"target": "historyPage"
 				}
@@ -88,9 +88,9 @@
 					"options": {
 						"settings": {
 							"viewName": "customCards.Main",
-							"entitySet": "Cards",
+							"entitySet": "Slova",
 							"navigation": {
-								"Cards": {
+								"Slova": {
 									"detail": {
 										"route": "objectPage"
 									}
@@ -105,7 +105,7 @@
 					"name": "sap.fe.templates.ObjectPage",
 					"options": {
 						"settings": {
-							"entitySet": "Cards",
+							"entitySet": "Slova",
 							"editableHeaderContent": false,
 							"navigation": {
 								"history": {
