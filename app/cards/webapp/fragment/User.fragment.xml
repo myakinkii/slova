@@ -1,0 +1,22 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
+    <Dialog showHeader="false" type="Message" >
+        <content>
+            <Panel expandable="false" expanded="true">
+                <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
+                    <Toolbar>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>onboardUser}" press="onboardUser"/>
+                        <ToolbarSpacer/>
+                    </Toolbar>
+                    <Label text="{i18n>userName}" />
+                    <Input value="{auth>/user}" />
+                    <Label text="{i18n>userPin}" />
+                    <Input value="{auth>/pin}" enabled="false" />
+                </f:SimpleForm>
+            </Panel>
+        </content>
+        <endButton>
+            <Button text="{i18n>btnClose}" press="closeDlg" />
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

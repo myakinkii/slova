@@ -7,12 +7,27 @@ sap.ui.define(["sap/fe/core/PageController","sap/ui/model/Filter"], function (Pa
             PageController.prototype.onInit.apply(this);
         },
 
+        getRandomForm:function(form1){
+            if (!form1) return ''
+            var forms = Object.values(arguments).filter( v => !!v )
+            var random = forms[ Math.floor(Math.random()*forms.length)]
+            return random
+        },
+
+        delayMorhpem:function(morphem){
+            if (!morphem) return ''
+            return new Promise(function(resolve){
+                window.setTimeout(() => resolve(morphem),1500)
+            })
+        },
+
         onPressed: function (oEvent) {
             var oContext = oEvent.getSource().getBindingContext();
             this.routing.navigate(oContext);
         },
 
         clearFilter:function(){
+            this.getView().byId("idFacetFilter").getLists().forEach(function(list) {  list.setSelectedKeys() });
             this.getView().byId("idCarousel").getBinding("pages").filter([])
         },
 
@@ -28,6 +43,10 @@ sap.ui.define(["sap/fe/core/PageController","sap/ui/model/Filter"], function (Pa
             }), true);
 
             this.getView().byId("idCarousel").getBinding("pages").filter(filter)
+        },
+
+        forceRefresh:function(){
+            this.getView().byId("idCarousel").getBinding("pages").refresh()
         }
     });
 });

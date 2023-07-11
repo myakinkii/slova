@@ -10,10 +10,16 @@
     <content>
         <FacetFilter width="100%" id="idFacetFilter" type="Light" showPersonalization="true" showReset="true" reset="clearFilter">
             <lists>
-                <FacetFilterList title="POS" key="pos" mode="MultiSelect" listClose="setFilter" items="{/PartsOfSpeech}" >
+                <FacetFilterList title="TEXT" key="import_ID" mode="MultiSelect" listClose="setFilter" items="{/TextsFilter}" >
+                    <FacetFilterItem text="{text}" key="{code}" count="{count}" />
+                </FacetFilterList>
+                <FacetFilterList title="AUTHOR" key="createdBy" mode="MultiSelect" listClose="setFilter" items="{/AuthorsFilter}" >
                     <FacetFilterItem text="{code}" key="{code}" count="{count}" />
                 </FacetFilterList>
-                <FacetFilterList title="LANG" key="lang" mode="MultiSelect" listClose="setFilter" items="{/Langs}" >
+                <FacetFilterList title="POS" key="pos" mode="MultiSelect" listClose="setFilter" items="{/PosFilter}" >
+                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                </FacetFilterList>
+                <FacetFilterList title="LANG" key="lang" mode="MultiSelect" listClose="setFilter" items="{/LangsFilter}" >
                     <FacetFilterItem text="{code}" key="{code}" count="{count}" />
                 </FacetFilterList>
             </lists>
@@ -21,8 +27,14 @@
         <Carousel id="idCarousel" pageIndicatorPlacement="Top" loop="true" pages="{/Slova}" _class="sapUiMediumMargin">
             <pages>
                 <FlexBox height="100%" alignItems="Center" justifyContent="Center">
-                    <GenericTile header="{morphem}" subheader="{pos}" press="onPressed">
-                        <TileContent _footer="{how}">
+                    <GenericTile press="onPressed" 
+                            subheader="{pos}" 
+                            header="{parts:[
+                                {path:'forms/0/form', targetType:'any'},
+                                {path:'forms/1/form', targetType:'any'},
+                                {path:'forms/2/form', targetType:'any'}
+                            ], formatter:'.getRandomForm'}">
+                        <TileContent _footer="{path:'morphem',formatter:'.delayMorhpem'}">
                             <NumericContent withMargin="false" value="{count}" valueColor="Good" indicator="Up" />
                         </TileContent>
                     </GenericTile>
@@ -37,7 +49,7 @@
     <footer>
         <Toolbar >
             <ToolbarSpacer />
-                <Button text="skip" />
+                <Button text="refresh" press="forceRefresh" />
             <ToolbarSpacer />
         </Toolbar >
     </footer>
