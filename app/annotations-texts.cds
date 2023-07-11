@@ -64,16 +64,35 @@ annotate TextsService.Sentences with @UI: {
 };
 
 annotate TextsService.Sentences.tokens with @UI: {
-    HeaderInfo: {
+    HeaderInfo        : {
         TypeName      : '{i18n>Token}',
         TypeNamePlural: '{i18n>Tokens}'
     },
-    LineItem  : [
+    LineItem          : [
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Target: '@UI.FieldGroup#Mobile',
+            Label : 'Type Information',
+            ![@HTML5.CssDefaults]: {width: '25rem'}
+        },
         {Value: index},
-        {Value: form},
-        {Value: lemma},
-        {Value: pos}
-    ]
+        // {Value: form},
+        // {Value: lemma},
+        // {Value: pos}
+    ],
+    FieldGroup #Mobile: {Data: [
+        {Value: {$edmJson: {
+            $Apply   : [
+                {Path: 'form'},
+                ' -> ',
+                {Path: 'lemma'},
+                ' [',
+                {Path: 'pos'},
+                ']'
+            ],
+            $Function: 'odata.concat'
+        }}}
+    ]},
 };
 
 annotate TextsService.Slova.sentences with @UI: {
