@@ -139,7 +139,7 @@
                 },
                 "sentencesPage": {
                     "type": "Component",
-                    "id": "tokensPage",
+                    "id": "sentencesPage",
                     "name": "sap.fe.templates.ObjectPage",
                     "options": {
                         "settings": {

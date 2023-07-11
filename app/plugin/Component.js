@@ -106,10 +106,10 @@ sap.ui.define([
             })
         },
 
-        genQR:function(id, pwd, name){
+        genQR:function(id, pwd, user){
             $('#qrcode')[0].innerHTML=''; // clear div
 			new QRCode("qrcode", {
-				text: JSON.stringify({ id:id, pwd:pwd, name:name }),
+				text: JSON.stringify({ id:id, pwd:pwd, user:user }),
 				width: 250,
 				height: 250,
 				colorDark: "#000000",
