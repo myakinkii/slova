@@ -5,14 +5,14 @@ using {cc.slova.model as db} from '../db/schema';
 service WorkBookService {
 
     @readonly
-    entity PartsOfSpeech as select from Slova {
+    entity PosFilter as select from Slova {
         owner,
         pos as code,
         count(*) as count:Integer
     } group by owner, pos;
 
     @readonly
-    entity Langs as select from Slova {
+    entity LangsFilter as select from Slova {
         owner,
         lang as code,
         count(*) as count:Integer

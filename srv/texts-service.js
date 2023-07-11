@@ -14,17 +14,32 @@ class TextsService extends BaseService {
         this.on('parseText', this.parseTextHandler)
         this.on('createText', this.createTextHandler)
         this.on('getDefinition', this.getDefinitionUrl)
+        this.after('READ', 'Sentences', this.getGoogleTranslate)
+        this.after('READ', 'Slova.sentences', this.getGoogleTranslate)
         await super.init()
     }
 
     async getDefinitionUrl(req, next) {
         const {lang, lemma} = req.data
-        // const profile = await this.getProfile(req.user.id)
-        const userLang = "auto" //profile.defaultLang_code
+        const profile = await this.getProfile(req.user.id)
+        const userLang = profile.id == "anynoumous" ? "auto" : profile.defaultLang_code
         let definitionUrl = await definitionFinder.get(lang, lemma).catch( ()=>{} )
         if (!definitionUrl) return ''
         const googleTranslateBaseUrl = 'https://translate.google.com/translate'
         return `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
+    }
+
+    async getGoogleTranslate(data, req) {
+        if (!data || Array.isArray(data)) return
+        const profile = await this.getProfile(req.user.id)
+        const userLang = profile.id == "anynoumous" ? "auto" : profile.defaultLang_code
+        const lang = data.lang_code || data.sent.lang_code
+        const text = data.text || data.sent.text
+        if (!text) return
+        const googleTranslateBaseUrl = 'https://translate.google.com/'
+        const link = `${googleTranslateBaseUrl}?text=${encodeURIComponent(text)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
+        if (data.text) data.translation = link
+        else data.sent.translation = link
     }
 
     async createTextHandler(req,next){

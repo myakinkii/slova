@@ -10,9 +10,9 @@ annotate TextsService.Texts with @UI: {
         lang_code
     ],
     LineItem       : [
-         {
+        {
             $Type : 'UI.DataFieldForAction',
-            Action : 'TextsService.EntityContainer/createText',
+            Action: 'TextsService.EntityContainer/createText',
             Label : '{i18n>createText}',
         },
         {Value: createdBy},
@@ -40,7 +40,7 @@ annotate TextsService.Sentences with @UI: {
         TypeName      : '{i18n>Sentence}',
         TypeNamePlural: '{i18n>Sentences}',
         Title         : {Value: text},
-        Description   : {Value: hash}
+        Description   : {Value: lang_code}
     },
     LineItem               : [{
         Value                : text,
@@ -77,16 +77,31 @@ annotate TextsService.Sentences.tokens with @UI: {
 };
 
 annotate TextsService.Slova.sentences with @UI: {
-    HeaderInfo: {
+    HeaderInfo             : {
         TypeName      : '{i18n>Sentence}',
         TypeNamePlural: '{i18n>Sentences}',
         Title         : {Value: sent.text},
-        Description   : {Value: sent.hash}
+        Description   : {Value: sent.lang_code}
     },
-    LineItem  : [{
+    LineItem               : [{
         Value                : sent.text,
         ![@HTML5.CssDefaults]: {width: 'auto'}
-    }]
+    }],
+    Facets                 : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: 'sent/tokens/@UI.LineItem',
+    // Label : '{i18n>Tokens}'
+    }],
+    HeaderFacets           : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: '@UI.FieldGroup#Translation',
+    }],
+    FieldGroup #Translation: {Data: [{
+        Label: '{i18n>translation}',
+        Value: sent.translation,
+        Url  : sent.translation,
+        $Type: 'UI.DataFieldWithUrl'
+    }]},
 };
 
 annotate TextsService.Slova with @UI: {

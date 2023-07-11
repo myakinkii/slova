@@ -4,6 +4,62 @@ using {cc.slova.model as db} from '../db/schema';
 @requires: 'authenticated-user'
 service TextsService {
 
+
+    @readonly
+    entity PosFilter     as
+        select from SlovaDistinct {
+            pos        as code,
+            createdBy,
+            status,
+            count( * ) as count : Integer
+        }
+        group by
+            pos;
+
+    @readonly
+    entity LangsFilter   as
+        select from SlovaDistinct {
+            lang       as code,
+            createdBy,
+            status,
+            count( * ) as count : Integer
+        }
+        group by
+            lang;
+
+    @readonly
+    entity SlovaDistinct as
+        select distinct
+            pos,
+            morphem,
+            lang,
+            createdBy,
+            status
+        from Slova;
+
+    @readonly
+    entity TextsFilter   as
+        select from Slova {
+            import.ID   as code,
+            import.name as text,
+            createdBy,
+            status,
+            count( * )  as count : Integer
+        }
+        group by
+            import.ID;
+
+    @readonly
+    entity AuthorsFilter as
+        select from Texts {
+            createdBy  as code,
+            createdBy,
+            status,
+            count( * ) as count : Integer
+        }
+        group by
+            createdBy;
+
     type Token {
         importId : UUID;
         hash     : String;
@@ -54,11 +110,27 @@ service TextsService {
     };
 
     @readonly
-    entity Sentences     as projection on db.ImportSentences order by
+    entity Sentences @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user or status = 9'
+    }])                  as projection on db.ImportSentences {
+        *,
+        import.createdBy,
+        import.status
+    } order by
         index asc;
 
     @readonly
-    entity Slova         as projection on db.ImportWords;
+    entity Slova @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user or status = 9'
+    }])                  as projection on db.ImportWords {
+        *,
+        import.createdBy,
+        import.status
+    };
 
     @readonly
     entity Forms         as projection on db.ImportForms;
