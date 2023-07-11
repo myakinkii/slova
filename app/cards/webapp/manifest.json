@@ -137,7 +137,19 @@
                     "name": "sap.fe.templates.ObjectPage",
                     "options": {
                         "settings": {
-                            "entitySet": "Sentences"
+                            "entitySet": "Sentences",
+                            "content": {
+                                "footer": {
+                                    "actions": {
+                                        "CustomActionOPFooter": {
+                                            "press": "customCards.ext.CustomActions.navBack",
+                                            "enabled": true,
+                                            "visible": true,
+                                            "text": "{i18n>navBack}"
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
