@@ -25,7 +25,10 @@ sap.ui.define([
             }).then(function(dlg){
                 dlg.setModel(i18n,"i18n");
                 dlg.setModel(authModel, "auth")
-                dlg.getEndButton().attachPress(function(){ dlg.close(); })
+                dlg.getEndButton().attachPress(function(){ 
+                    dlg.close();
+                    window.location.reload() // for now we will do it like this
+                })
                 return Promise.resolve(dlg)
             });
 
