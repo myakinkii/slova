@@ -46,8 +46,9 @@ class TextsService extends BaseService {
         if (req.user.id == 'anonymous') throw new Error('FORBIDDEN')
         const profile = await this.getProfile(req.user.id)
         const { Import } = cds.entities("cc.slova.model")
-        const text = await cds.create(Import).entries({ name: '$now', input: req.data.input, lang_code: profile.defaultLang_code, createdBy: profile.id })
-        return { ID : text.results[0].values[7] }
+        const ID = cds.utils.uuid()
+        await cds.create(Import).entries({ ID: ID, name: '$now', input: req.data.input, lang_code: profile.defaultLang_code, createdBy: profile.id })
+        return { ID : ID }
     }
 
     async parseTextHandler(req,next){

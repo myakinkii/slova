@@ -38,8 +38,8 @@ module.exports = async (db) => {
             LOG.debug(`got ${files.length} files in ${dir}`)
             for( var file of files){
                 LOG.debug(`importing [${lang}] ${file}`)
-                const {results} = await importText(lang, dir, file)
-                const ID = results[0].values[7] // omg this is ugly
+                const ID = cds.utils.uuid()
+                await importText(ID, lang, dir, file)
                 await importHandler.parseInput(ID)
                 const result = await importHandler.performImport(ID)
                 const stat = result.length && result[result.length-1].reduce( (prev,cur) => {
@@ -99,10 +99,10 @@ module.exports = async (db) => {
         })
     }
 
-    async function importText (lang, dir, fileName) {
+    async function importText (ID, lang, dir, fileName) {
         const data = fs.readFileSync(`./test/conllu/${lang}/${dir}/${fileName}`, 'utf8')
         const name = dir+" - "+fileName.slice(0,-7)
-        return cds.create(Import).entries({ name: name, text: data, lang_code: lang, createdBy: 'admin' })
+        return cds.create(Import).entries({ ID: ID, name: name, text: data, lang_code: lang, createdBy: 'admin' })
     }
 
 }
