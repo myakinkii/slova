@@ -53,6 +53,7 @@ aspect Features : {
     Polarity : Polarity;
     Typo     : Typo;
     Foreign  : Foreign;
+    ExtPos   : ExtPos;
 }
 
 type![Case]        : String enum {
@@ -183,4 +184,12 @@ type Typo          : String enum {
 
 type Foreign       : String enum {
     Yes   = 'yes';
+}
+
+type ExtPos        : String enum {
+    ADP   = 'adposition';
+    ADV   = 'adverb';
+    CCONJ = 'coordinating conjunction';
+    PRON  = 'pronoun';
+    SCONJ = 'subordinator';
 }
