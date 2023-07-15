@@ -7,14 +7,15 @@ annotate TextsService.Texts with @UI: {
     },
     SelectionFields: [
         createdBy,
+        name,
         lang_code
     ],
     LineItem       : [
-        {
-            $Type : 'UI.DataFieldForAction',
-            Action: 'TextsService.EntityContainer/createText',
-            Label : '{i18n>createText}',
-        },
+        // {
+        //     $Type : 'UI.DataFieldForAction',
+        //     Action: 'TextsService.EntityContainer/createText',
+        //     Label : '{i18n>createText}',
+        // },
         {Value: createdBy},
         {Value: name},
         {Value: lang_code}

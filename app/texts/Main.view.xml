@@ -13,7 +13,9 @@
                 <ToolbarSpacer />
                 <Title text="{createdBy} [{lang_code}]" />
                 <Input width="15rem" value="{name}" />
-                <Input width="5rem" value="{lang_code}" />
+                <ComboBox width="15rem" selectedKey="{lang_code}" showSecondaryValues= "true" items="{/Languages}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                </ComboBox>
                 <ToolbarSpacer />
                 <ToggleButton icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
             </Toolbar>

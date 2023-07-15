@@ -72,8 +72,14 @@ service TextsService {
     action syncToken(token : Token);
     action getDefinition(lang : String, lemma : String) returns String;
 
-    @(Common.SideEffects: {TargetEntities: ['/TextsService.EntityContainer/Texts']})
-    action createText();
+    @(Common.SideEffects: {TargetEntities: [
+        '/TextsService.EntityContainer/Texts',
+        '/TextsService.EntityContainer/PosFilter',
+        '/TextsService.EntityContainer/LangsFilter',
+        '/TextsService.EntityContainer/TextsFilter',
+        '/TextsService.EntityContainer/AuthorsFilter'
+    ]})
+    action createText(input : String)                   returns Texts;
 
     entity Texts @(restrict: [
         {
@@ -167,4 +173,8 @@ service TextsService {
 
     @readonly
     entity VerbForms     as projection on db.VerbForms;
+
+    @readonly
+    entity Languages as projection on db.Languages;
+
 }

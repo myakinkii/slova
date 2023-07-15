@@ -46,7 +46,8 @@ class TextsService extends BaseService {
         if (req.user.id == 'anonymous') throw new Error('FORBIDDEN')
         const profile = await this.getProfile(req.user.id)
         const { Import } = cds.entities("cc.slova.model")
-        return cds.create(Import).entries({ name: '$now', text: '', lang_code: profile.defaultLang_code, createdBy: profile.id })
+        const text = await cds.create(Import).entries({ name: '$now', input: req.data.input, lang_code: profile.defaultLang_code, createdBy: profile.id })
+        return { ID : text.results[0].values[7] }
     }
 
     async parseTextHandler(req,next){
@@ -55,7 +56,7 @@ class TextsService extends BaseService {
         const data = await cds.read(Import, ID)
         if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
         if (!data.input) return
-        const input = data.input.split("\n")
+        const input = data.input.split("\n").filter( sent => !!sent )
         const results = await Promise.all(input.map( sent => this.importHandler.parseSentence(sent, data.lang_code)))
         const text = results.reduce( (prev, cur, index) => {
             return prev += `# text = ${input[index]}\n` + cur + '\n\n'
