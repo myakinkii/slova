@@ -98,9 +98,11 @@
                 "listReport": {
                     "type": "Component",
                     "id": "listReport",
-                    "name": "sap.fe.templates.ListReport",
+                    "_name": "sap.fe.templates.ListReport",
+                    "name": "sap.fe.core.fpm",
                     "options": {
                         "settings": {
+                            "viewName": "cc.slova.textEditor.List",
                             "entitySet": "Texts",
                             "initialLoad": true,
                             "navigation": {

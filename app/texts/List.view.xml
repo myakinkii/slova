@@ -1,0 +1,67 @@
+<mvc:View
+    id="application-product"
+    height="100%"
+    controllerName="cc.slova.textEditor.List"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:l="sap.ui.layout"
+    xmlns:macros="sap.fe.macros">
+    <Page title="{i18n>textsTitle}">
+    <content>
+        <FacetFilter width="100%" id="idFacetFilter" type="Light" showPersonalization="true" showReset="true" reset="clearFilter">
+            <lists>
+                <FacetFilterList title="TEXT" key="ID" mode="MultiSelect" listClose="setFilter" items="{/TextsFilter}" >
+                    <FacetFilterItem text="{text}" key="{code}" count="{count}" />
+                </FacetFilterList>
+                <FacetFilterList title="AUTHOR" key="createdBy" mode="MultiSelect" listClose="setFilter" items="{/AuthorsFilter}" >
+                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                </FacetFilterList>
+                <!-- <FacetFilterList title="POS" key="pos" mode="MultiSelect" listClose="setFilter" items="{/PosFilter}" >
+                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                </FacetFilterList> -->
+                <FacetFilterList title="LANG" key="lang_code" mode="MultiSelect" listClose="setFilter" items="{/LangsFilter}" >
+                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                </FacetFilterList>
+            </lists>
+        </FacetFilter >
+        <Carousel id="idCarousel" pageIndicatorPlacement="Top" loop="true" pages="{/Texts}" >
+            <pages>
+                <FlexBox height="100%" alignItems="Center" justifyContent="Center">
+                    <!-- <GenericTile press="onPressed" 
+                            subheader="{lang_code}" 
+                            header="{name}">
+                        <TileContent footer="{createdBy}">
+                            <NumericContent withMargin="false" value="{count}" valueColor="Good" _indicator="Up" />
+                        </TileContent>
+                    </GenericTile> -->
+                    <List>
+                    <FeedListItem
+                        sender="{createdBy}"
+                        senderActive="false"
+                        icon="sap-icon://{= ${createdBy}==='admin' ? 'employee' : 'customer'}"
+                        iconActive="false"
+                        iconDensityAware="false"
+                        info="{lang_code}"
+                        timestamp="{createdAt}"
+                        text="{name} {input}"
+                        type="Active"
+                        press="onPressed" />
+                    </List>
+                </FlexBox>
+            </pages>
+        </Carousel>
+        <Panel headerText="Fiori Elements table" expandable="true" expanded="false" class="sapUiMediumMarginTop">
+            <macros:FilterBar metaPath="/Texts/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar" liveMode="true" />
+            <macros:Table metaPath="/Texts/@com.sap.vocabularies.UI.v1.LineItem" id="macroTable" filterBar="FilterBar" />
+        </Panel>
+    </content>
+    <footer>
+        <Toolbar >
+            <ToolbarSpacer />
+                <Button text="refresh" press="forceRefresh" />
+            <ToolbarSpacer />
+            <Button icon="sap-icon://add" press="addText" />
+        </Toolbar >
+    </footer>
+    </Page>
+</mvc:View>
