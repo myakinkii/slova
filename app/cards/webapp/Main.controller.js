@@ -1,4 +1,8 @@
-sap.ui.define(["sap/fe/core/PageController","sap/ui/model/Filter"], function (PageController, Filter) {
+sap.ui.define([
+    "sap/fe/core/PageController",
+    "sap/ui/model/Filter",
+    "sap/m/MessageToast"
+], function (PageController, Filter, MessageToast) {
     "use strict";
 
     return PageController.extend("customCards.Main", {
@@ -47,6 +51,21 @@ sap.ui.define(["sap/fe/core/PageController","sap/ui/model/Filter"], function (Pa
 
         forceRefresh:function(){
             this.getView().byId("idCarousel").getBinding("pages").refresh()
-        }
+        },
+
+        addText:function(e){
+            var src = e.getSource()
+            var odata = src.getModel()
+            var action = odata.bindContext("/createText(...)");
+            navigator.clipboard.readText().then(function(text){
+                action.setParameter("input", text||'')
+                return action.execute()
+            }).then(function(){
+                var ctx = action.getBoundContext().getObject()
+                MessageToast.show(ctx.ID)
+            }.bind(this)).catch(function(err){
+                MessageToast.show(err.message)
+            })
+        },
     });
 });
