@@ -67,7 +67,7 @@ class TextsService extends BaseService {
         },'\n')
         await cds.update(Import, ID).with({text})
         const profile = await this.getProfile(req.user.id)
-        await this.importHandler.parseInput(ID, profile.pos?.split(","))
+        await this.importHandler.parseInput(ID, profile.pos)
     }
 
     async syncAndReparseConllu(req, next) {
@@ -78,7 +78,7 @@ class TextsService extends BaseService {
         const text = this.importHandler.mergeAndCreateConllu(token, importData.sentences)
         await cds.update(Import, token.importId).with({text})
         const profile = await this.getProfile(req.user.id)
-        await this.importHandler.parseInput(token.importId, profile.pos?.split(","))
+        await this.importHandler.parseInput(token.importId, profile.pos)
     }
 
 }

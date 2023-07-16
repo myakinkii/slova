@@ -9,8 +9,6 @@ const CONLLU_DIRS = process.env.CONLLU_DIRS?.split(',') || [] // dirs with conll
 const CONLLU_SETS = process.env.CONLLU_SETS?.split(',') || [] // ud sets in form {SET_NAME}-ud-{CHUNK}.conllu
 const SET_CHUNKS = ['train', 'dev', 'test'] // sets in order of precedence (usually 80/10/10 % of treebank size)
 
-const IMPORT_POS = process.env.IMPORT_POS?.split(',') || ['VERB', 'NOUN', 'PRON', 'ADJ', 'ADV'] // parts of speech to impor
-
 const SET_ADMIN_PWD = process.env.SET_ADMIN_PWD // to reset admin pwd from default 'secret'
 
 module.exports = async (db) => {
@@ -19,7 +17,7 @@ module.exports = async (db) => {
 
     if (CONLLU_SETS.length) {
         let sentences = {}, stat = [], words = [] // references to data
-        CONLLU_SETS.forEach( set => { IMPORT_POS.reduce( getParser(set, sentences, stat), words) })
+        CONLLU_SETS.forEach( set => { ImportHandler.IMPORT_POS.reduce( getParser(set, sentences, stat), words) })
         sentences = Object.values(sentences)
         LOG.debug(`got ${words.length} words and ${sentences.length} sentences`)
 

@@ -2,9 +2,13 @@ const {parseConllu, prepareWords, performMerge } = require('./conlluParser')
 const externalParser = require('./externalParser')
 const externalGenerator = require('./externalGenerator')
 
-const IMPORT_POS = process.env.IMPORT_POS?.split(',') || ['VERB', 'NOUN', 'PRON', 'ADJ', 'ADV'] // parts of speech to import
+const DEFAULT_IMPORT_POS = process.env.IMPORT_POS || "VERB,NOUN,PRON,ADJ,ADV" // parts of speech to import
 
 class ImportHandler {
+
+    static get IMPORT_POS () {
+        return DEFAULT_IMPORT_POS.split(",")
+    }
 
     cdsRef
 
@@ -26,12 +30,13 @@ class ImportHandler {
         return conlluTokens.join("\n")
     }
 
-    async parseInput(ID, pos = IMPORT_POS ) {
+    async parseInput(ID, pos ) {
+        if (!pos) pos = DEFAULT_IMPORT_POS
         const { Import } = this.cdsRef.entities("cc.slova.model")
         const data = await this.cdsRef.read(Import, ID)
         const lang = data.lang_code
         const results = parseConllu(lang, data.text || '')
-        let words = pos.reduce( (prev,cur) => {
+        let words = pos.split(",").reduce( (prev,cur) => {
             return prepareWords(lang, results.words, cur, prev)
         },[])
         words.forEach( w => {
