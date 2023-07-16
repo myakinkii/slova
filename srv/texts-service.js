@@ -16,6 +16,7 @@ class TextsService extends BaseService {
         this.on('getDefinition', this.getDefinitionUrl)
         this.after('READ', 'Sentences', this.getGoogleTranslate)
         this.after('READ', 'Slova.sentences', this.getGoogleTranslate)
+        this.before('READ', 'Users', this.checkCreateProfile)
         await super.init()
     }
 
@@ -65,7 +66,8 @@ class TextsService extends BaseService {
             return prev += `# text = ${input[index]}\n` + cur + '\n\n'
         },'\n')
         await cds.update(Import, ID).with({text})
-        await this.importHandler.parseInput(ID)
+        const profile = await this.getProfile(req.user.id)
+        await this.importHandler.parseInput(ID, profile.pos?.split(","))
     }
 
     async syncAndReparseConllu(req, next) {
@@ -75,7 +77,8 @@ class TextsService extends BaseService {
         if (req.user.id != importData.createdBy) throw new Error('FORBIDDEN')
         const text = this.importHandler.mergeAndCreateConllu(token, importData.sentences)
         await cds.update(Import, token.importId).with({text})
-        await this.importHandler.parseInput(token.importId, Import)
+        const profile = await this.getProfile(req.user.id)
+        await this.importHandler.parseInput(token.importId, profile.pos?.split(","))
     }
 
 }

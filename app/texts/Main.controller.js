@@ -91,7 +91,7 @@ sap.ui.define([
                     events:{ 
                         dataReceived:function(){
                             var data = popover.getElementBinding().getBoundContext().getObject()
-                            data.features = data.feats.split("|").reduce(function(prev,cur){
+                            data.features = (data.feats||"").split("|").reduce(function(prev,cur){
                                 var f=cur.split("=")
                                 prev[f[0]]=f[1]
                                 return prev;
@@ -102,6 +102,15 @@ sap.ui.define([
                 })
                 if (uiModel.getProperty("/showSidePanel")==false) popover.openBy(link)
             })
+        },
+
+        splitPosTokens:function(pos){
+            return !!pos ? pos.split(",") : []
+        },
+
+        changePos:function(e){
+            var src = e.getSource()
+            src.getBindingContext().setProperty("pos", src.getSelectedKeys().join(","))
         }
     });
 });

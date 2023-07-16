@@ -26,12 +26,12 @@ class ImportHandler {
         return conlluTokens.join("\n")
     }
 
-    async parseInput(ID ) {
+    async parseInput(ID, pos = IMPORT_POS ) {
         const { Import } = this.cdsRef.entities("cc.slova.model")
         const data = await this.cdsRef.read(Import, ID)
         const lang = data.lang_code
         const results = parseConllu(lang, data.text || '')
-        let words = IMPORT_POS.reduce( (prev,cur) => {
+        let words = pos.reduce( (prev,cur) => {
             return prepareWords(lang, results.words, cur, prev)
         },[])
         words.forEach( w => {

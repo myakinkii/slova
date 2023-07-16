@@ -93,6 +93,7 @@ entity Users {
         pin          : Integer; // to restore creds
         defaultLang  : Association to Languages;
         name         : String;
+        pos          : String;
         cards        : Association to many Cards
                            on cards.user = $self;
         translations : Association to many Translations

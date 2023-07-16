@@ -32,9 +32,14 @@
                             content="{path:'sentences', sorter: { path: 'index', descending: false} }">
                             <content>
                                 <l:HorizontalLayout class="sapUiContentPadding" 
-                                    content="{path:'tokens',sorter: { path: 'index', descending: false} }">
+                                    content="{path:'tokens', sorter: { path: 'index', descending: false} }">
                                     <l:content>
-                                        <Link text="{parts:[{path:'form'},{path:'pos'}],formatter:'cc.slova.textEditor.globalFormatter.linkFormat'}" press="showWordPopover" />
+                                        <Link text="{parts:[
+                                            {path:'form'},
+                                            {path:'pos'},
+                                            {path: '/Profile/pos'}
+                                        ],formatter:'cc.slova.textEditor.globalFormatter.linkFormat'}" 
+                                        press="showWordPopover" />
                                     </l:content>
                                 </l:HorizontalLayout>
                             </content>
@@ -59,8 +64,15 @@
                         <ToolbarSpacer/>
                     </Toolbar>
 
-                    <Label text="{i18n>propmt}" />
+                    <Label text="{i18n>propmt}"/>
                     <Input value="č ć dž đ š ž" />
+
+                    <Label text="{i18n>pos}" />
+                    <MultiComboBox binding="{/Profile}" selectedKeys="{path:'pos', targetType:'any', formatter:'.splitPosTokens' }" 
+                            selectionChange=".changePos"
+                            showSecondaryValues= "true" items="{/PartsOfSpeech}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </MultiComboBox>
                 </f:SimpleForm>
                 <f:SimpleForm visible="{= ${ui>/selectedTab}==='output' }" binding="{ui>/token}" editable="true" layout="ResponsiveGridLayout">
                     <Toolbar>

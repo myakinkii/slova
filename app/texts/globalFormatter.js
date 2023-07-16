@@ -12,18 +12,24 @@ sap.ui.define([], function () {
     }
 
     return {
-        linkFormat: function (form,pos) {
-            if (POS[pos]) {
+
+        linkFormat: function (form, pos, userPos) {
+            if (!(form && pos)) return ''
+            if ( userPos=="" && POS[pos] ) {
+                this.addStyleClass("linkPOS_"+pos)
+            } else if (userPos.split(",").indexOf(pos)>-1) {
                 this.addStyleClass("linkPOS_"+pos)
             } else {
                 this.addStyleClass("linkPOS_disabled")
-                this.setEnabled(false)
+                // this.setEnabled(false)
             }
             return form;
         },
+
         featsFormat:function(feats){
             if (!feats) return '';
             return feats.split("|").join(", ")
         }
+
     };
 },true);

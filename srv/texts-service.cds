@@ -175,6 +175,8 @@ service TextsService {
     entity VerbForms     as projection on db.VerbForms;
 
     @readonly
-    entity Languages as projection on db.Languages;
+    entity Languages     as projection on db.Languages;
 
+    @odata.singleton
+    entity Profile       as select from db.Users where id = $user;
 }
