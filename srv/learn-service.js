@@ -26,11 +26,7 @@ class MyService extends BaseService {
             await this.update(Cards).set({ seen:false }).where({ user_id : req.user.id })
         }
 
-        return this.create(CardGuesses).entries({
-            card: card,
-            guess: guess,
-            now: '$now'
-        })
+        return this.create(CardGuesses).entries({ card: card, guess: guess })
     }
 
     async applyFilter(req) {

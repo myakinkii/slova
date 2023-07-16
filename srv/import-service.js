@@ -99,8 +99,9 @@ class ImportService extends BaseService {
         })
     }
 
-    async getGoogleTranslate(data, req) {
-        if (!data || Array.isArray(data)) return
+    async getGoogleTranslate(results, req) {
+        if (!req.query.SELECT.one) return
+        const data = results[0]
         const { Import } = this.entities
         let lang = await cds.read(Import, data.import_ID).columns('lang_code')
         lang = lang.lang_code

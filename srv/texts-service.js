@@ -29,8 +29,9 @@ class TextsService extends BaseService {
         return `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
     }
 
-    async getGoogleTranslate(data, req) {
-        if (!data || Array.isArray(data)) return
+    async getGoogleTranslate(results, req) {
+        if (!req.query.SELECT.one) return
+        const data = results[0]
         const profile = await this.getProfile(req.user.id)
         const userLang = profile.id == "anynoumous" ? "auto" : profile.defaultLang_code
         const lang = data.lang_code || data.sent.lang_code
@@ -47,7 +48,8 @@ class TextsService extends BaseService {
         const profile = await this.getProfile(req.user.id)
         const { Import } = cds.entities("cc.slova.model")
         const ID = cds.utils.uuid()
-        await cds.create(Import).entries({ ID: ID, name: '$now', input: req.data.input, lang_code: profile.defaultLang_code, createdBy: profile.id })
+        const textNameCreated = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'medium', hour12: false }).format(new Date());
+        await cds.create(Import).entries({ ID: ID, name: textNameCreated, input: req.data.input, lang_code: profile.defaultLang_code, createdBy: profile.id })
         return { ID : ID }
     }
 

@@ -42,13 +42,14 @@ module.exports = async (db) => {
                 await importText(ID, lang, dir, file)
                 await importHandler.parseInput(ID)
                 const result = await importHandler.performImport(ID)
-                const stat = result.length && result[result.length-1].reduce( (prev,cur) => {
-                    const [lang, pos, tokens, lemmas] = cur.values
-                    prev[pos] = {lemmas,tokens}
-                    prev.total+=lemmas
-                    return prev
-                },{total:0})
-                LOG.debug(`import stat:`,stat)
+                // new DB service does not return inserted/updated stuff
+                // const stat = result.length && result[result.length-1].reduce( (prev,cur) => {
+                //     const [lang, pos, tokens, lemmas] = cur.values
+                //     prev[pos] = {lemmas,tokens}
+                //     prev.total+=lemmas
+                //     return prev
+                // },{total:0})
+                // LOG.debug(`import stat:`,stat)
             }
         }))
     }

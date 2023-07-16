@@ -35,11 +35,12 @@ class ImportHandler {
             return prepareWords(lang, results.words, cur, prev)
         },[])
         words.forEach( w => {
+            w.import_ID = ID
             w.sentences.forEach(s => { s["sent_import_ID"] = ID })
         })
         await this.cdsRef.update(Import, ID).with({
             words : words,
-            sentences : Object.values(results.sentences)
+            sentences : Object.values(results.sentences).map( s => Object.assign( s, { import_ID: ID } ))
         })
         return { ID: ID }
     }
@@ -61,7 +62,7 @@ class ImportHandler {
         }
         // basically this stuff above is insert or update with increment depending on data we merge
 
-        await this.setImportData(ID,{ status:9, publishDate: '$now' })
+        await this.setImportData(ID,{ status:9, publishDate: new Date() })
         return this.cdsRef.run(this.makeQueriesFrom(result))
     }
 

@@ -17,16 +17,18 @@ class BaseService extends cds.ApplicationService {
         return profile
     }
     
-    async addOccurence(data, req) {
-        if (!data || Array.isArray(data)) return
+    async addOccurence(results, req) {
+        if (!req.query.SELECT.one) return
+        const data = results[0]
         const { Stat } = cds.entities("cc.slova.model")
         const stat = await cds.read(Stat,{pos:data.pos, lang:data.lang})
         const fraction = (data.occurence / stat.tokens * 100).toFixed(1)
         data.occurence = `${fraction}% - ${data.occurence} occs of ${stat.tokens} for ${data.pos} (${stat.lemmas})`
     }
 
-    async getDefinition(data, req) {
-        if (!data || Array.isArray(data)) return
+    async getDefinition(results, req) {
+        if (!req.query.SELECT.one) return
+        const data = results[0]
         const lang = data.lang
         const profile = await this.getProfile(req.user.id)
         const userLang = profile.defaultLang_code
@@ -37,8 +39,9 @@ class BaseService extends cds.ApplicationService {
         data.definition = `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
     }
 
-    async getGoogleTranslate(data, req) {
-        if (!data || Array.isArray(data)) return
+    async getGoogleTranslate(results, req) {
+        if (!req.query.SELECT.one) return
+        const data = results[0]
         const lang = data["up__lang"]
         const profile = await this.getProfile(req.user.id)
         const userLang = profile.defaultLang_code

@@ -113,7 +113,7 @@ entity Cards : managed {
 entity CardGuesses : cuid {
     card  : Association to Cards;
     guess : String;
-    now   : DateTime;
+    now   : DateTime @cds.on.insert: $now;
 }
 
 entity Translations : cuid, managed {
