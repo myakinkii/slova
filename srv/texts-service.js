@@ -61,10 +61,7 @@ class TextsService extends BaseService {
         if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
         if (!data.input) return
         const input = data.input.split("\n").filter( sent => !!sent )
-        const results = await Promise.all(input.map( sent => this.importHandler.parseSentence(sent, data.lang_code)))
-        const text = results.reduce( (prev, cur, index) => {
-            return prev += `# text = ${input[index]}\n` + cur + '\n\n'
-        },'\n')
+        const text = await this.importHandler.parseMultiline(input, data.lang_code)
         await cds.update(Import, ID).with({text})
         const profile = await this.getProfile(req.user.id)
         await this.importHandler.parseInput(ID, profile.pos)

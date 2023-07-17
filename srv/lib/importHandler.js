@@ -30,6 +30,15 @@ class ImportHandler {
         return conlluTokens.join("\n")
     }
 
+    async parseMultiline(input, lang) {
+        const stanzaSentences = await this.callExternalParser(input, lang)
+        const text = stanzaSentences.reduce( (prev, cur, index) => {
+            const conlluTokens = cur.map( t => `${t.id||t.index}\t${t.text||t.word}\t${t.lemma}\t${t.upos}\t_\t${t.feats||'_'}` )
+            return prev += `\n# text = ${input[index]}\n` + conlluTokens.join("\n") + '\n'
+        },'')
+        return text
+    }
+
     async parseInput(ID, pos ) {
         if (!pos) pos = DEFAULT_IMPORT_POS
         const { Import } = this.cdsRef.entities("cc.slova.model")

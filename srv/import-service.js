@@ -43,12 +43,9 @@ class ImportService extends BaseService {
         const { ID } = req.params[0]
         const { Import } = this.entities
         const data = await cds.read(Import.drafts, ID)
-        const input = data.input.split("\n")
         if (!data.input) return
-        const results = await Promise.all(input.map( sent => this.importHandler.parseSentence(sent, data.lang_code)))
-        const text = results.reduce( (prev, cur, index) => {
-            return prev += `# text = ${input[index]}\n` + cur + '\n\n'
-        },'\n')
+        const input = data.input.split("\n").filter( sent => !!sent )
+        const text = await this.importHandler.parseMultiline(input, data.lang_code)
         await cds.update(Import.drafts, ID).with({text})
     }
 
