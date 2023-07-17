@@ -43,7 +43,7 @@
                         iconDensityAware="false"
                         info="{lang_code}"
                         timestamp="{createdAt}"
-                        text="{name} {input}"
+                        text="{name}&#10;{input}"
                         type="Active"
                         press="onPressed" />
                     </List>
