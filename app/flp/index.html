@@ -31,7 +31,7 @@
                                 "id": "admin_group",
                                 "title": "Admin",
                                 "isPreset": true,
-                                "isVisible": true,
+                                "isVisible": false,
                                 "isGroupLocked": true,
                                 "tiles": [{
                                     "id": "admin_slova",
@@ -41,6 +41,7 @@
                                     "properties": {
                                         "chipId": "catalogTile_10",
                                         "title": "Slova",
+                                        "subtitle": "Manage words",
                                         "icon": "sap-icon://Fiori2/F0001",
                                         "targetURL": "#slova-manage"
                                     }
@@ -66,12 +67,23 @@
                                         "icon": "sap-icon://Fiori2/F0001",
                                         "targetURL": "#translations-manage"
                                     }
+                                },{
+                                    "id": "data_import",
+                                    "title": "Import",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_13",
+                                        "title": "Import",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#data-import"
+                                    }
                                 }]
                             },{
                                 "id": "browse_group",
                                 "title": "Browse",
                                 "isPreset": true,
-                                "isVisible": true,
+                                "isVisible": false,
                                 "isGroupLocked": true,
                                 "tiles": [{
                                     "id": "browse_slova",
@@ -81,8 +93,33 @@
                                     "properties": {
                                         "chipId": "catalogTile_20",
                                         "title": "Slova",
+                                        "subtitle": "Published words",
                                         "icon": "sap-icon://Fiori2/F0001",
                                         "targetURL": "#slova-browse"
+                                    }
+                                },{
+                                    "id": "browse_translations",
+                                    "title": "Translations",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_21",
+                                        "title": "Translations",
+                                        "subtitle": "For published words",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#translations-browse"
+                                    }
+                                },{
+                                    "id": "browse_cards",
+                                    "title": "Cards",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_22",
+                                        "title": "Cards",
+                                        "subtitle": "Of published words",
+                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "targetURL": "#cards-browse"
                                     }
                                 },{
                                     "id": "configure_user",
@@ -90,32 +127,11 @@
                                     "size": "1x1",
                                     "tileType": "sap.ushell.ui.tile.StaticTile",
                                     "properties": {
-                                        "chipId": "catalogTile_21",
+                                        "chipId": "catalogTile_23",
                                         "title": "User",
+                                        "subtitle": "My settings",
                                         "icon": "sap-icon://Fiori2/F0001",
                                         "targetURL": "#user-configure"
-                                    }
-                                },{
-                                    "id": "data_import",
-                                    "title": "Import",
-                                    "size": "1x1",
-                                    "tileType": "sap.ushell.ui.tile.StaticTile",
-                                    "properties": {
-                                        "chipId": "catalogTile_22",
-                                        "title": "Import",
-                                        "icon": "sap-icon://Fiori2/F0001",
-                                        "targetURL": "#data-import"
-                                    }
-                                },{
-                                    "id": "texts_edit",
-                                    "title": "Texts",
-                                    "size": "1x1",
-                                    "tileType": "sap.ushell.ui.tile.StaticTile",
-                                    "properties": {
-                                        "chipId": "catalogTile_22",
-                                        "title": "Texts",
-                                        "icon": "sap-icon://Fiori2/F0001",
-                                        "targetURL": "#texts-edit"
                                     }
                                 }]
                             },{
@@ -125,37 +141,40 @@
                                 "isVisible": true,
                                 "isGroupLocked": true,
                                 "tiles": [{
-                                    "id": "browse_cards",
-                                    "title": "Cards",
-                                    "size": "1x1",
-                                    "tileType": "sap.ushell.ui.tile.StaticTile",
-                                    "properties": {
-                                        "chipId": "catalogTile_30",
-                                        "title": "Cards",
-                                        "icon": "sap-icon://Fiori2/F0001",
-                                        "targetURL": "#cards-browse"
-                                    }
-                                },{
-                                    "id": "browse_translations",
-                                    "title": "Translations",
-                                    "size": "1x1",
-                                    "tileType": "sap.ushell.ui.tile.StaticTile",
-                                    "properties": {
-                                        "chipId": "catalogTile_31",
-                                        "title": "Translations",
-                                        "icon": "sap-icon://Fiori2/F0001",
-                                        "targetURL": "#translations-browse"
-                                    }
-                                },{
                                     "id": "browse_workbook",
                                     "title": "Workbook",
                                     "size": "1x1",
                                     "tileType": "sap.ushell.ui.tile.StaticTile",
                                     "properties": {
-                                        "chipId": "catalogTile_32",
+                                        "chipId": "catalogTile_30",
                                         "title": "Workbook",
-                                        "icon": "sap-icon://Fiori2/F0001",
+                                        "subtitle": "Words from texts",
+                                        "icon": "sap-icon://tree",
                                         "targetURL": "#workbook-browse"
+                                    }
+                                },{
+                                    "id": "texts_edit",
+                                    "title": "Texts",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_31",
+                                        "title": "Texts",
+                                        "subtitle": "Parse into words",
+                                        "icon": "sap-icon://education",
+                                        "targetURL": "#texts-edit"
+                                    }
+                                },{
+                                    "id": "mobile_cards",
+                                    "title": "Cards",
+                                    "size": "1x1",
+                                    "tileType": "sap.ushell.ui.tile.StaticTile",
+                                    "properties": {
+                                        "chipId": "catalogTile_32",
+                                        "title": "Cards",
+                                        "subtitle": "Mobile companion",
+                                        "icon": "sap-icon://responsive",
+                                        "targetURL": "#cards-mobile"
                                     }
                                 }]
                             }]
@@ -309,6 +328,20 @@
                                         "applicationType": "SAPUI5",
                                         "additionalInformation": "SAPUI5.Component=cc.slova.textEditor",
                                         "url": "../texts/"
+                                    }
+                                },
+                                "mobile_cards": {
+                                    "semanticObject": "cards",
+                                    "action": "mobile",
+                                    "title": "Cards",
+                                    "signature": {
+                                        "parameters": {},
+                                        "additionalParameters": "allowed"
+                                    },
+                                    "resolutionResult": {
+                                        "applicationType": "SAPUI5",
+                                        "additionalInformation": "SAPUI5.Component=cc.slova.flashCards",
+                                        "url": "../cards/webapp"
                                     }
                                 }
                             }

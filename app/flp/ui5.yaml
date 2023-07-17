@@ -59,3 +59,8 @@ server:
     mountPath: /plugin
     configuration:
       baseUri: "http://localhost:4004/plugin/"
+  - name: ui5-middleware-simpleproxy
+    afterMiddleware: compression
+    mountPath: /cards
+    configuration:
+      baseUri: "http://localhost:4004/cards/"
