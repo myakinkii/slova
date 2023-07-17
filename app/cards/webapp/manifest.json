@@ -1,7 +1,7 @@
 {
     "_version": "1.12.0",
     "sap.app": {
-        "id": "customCards",
+        "id": "cc.slova.flashCards",
         "type": "application",
         "i18n": {
             "bundleUrl": "i18n/i18n.properties",
@@ -89,7 +89,7 @@
                     "name": "sap.fe.core.fpm",
                     "options": {
                         "settings": {
-                            "viewName": "customCards.Main",
+                            "viewName": "cc.slova.flashCards.Main",
                             "entitySet": "Slova",
                             "navigation": {
                                 "Slova": {
@@ -120,7 +120,7 @@
                                 "footer": {
                                     "actions": {
                                         "CustomActionOPFooter": {
-                                            "press": "customCards.ext.CustomActions.navBack",
+                                            "press": "cc.slova.flashCards.ext.CustomActions.navBack",
                                             "enabled": true,
                                             "visible": true,
                                             "text": "{i18n>navBack}"
@@ -142,7 +142,7 @@
                                 "footer": {
                                     "actions": {
                                         "CustomActionOPFooter": {
-                                            "press": "customCards.ext.CustomActions.navBack",
+                                            "press": "cc.slova.flashCards.ext.CustomActions.navBack",
                                             "enabled": true,
                                             "visible": true,
                                             "text": "{i18n>navBack}"

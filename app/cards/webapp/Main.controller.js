@@ -5,7 +5,7 @@ sap.ui.define([
 ], function (PageController, Filter, MessageToast) {
     "use strict";
 
-    return PageController.extend("customCards.Main", {
+    return PageController.extend("cc.slova.flashCards.Main", {
 
         onInit: function () {
             PageController.prototype.onInit.apply(this);

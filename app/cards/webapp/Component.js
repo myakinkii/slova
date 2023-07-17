@@ -7,7 +7,7 @@ sap.ui.define([
 ], function (Component, ODataModel, Fragment, JSONModel, MessageToast ) {
     "use strict";
 
-    return Component.extend("customCards.Component", {
+    return Component.extend("cc.slova.flashCards.Component", {
 
         metadata: {
             manifest: "json"
@@ -43,7 +43,7 @@ sap.ui.define([
                 authPromise = Promise.resolve(creds)
             } catch (e) {
                 authPromise = Fragment.load({
-                    name: "customCards.fragment.User",
+                    name: "cc.slova.flashCards.fragment.User",
                     controller: this
                 }).then(function(dlg){
                     dlg.setModel(i18n,"i18n");

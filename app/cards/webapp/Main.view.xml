@@ -1,7 +1,7 @@
 <mvc:View
     id="application-product"
     height="100%"
-    controllerName="customCards.Main"
+    controllerName="cc.slova.flashCards.Main"
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:l="sap.ui.layout"
@@ -51,7 +51,7 @@
             <ToolbarSpacer />
                 <Button text="refresh" press="forceRefresh" />
             <ToolbarSpacer />
-            <Button icon="sap-icon://add" press="addText" />
+            <Button visible="{= %{/Profile/id} !== 'anonymous' }" icon="sap-icon://add" press="addText" />
         </Toolbar >
     </footer>
     </Page>
