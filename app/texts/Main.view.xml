@@ -12,12 +12,14 @@
             <Toolbar>
                 <ToolbarSpacer />
                 <Title text="{createdBy} [{lang_code}]" />
-                <Input width="15rem" value="{name}" />
-                <ComboBox width="15rem" selectedKey="{lang_code}" showSecondaryValues= "true" items="{/Languages}">
+                <Input editable="{= %{/Profile/id} !== 'anonymous' }" width="15rem" value="{name}" />
+                <ComboBox  editable="{= %{/Profile/id} !== 'anonymous' }" width="15rem" 
+                        selectedKey="{lang_code}" showSecondaryValues= "true" 
+                        items="{/Languages}">
                         <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
                 </ComboBox>
                 <ToolbarSpacer />
-                <ToggleButton icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
+                <ToggleButton enabled="{= %{/Profile/id} !== 'anonymous' }" icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
             </Toolbar>
         </customHeader>    
         <l:DynamicSideContent showSideContent="{ui>/showSidePanel}">
@@ -25,7 +27,7 @@
                 <IconTabBar selectedKey="{ui>/selectedTab}">
                     <items>
                     <IconTabFilter text="Input" key="input">
-                    <TextArea id="inputText" width="100%" rows="20" value="{input}"/>
+                    <TextArea enabled="{= %{/Profile/id} !== 'anonymous' }" id="inputText" width="100%" rows="20" value="{input}"/>
                     </IconTabFilter>
                     <IconTabFilter text="Output" key="output">
                         <Panel _headerText="Text" expandable="false" expanded="true" _class="sapUiMediumMarginTop" 

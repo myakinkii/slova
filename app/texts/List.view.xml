@@ -60,7 +60,7 @@
             <ToolbarSpacer />
                 <Button text="refresh" press="forceRefresh" />
             <ToolbarSpacer />
-            <Button icon="sap-icon://add" press="addText" />
+            <Button visible="{= %{/Profile/id} !== 'anonymous' }" icon="sap-icon://add" press="addText" />
         </Toolbar >
     </footer>
     </Page>

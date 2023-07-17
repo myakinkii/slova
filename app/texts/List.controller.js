@@ -45,7 +45,7 @@ sap.ui.define([
             var action = odata.bindContext("/createText(...)");
             action.setParameter("input",'').execute().then(function(){
                 var ctx = action.getBoundContext().getObject()
-                this.routing.navigateToRoute("customPage",{key:ctx.ID});
+                this.routing.navigateToRoute("customPage",{key:ctx.ID, "?query": { selectedTab:"input" } });
             }.bind(this)).catch(function(err){
                 MessageToast.show(err.message)
             })

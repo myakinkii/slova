@@ -2,7 +2,6 @@
     xmlns="sap.m"
     xmlns:core="sap.ui.core">
     <Popover
-        id="myPopover"
         title="[{pos}] {lemma}"
         class="sapUiResponsivePadding--header sapUiResponsivePadding--footer"
         placement="Auto">
@@ -10,7 +9,7 @@
             <Toolbar>
                 <Title text="[{pos}] {lemma}" />
                 <ToolbarSpacer />
-                <ToggleButton icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
+                <ToggleButton visible="{= %{/Profile/id} !== 'anonymous' }" icon="sap-icon://menu" pressed="{ui>/showSidePanel}" />
             </Toolbar>
         </customHeader>
         <Text class="sapUiSmallMargin" text="{path:'feats', formatter:'cc.slova.textEditor.globalFormatter.featsFormat'}" />

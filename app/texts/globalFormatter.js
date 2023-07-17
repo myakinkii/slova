@@ -15,9 +15,9 @@ sap.ui.define([], function () {
 
         linkFormat: function (form, pos, userPos) {
             if (!(form && pos)) return ''
-            if ( userPos=="" && POS[pos] ) {
+            if ( !userPos && POS[pos] ) {
                 this.addStyleClass("linkPOS_"+pos)
-            } else if (userPos.split(",").indexOf(pos)>-1) {
+            } else if (userPos && userPos.split(",").indexOf(pos)>-1) {
                 this.addStyleClass("linkPOS_"+pos)
             } else {
                 this.addStyleClass("linkPOS_disabled")

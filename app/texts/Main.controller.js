@@ -12,12 +12,19 @@ sap.ui.define([
 
         onInit: function () {
             PageController.prototype.onInit.apply(this);
-            var uiModel = new JSONModel({ showSidePanel:true, selectedTab:"input" })
+            var uiModel = new JSONModel()
             this.popoverPromise = Fragment.load({ name: "cc.slova.textEditor.WordPopover", controller: this })
             this.popoverPromise.then(function(popover){
                 popover.setModel(uiModel,"ui")
             })
             this.getView().setModel(uiModel,"ui")
+
+			this.getAppComponent().getRouter().getRoute("customPage").attachPatternMatched(function(e){
+                var query = e.getParameter("arguments")["?query"] || {}
+                var tab = query.selectedTab || "output"
+                uiModel.setData({ showSidePanel:tab=="input", selectedTab:tab })
+            });
+
             // document.addEventListener("selectionchange",this.onSelectText.bind(this))
         },
 

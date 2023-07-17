@@ -14,6 +14,10 @@ class TextsService extends BaseService {
         this.on('parseText', this.parseTextHandler)
         this.on('createText', this.createTextHandler)
         this.on('getDefinition', this.getDefinitionUrl)
+        this.before('READ', 'Texts', async (req) => { 
+            // to ensure anonymous singleton works
+            await this.getProfile(req.user.id)
+        })
         this.after('READ', 'Sentences', this.getGoogleTranslate)
         this.after('READ', 'Slova.sentences', this.getGoogleTranslate)
         this.before('READ', 'Users', this.checkCreateProfile)
