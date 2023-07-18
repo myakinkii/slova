@@ -48,6 +48,21 @@ sap.ui.define([
             })
         },
 
+        generateText:function(e){
+            var src = e.getSource()
+            var odata = src.getModel()
+            var action = odata.bindContext("TextsService.generateText(...)", src.getBindingContext() );
+            BusyIndicator.show(100)
+            action.execute().then(function(){
+                BusyIndicator.hide();
+                src.getBindingContext().refresh()
+            }).catch(function(err){
+                // console.log(err)
+                BusyIndicator.hide();
+                MessageToast.show(err.message)
+            })
+        },
+
         getDefinition:function(e){
             var src = e.getSource() // input field
             var lemma = src.getValue()

@@ -59,15 +59,15 @@
                 </IconTabBar>
             </l:mainContent>
             <l:sideContent>
-                <f:SimpleForm visible="{= ${ui>/selectedTab}==='input' }" binding="{ui>/token}" editable="true" layout="ResponsiveGridLayout">
+                <f:SimpleForm visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
                     <Toolbar>
                         <ToolbarSpacer/>
                         <Button text="{i18n>parseText}" press="parseText"/>
                         <ToolbarSpacer/>
                     </Toolbar>
 
-                    <Label text="{i18n>propmt}"/>
-                    <Input value="č ć dž đ š ž" />
+                    <!-- <Label text="{i18n>special}"/>
+                    <Input value="č ć dž đ š ž" /> -->
 
                     <Label text="{i18n>pos}" />
                     <MultiComboBox binding="{/Profile}" selectedKeys="{path:'pos', targetType:'any', formatter:'.splitPosTokens' }" 
@@ -76,6 +76,32 @@
                         <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
                     </MultiComboBox>
                 </f:SimpleForm>
+
+                <f:SimpleForm visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
+                    <Toolbar>
+                        <ToolbarSpacer/>
+                        <Button text="{i18n>generateText}" press="generateText"/>
+                        <ToolbarSpacer/>
+                    </Toolbar>
+
+                    <Label text="{i18n>gptType}" />
+                    <ComboBox binding="{/Profile}" selectedKey="{gptType}" items="{/TextTypes}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>gptSize}" />
+                    <ComboBox binding="{/Profile}" selectedKey="{gptSize}" items="{/TextSizes}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>gptLocation}" />
+                    <ComboBox binding="{/Profile}" selectedKey="{gptLocation}" items="{/TextLocations}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                    <Label text="{i18n>gptModifier}" />
+                    <ComboBox binding="{/Profile}" selectedKey="{gptModifier}" items="{/TextModifiers}">
+                        <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
+                    </ComboBox>
+                </f:SimpleForm>
+
                 <f:SimpleForm visible="{= ${ui>/selectedTab}==='output' }" binding="{ui>/token}" editable="true" layout="ResponsiveGridLayout">
                     <Toolbar>
                         <ToolbarSpacer/>

@@ -12,6 +12,7 @@ class TextsService extends BaseService {
         this.importHandler = new ImportHandler(cds)
         this.on('syncToken', this.syncAndReparseConllu)
         this.on('parseText', this.parseTextHandler)
+        this.on('generateText', this.generateTextHandler)
         this.on('createText', this.createTextHandler)
         this.on('getDefinition', this.getDefinitionUrl)
         this.before('READ', 'Texts', async (req) => { 
@@ -69,6 +70,16 @@ class TextsService extends BaseService {
         await cds.update(Import, ID).with({text})
         const profile = await this.getProfile(req.user.id)
         await this.importHandler.parseInput(ID, profile.pos)
+    }
+
+    async generateTextHandler(req,next){
+        const ID = req.params[0]
+        const { Import } = cds.entities("cc.slova.model")
+        const data = await cds.read(Import, ID)
+        if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
+        const profile = await this.getProfile(req.user.id)
+        const chatGptResponse = await this.importHandler.callExternalGenerator(data.lang_code, profile.gptSize, profile.gptType, profile.gptLocation, profile.gptModifier)
+        return cds.update(Import, ID).with({ input : chatGptResponse.replaceAll('\n\n','\n') })
     }
 
     async syncAndReparseConllu(req, next) {

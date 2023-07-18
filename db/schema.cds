@@ -92,6 +92,10 @@ entity Users {
         pwd          : String(32); // md5 hash must fit
         pin          : Integer; // to restore creds
         defaultLang  : Association to Languages;
+        gptType      : String default 'text';
+        gptSize      : String default 'small';
+        gptLocation  : String default 'shop';
+        gptModifier  : String default 'typical';
         name         : String;
         pos          : String;
         cards        : Association to many Cards

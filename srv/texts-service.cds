@@ -90,7 +90,8 @@ service TextsService {
         {
             grant: [
                 'WRITE',
-                'parseText'
+                'parseText',
+                'generateText'
             ],
             to   : 'authenticated-user',
             where: 'createdBy = $user'
@@ -113,6 +114,12 @@ service TextsService {
             }
         )
         action parseText();
+
+        @(
+            cds.odata.bindingparameter.name: '_it',
+            Common.SideEffects             : {TargetProperties: ['_it/input']}
+        )
+        action generateText();
     };
 
     @readonly
@@ -177,6 +184,21 @@ service TextsService {
     @readonly
     entity Languages     as projection on db.Languages;
 
+    @readonly
+    entity TextTypes     as projection on db.TextTypes;
+
+    @readonly
+    entity TextSizes     as projection on db.TextSizes;
+
+    @readonly
+    entity TextLocations as projection on db.TextLocations;
+
+    @readonly
+    entity TextModifiers as projection on db.TextModifiers;
+
     @odata.singleton
-    entity Profile       as select from db.Users where id = $user;
+    entity Profile       as
+        select from db.Users
+        where
+            id = $user;
 }
