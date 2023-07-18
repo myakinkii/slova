@@ -54,7 +54,9 @@ const locations = {
 const langs = {
     en: "Simple English",
     de: "German",
+    gr: "Greek",
     hr: "Croatian",
+    pl: "Polish",
     ru: "Russian"
 }
 
