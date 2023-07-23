@@ -11,9 +11,9 @@
         <customHeader>
             <Toolbar>
                 <ToolbarSpacer />
-                <Title text="{createdBy} [{lang_code}]" />
-                <Input editable="{= %{/Profile/id} !== 'anonymous' }" width="15rem" value="{name}" />
-                <ComboBox  editable="{= %{/Profile/id} !== 'anonymous' }" width="15rem" 
+                <!-- <Title text="{createdBy} [{lang_code}]" /> -->
+                <Input editable="{= %{/Profile/id} !== 'anonymous' }" width="12rem" value="{name}" />
+                <ComboBox  editable="{= %{/Profile/id} !== 'anonymous' }" width="10rem" 
                         selectedKey="{lang_code}" showSecondaryValues= "true" 
                         items="{/Languages}">
                         <core:ListItem key="{code}" text="{name}" additionalText = "{code}"/>
@@ -165,5 +165,12 @@
                 </f:SimpleForm>
             </l:sideContent>
         </l:DynamicSideContent>
+        <footer>
+            <Toolbar visible="{= %{/Profile/id} !== 'anonymous' }" >
+                <ToolbarSpacer />
+                    <Button text="{i18n>parseText}" press="parseText"/>
+                <ToolbarSpacer />
+            </Toolbar >
+        </footer>
     </Page>
 </mvc:View>
