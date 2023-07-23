@@ -1,0 +1,5 @@
+html.scanner-active {
+    --background: transparent;
+    --ion-background-color: transparent;
+    opacity: 0;
+}

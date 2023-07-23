@@ -48,6 +48,7 @@
     </content>
     <footer>
         <Toolbar >
+            <Button icon="sap-icon://user-settings" press="showUserDialog" />
             <ToolbarSpacer />
                 <Button text="refresh" press="forceRefresh" />
             <ToolbarSpacer />

@@ -5,6 +5,7 @@
   "main": "Component.js",
   "scripts": {
     "ui5:build": "ui5 build --all --include-task generateLibraryPreload --exclude-task generateBundle generateFlexChangesBundle generateComponentPreload createDebugFiles",
+    "webpack:build": "npx webpack",
     "cap:sync": "cap sync",
     "cap:run": "cap run",
     "cap:open": "cap open"
@@ -12,11 +13,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@capacitor-community/barcode-scanner": "^4.0.1",
     "@capacitor/android": "^5.0.4",
     "@capacitor/core": "^5.0.4",
     "@capacitor/ios": "^5.0.4"
   },
   "devDependencies": {
-    "@capacitor/cli": "^5.0.4"
+    "@capacitor/cli": "^5.0.4",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   }
 }

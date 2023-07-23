@@ -64,6 +64,13 @@
                 }
             }
         },
+        "resources": {
+            "css": [
+                {
+                    "uri": "style.css"
+                }
+            ]
+        },
         "routing": {
             "routes": [
                 {

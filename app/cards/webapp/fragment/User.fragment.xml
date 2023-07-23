@@ -2,10 +2,20 @@
     <Dialog showHeader="false" type="Message" >
         <content>
             <Panel expandable="false" expanded="true">
+                <headerToolbar>
+                    <Toolbar>
+                        <Button icon="sap-icon://camera" press="scanQr"/>
+                        <ToolbarSpacer/>
+                        <Title text="{auth>/user}" />
+                        <ToolbarSpacer/>
+                        <Button icon="sap-icon://delete" press="clearAuthData"/>
+                    </Toolbar>
+                </headerToolbar>
                 <f:SimpleForm editable="true" layout="ResponsiveGridLayout">
                     <Toolbar>
                         <ToolbarSpacer/>
                         <Button text="{i18n>onboardUser}" press="onboardUser"/>
+                        <Button text="{i18n>generatePin}" press="generatePin"/>
                         <ToolbarSpacer/>
                     </Toolbar>
                     <Label text="{i18n>userName}" />
