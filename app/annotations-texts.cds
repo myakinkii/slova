@@ -138,7 +138,7 @@ annotate TextsService.Slova with @UI: {
         TypeName      : '{i18n>Slovo}',
         TypeNamePlural: '{i18n>Slova}',
         Title         : {Value: morphem},
-        Description   : {Value: occurence}
+        Description   : {Value: lang}
     },
     Facets         : [
         {
