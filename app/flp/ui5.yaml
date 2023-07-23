@@ -64,3 +64,8 @@ server:
     mountPath: /cards
     configuration:
       baseUri: "http://localhost:4004/cards/"
+  - name: ui5-middleware-simpleproxy
+    afterMiddleware: compression
+    mountPath: /onboard
+    configuration:
+      baseUri: "http://localhost:4004/onboard/"
