@@ -2,11 +2,14 @@ const cds = require('@sap/cds')
 const ALLOW_FAKE_USERS = !!process.env.ALLOW_FAKE_USERS // any non-empty value is true
 
 const anonymous = {
-    "/onboard" : true,
     "/texts" : true
+}
+const noauth = {
+    "/onboard" : true
 }
 
 module.exports = async function custom_auth (req, res, next) {
+    if (noauth[req.baseUrl]) return next() // dont even go further
     const auth = req.header('Authorization')
     if (auth) {
         const basic = auth.split(" ")
@@ -25,7 +28,7 @@ module.exports = async function custom_auth (req, res, next) {
     } else {
         if (anonymous[req.baseUrl]) {
             req.user = new cds.User({ id: 'anonymous', roles: [] })
-            return next() // wtf it does not require auth...
+            return next()
         } else {
             res.setHeader('WWW-Authenticate', 'Basic realm="slova.cc"');
             return res.sendStatus(401)
