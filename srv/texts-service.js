@@ -65,7 +65,8 @@ class TextsService extends BaseService {
         const data = await cds.read(Import, ID)
         if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
         if (!data.input) return
-        const input = data.input.split("\n").filter(sent => !!sent)
+        const parts = data.input.split("---") // tearline
+        const input = parts[0].split("\n").filter(sent => !!sent)
         // here we also have slow child_process.spawn, but we will leave this guy blocking for now
         const text = await this.importHandler.parseMultiline(input, data.lang_code)
         await cds.update(Import, ID).with({ text })
