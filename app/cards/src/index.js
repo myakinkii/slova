@@ -7,10 +7,12 @@ window.startScan = async () => {
     BarcodeScanner.hideBackground();
 
     document.querySelector('html').classList.add('scanner-active');
+    document.querySelector('body').classList.remove('sapUiBody');
 
     const result = await BarcodeScanner.startScan();
 
     document.querySelector('html').classList.remove('scanner-active');
+    document.querySelector('body').classList.add('sapUiBody');
 
     if (result.hasContent) {
         try {
