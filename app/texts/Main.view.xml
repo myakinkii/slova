@@ -59,7 +59,7 @@
                 </IconTabBar>
             </l:mainContent>
             <l:sideContent>
-                <f:SimpleForm visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
+                <f:SimpleForm _visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
                     <Toolbar>
                         <ToolbarSpacer/>
                         <Button text="{i18n>parseText}" press="parseText"/>
