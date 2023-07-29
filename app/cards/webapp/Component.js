@@ -3,8 +3,8 @@ sap.ui.define([
     "sap/ui/model/odata/v4/ODataModel",
     "sap/ui/core/Fragment",
     "sap/ui/model/json/JSONModel",
-    "sap/m/MessageToast",
-], function (Component, ODataModel, Fragment, JSONModel, MessageToast ) {
+    "sap/m/MessageToast", "sap/m/MessageBox",
+], function (Component, ODataModel, Fragment, JSONModel, MessageToast, MessageBox ) {
     "use strict";
 
     if(!window.startScan) {
@@ -45,30 +45,21 @@ sap.ui.define([
                     var data = authModel.getData()
                     var creds = { id:data.id, user: data.user, pwd: data.pwd}
                     window.localStorage.setItem("auth",JSON.stringify(creds))
-                    window.location.reload()
-                    // resolve(creds)  // fiori elements dont wait for our promise
-                    // so it fail without Component.init called on time (sync)
+                    window.location.reload() // for now just reload so that $.ajaxSetup is done
                 })
                 return dlg;
             })
 
-            var modelPromise = Promise.resolve()
             var compData = this.getComponentData()
-
             if (compData && compData.mobile) {
+                var auth = this.getAuth()
+                if (auth) $.ajaxSetup({ headers: { Authorization: "Basic "+ btoa(auth.id+":"+auth.pwd) } });
                 var mainSvcUrl = this.getManifestEntry("sap.app").dataSources.mainService.uri
-                modelPromise = this.getAuth().then(function(auth){
-                    $.ajaxSetup({ headers: { Authorization: "Basic "+ btoa(auth.id+":"+auth.pwd) } });
-                    var odataModel = this.createOdataModel(mainSvcUrl)
-                    this.setModel(odataModel)
-                    return Promise.resolve()
-                }.bind(this))
+                var odataModel = this.createOdataModel(mainSvcUrl)
+                this.setModel(odataModel)
             }
-            return modelPromise.then(function(){
-                Component.prototype.init.apply(this, arguments);
-            }.bind(this)).catch(function(err){
-                console.log(err)
-            })
+            
+            Component.prototype.init.apply(this, arguments);
         },
 
         showAuthDialog:function(){
@@ -78,11 +69,13 @@ sap.ui.define([
         },
 
         scanQr:function(e){
+            var i18n = this.getModel("i18n").getResourceBundle()
             var authModel = e.getSource().getModel("auth")
             if (window.startScan) {
                 window.startScan().then(function(auth){
                     auth.pin = "OK"
                     authModel.setData(auth)
+                    MessageBox.success(i18n.getText("onboardQrScanSuccess"))
                 }).catch(function(err){
                     console.log(err)
                     MessageToast.show(err.message)
@@ -91,24 +84,26 @@ sap.ui.define([
         },
 
         clearAuthData:function(){
-            window.localStorage.removeItem("auth")
-            window.location.reload()
+            var i18n = this.getModel("i18n").getResourceBundle()
+            MessageBox.confirm(i18n.getText('onboardConfirmClearAuth'),{
+                emphasizedAction: MessageBox.Action.CANCEL,
+                onClose: function (sAction) {
+                    if (sAction == MessageBox.Action.CANCEL) return
+                    window.localStorage.removeItem("auth")
+                    window.location.reload()
+                }
+            })
         },
 
         getAuth:function(){
-            var authPromise
+            var auth = null
             try {
                 var creds = JSON.parse(window.localStorage.getItem("auth")||"{}")
-                if (!creds.id) throw new Error()
-                authPromise = Promise.resolve(creds)
+                if (creds.id && creds.pwd) auth = creds
             } catch (e) {
-                authPromise = this.authDlgPromise.then(function(dlg){
-                    return new Promise(function(resolve,reject){
-                        dlg.open()
-                    })
-                });
+                console.log(err)
             }
-            return authPromise
+            return auth
         },
 
         onboardUser:function(e){
@@ -131,6 +126,7 @@ sap.ui.define([
             }).then(function(result){
                 if(!result.value) throw new Error("ALREADY_ONBOARDED")
                 authModel.setProperty("/pwd",result.value)
+                MessageBox.success(i18n.getText("onboardUserClaimed"))
             }).catch(function(err){
                 MessageToast.show(err.message)
                 console.log(err)
@@ -153,6 +149,7 @@ sap.ui.define([
                 return Promise.resolve(ctx.getBoundContext().getObject())
             }).then(function(result){
                 if(result.value) authModel.setProperty("/pin",result.value)
+                MessageBox.success(i18n.getText("onboardPinGenerated"))
             }).catch(function(err){
                 console.log(err)
                 MessageToast.show(err.message)
