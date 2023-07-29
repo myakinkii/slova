@@ -51,6 +51,9 @@ sap.ui.define([
 
         forceRefresh: function () {
             this.getView().byId("idCarousel").getBinding("pages").refresh()
+            this.getView().byId("idFacetFilter").getLists().forEach(function(list){
+                list.getBinding("items").refresh()
+            })
         },
 
         addText: function (e) {
