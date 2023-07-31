@@ -2,7 +2,8 @@ const cds = require('@sap/cds')
 const ALLOW_FAKE_USERS = !!process.env.ALLOW_FAKE_USERS // any non-empty value is true
 
 const anonymous = {
-    "/texts" : true
+    "/texts" : true,
+    "/workbook" : true
 }
 const noauth = {
     "/onboard" : true
