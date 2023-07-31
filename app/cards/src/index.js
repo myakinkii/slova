@@ -1,4 +1,5 @@
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { Clipboard } from '@capacitor/clipboard';
 
 window.startScan = async () => {
 
@@ -23,4 +24,13 @@ window.startScan = async () => {
             throw new Error('INVALID_CODE')
         }
     }
+};
+
+window.writeToClipboard = async (value) => {
+    await Clipboard.write({ string: value });
+};
+
+window.readFromClipboard = async () => {
+    const { type, value } = await Clipboard.read();
+    return type == 'text/plain' ? value : ''
 };

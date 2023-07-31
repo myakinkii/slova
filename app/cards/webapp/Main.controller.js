@@ -60,8 +60,9 @@ sap.ui.define([
             var src = e.getSource()
             var odata = src.getModel()
             var action = odata.bindContext("/createText(...)");
-            navigator.clipboard.readText().then(function (text) {
-                action.setParameter("input", text || '')
+            window.readFromClipboard().then(function (text) {
+                if (!text) throw new Error('EMPTY_TEXT')
+                action.setParameter("input", text)
                 return action.execute()
             }).then(function () {
                 var ctx = action.getBoundContext().getObject()

@@ -7,10 +7,16 @@ sap.ui.define([
 ], function (Component, ODataModel, Fragment, JSONModel, MessageToast, MessageBox ) {
     "use strict";
 
+    if (!window.readFromClipboard) {
+        window.readFromClipboard = async () => {
+            return navigator.clipboard.readText()
+        }
+    }
+
     if(!window.startScan) {
         // desktop implementation of qr code scan
         window.startScan = async () => {
-            return navigator.clipboard.readText().then(function(text){
+            return window.readFromClipboard().then(function(text){
                 try {
                     const creds = JSON.parse(text)
                     if (!creds.id || !creds.pwd) throw new Error()
@@ -107,6 +113,7 @@ sap.ui.define([
         },
 
         onboardUser:function(e){
+            var i18n = this.getModel("i18n").getResourceBundle()
             var authModel = e.getSource().getModel("auth")
             var creds = authModel.getData()
 
@@ -134,6 +141,7 @@ sap.ui.define([
         },
 
         generatePin:function(e){
+            var i18n = this.getModel("i18n").getResourceBundle()
             var authModel = e.getSource().getModel("auth")
             var creds = authModel.getData()
 
