@@ -6,7 +6,11 @@ service TextsService {
 
 
     @readonly
-    entity PosFilter     as
+    entity PosFilter @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user or status = 9'
+    }])                  as
         select from SlovaDistinct {
             pos        as code,
             createdBy,
@@ -17,7 +21,11 @@ service TextsService {
             pos;
 
     @readonly
-    entity LangsFilter   as
+    entity LangsFilter @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user or status = 9'
+    }])                  as
         select from SlovaDistinct {
             lang       as code,
             createdBy,
@@ -35,10 +43,17 @@ service TextsService {
             lang,
             createdBy,
             status
-        from Slova;
+        from Slova
+        where
+               createdBy = $user
+            or status    = 9;
 
     @readonly
-    entity TextsFilter   as
+    entity TextsFilter @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user or status = 9'
+    }])                  as
         select from Slova {
             import.ID   as code,
             import.name as text,
@@ -50,7 +65,11 @@ service TextsService {
             import.ID;
 
     @readonly
-    entity AuthorsFilter as
+    entity AuthorsFilter @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user or status = 9'
+    }])                  as
         select from Texts {
             createdBy  as code,
             createdBy,
