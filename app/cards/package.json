@@ -20,6 +20,7 @@
     "@capacitor/ios": "^5.0.4"
   },
   "devDependencies": {
+    "@capacitor/assets": "^2.0.4",
     "@capacitor/cli": "^5.0.4",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
