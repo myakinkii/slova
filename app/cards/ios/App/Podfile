@@ -15,7 +15,7 @@ def capacitor_pods
   pod 'CapacitorClipboard', :path => '../../node_modules/@capacitor/clipboard'
 end
 
-target 'App' do
+target 'slova' do
   capacitor_pods
   # Add your Pods here
 end

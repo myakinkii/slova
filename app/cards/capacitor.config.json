@@ -1,6 +1,7 @@
 {
   "appId": "cc.slova.flashCards",
-  "appName": "cards",
+  "appName": "slova",
+  "scheme": "slova",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"
