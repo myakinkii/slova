@@ -1,14 +1,34 @@
 sap.ui.define([
     "sap/fe/core/PageController",
     "sap/ui/model/Filter",
-    "sap/m/MessageToast"
-], function (PageController, Filter, MessageToast) {
+    "sap/m/MessageToast",
+    "sap/ui/model/json/JSONModel"
+], function (PageController, Filter, MessageToast, JSONModel) {
     "use strict";
 
     return PageController.extend("cc.slova.flashCards.Main", {
 
         onInit: function () {
+            var deck = JSON.parse(window.localStorage.getItem("deck") || 'null')
+            var filterModel = new JSONModel({
+                import_ID: { key: "import_ID", vals: {} },
+                createdBy: { key: "createdBy", vals: {} },
+                pos: { key: "pos", vals: {} },
+                lang: { key: "lang", vals: {} }
+            })
+            if (deck) filterModel.setData(deck)
+            this.getView().setModel(filterModel, "deck")
             PageController.prototype.onInit.apply(this);
+        },
+
+        onBeforeRendering: function () {
+            var filterModel = this.getView().getModel("deck")
+            var deck = filterModel.getData()
+            this.getView().byId("idFacetFilter").getLists().forEach(function (list) {
+                var vals = deck[list.getKey()].vals
+                list.setSelectedKeys(vals);
+            });
+            this.applyFilter()
         },
 
         getRandomForm: function (form1) {
@@ -33,9 +53,19 @@ sap.ui.define([
         clearFilter: function () {
             this.getView().byId("idFacetFilter").getLists().forEach(function (list) { list.setSelectedKeys() });
             this.getView().byId("idCarousel").getBinding("pages").filter([])
+            window.localStorage.setItem("deck", 'null')
         },
 
-        setFilter: function () {
+        setFilter: function (e) {
+            var filterModel = this.getView().getModel("deck")
+            var key = e.getSource().getKey()
+            var vals = e.getSource().getSelectedKeys()
+            filterModel.setProperty("/" + key + "/vals", vals)
+            window.localStorage.setItem("deck", JSON.stringify(filterModel.getData()))
+            this.applyFilter()
+        },
+
+        applyFilter: function () {
             var selectedFilters = this.getView().byId("idFacetFilter").getLists().filter(function (list) {
                 return list.getSelectedItems().length;
             });
@@ -51,7 +81,7 @@ sap.ui.define([
 
         forceRefresh: function () {
             this.getView().byId("idCarousel").getBinding("pages").refresh()
-            this.getView().byId("idFacetFilter").getLists().forEach(function(list){
+            this.getView().byId("idFacetFilter").getLists().forEach(function (list) {
                 list.getBinding("items").refresh()
             })
         },
@@ -72,7 +102,7 @@ sap.ui.define([
             })
         },
 
-        showUserDialog:function(){
+        showUserDialog: function () {
             this.getAppComponent().showAuthDialog()
         }
 
