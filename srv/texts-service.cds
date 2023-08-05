@@ -62,7 +62,9 @@ service TextsService {
             count( * )  as count : Integer
         }
         group by
-            import.ID;
+            import.ID
+        order by
+            text asc;
 
     @readonly
     entity AuthorsFilter @(restrict: [{
