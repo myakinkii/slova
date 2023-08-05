@@ -5,7 +5,9 @@ const fs = require('fs')
 
 const LOG = cds.log('init')
 
+const CONLLU_USER = process.env.CONLLU_USER // import texts for any user id
 const CONLLU_DIRS = process.env.CONLLU_DIRS?.split(',') || [] // dirs with conllu files in form {LANG}/{SET_NAME}
+
 const CONLLU_SETS = process.env.CONLLU_SETS?.split(',') || [] // ud sets in form {SET_NAME}-ud-{CHUNK}.conllu
 const SET_CHUNKS = ['train', 'dev', 'test'] // sets in order of precedence (usually 80/10/10 % of treebank size)
 
@@ -29,24 +31,16 @@ module.exports = async (db) => {
         }
     } else if (CONLLU_DIRS.length) {
         const importHandler = new ImportHandler(cds)
+        const owner = CONLLU_USER || 'admin'
         await Promise.all(CONLLU_DIRS.map(async set => {
             const [lang, dir] = set.split("_")
             const files = await readFolder(lang, dir)
             LOG.debug(`got ${files.length} files in ${dir}`)
             for (var file of files) {
                 LOG.debug(`importing [${lang}] ${file}`)
-                const ID = cds.utils.uuid()
-                await importText(ID, lang, dir, file)
+                const ID = await createImportText(lang, dir, file, owner)
                 await importHandler.parseInput(ID)
-                const result = await importHandler.performImport(ID)
-                // new DB service does not return inserted/updated stuff
-                // const stat = result.length && result[result.length-1].reduce( (prev,cur) => {
-                //     const [lang, pos, tokens, lemmas] = cur.values
-                //     prev[pos] = {lemmas,tokens}
-                //     prev.total+=lemmas
-                //     return prev
-                // },{total:0})
-                // LOG.debug(`import stat:`,stat)
+                if (owner=='admin') await importHandler.performImport(ID)
             }
         }))
     }
@@ -98,10 +92,14 @@ module.exports = async (db) => {
         })
     }
 
-    async function importText(ID, lang, dir, fileName) {
+    async function createImportText(lang, dir, fileName, owner) {
+        const name = dir + " - " + fileName.slice(0, -7) // remove ".conllu"
+        const exists = await cds.read(Import,['ID']).where({ name: name, createdBy: owner })
+        if (exists.length) return exists[0].ID
+        const ID = cds.utils.uuid()
         const data = fs.readFileSync(`./test/conllu/${lang}/${dir}/${fileName}`, 'utf8')
-        const name = dir + " - " + fileName.slice(0, -7)
-        return cds.create(Import).entries({ ID: ID, name: name, text: data, lang_code: lang, createdBy: 'admin' })
+        await cds.create(Import).entries({ ID: ID, name: name, text: data, lang_code: lang, createdBy: owner })
+        return ID
     }
 
 }
