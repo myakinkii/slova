@@ -4,8 +4,10 @@
   "description": "",
   "main": "Component.js",
   "scripts": {
+    "build" : "npm run ui5:build && npm run webpack:build",
     "ui5:build": "ui5 build --all --include-task generateLibraryPreload --exclude-task generateBundle generateFlexChangesBundle generateComponentPreload createDebugFiles",
     "webpack:build": "npx webpack",
+    "cap:assets": "npx @capacitor/assets generate --ios --android",
     "cap:sync": "cap sync",
     "cap:run": "cap run",
     "cap:open": "cap open"
