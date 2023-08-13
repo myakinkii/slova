@@ -24,7 +24,13 @@
                 </FacetFilterList>
             </lists>
         </FacetFilter >            
-        <Carousel id="idCarousel" pageIndicatorPlacement="Top" loop="true" pages="{/Slova}" _class="sapUiMediumMargin">
+        <Carousel id="idCarousel" _class="sapUiMediumMargin"
+                pageIndicatorPlacement="Top" 
+                loop="true" 
+                pages="{ 
+                    path:'/Slova',
+                    filters:[{ path:'skip', operator:'EQ', value1: false }]
+                }">
             <pages>
                 <FlexBox height="100%" alignItems="Center" justifyContent="Center">
                     <GenericTile press="onPressed" 

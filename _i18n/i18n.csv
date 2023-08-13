@@ -4,6 +4,7 @@ pos;Part of speech
 morphem;Morphem
 count;Occurences
 forms;Forms
+sentences;Sentences
 definition;Definition
 translation;Translation
 author;Author
@@ -30,3 +31,4 @@ mood;Mood
 voice;Voice
 degree;Degree
 verbForm;Verb Form
+texts.toggleSkip;toggle skip word

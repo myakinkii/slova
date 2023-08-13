@@ -71,29 +71,27 @@ annotate TextsService.Sentences.tokens with @UI: {
     },
     LineItem          : [
         {
-            $Type : 'UI.DataFieldForAnnotation',
-            Target: '@UI.FieldGroup#Mobile',
-            Label : 'Type Information',
+            $Type                : 'UI.DataFieldForAnnotation',
+            Target               : '@UI.FieldGroup#Mobile',
+            Label                : 'Type Information',
             ![@HTML5.CssDefaults]: {width: '25rem'}
         },
         {Value: index},
-        // {Value: form},
-        // {Value: lemma},
-        // {Value: pos}
+    // {Value: form},
+    // {Value: lemma},
+    // {Value: pos}
     ],
-    FieldGroup #Mobile: {Data: [
-        {Value: {$edmJson: {
-            $Apply   : [
-                {Path: 'form'},
-                ' -> ',
-                {Path: 'lemma'},
-                ' [',
-                {Path: 'pos'},
-                ']'
-            ],
-            $Function: 'odata.concat'
-        }}}
-    ]},
+    FieldGroup #Mobile: {Data: [{Value: {$edmJson: {
+        $Apply   : [
+            {Path: 'form'},
+            ' -> ',
+            {Path: 'lemma'},
+            ' [',
+            {Path: 'pos'},
+            ']'
+        ],
+        $Function: 'odata.concat'
+    }}}]},
 };
 
 annotate TextsService.Slova.sentences with @UI: {
@@ -132,8 +130,14 @@ annotate TextsService.Slova with @UI: {
     LineItem       : [
         {Value: pos},
         {Value: morphem},
-        {Value: count}
+        {Value: count},
+        {Value: skip},
     ],
+    Identification : [{
+        $Type : 'UI.DataFieldForAction',
+        Action: 'TextsService.toggleSkip',
+        Label : '{i18n>texts.toggleSkip}'
+    }, ],
     HeaderInfo     : {
         TypeName      : '{i18n>Slovo}',
         TypeNamePlural: '{i18n>Slova}',

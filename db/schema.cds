@@ -104,6 +104,11 @@ entity Users {
                            on translations.author = $self
 }
 
+entity Skips {
+    key user        : Association to Users;
+    key slovo       : Association to Slova;
+}
+
 entity Cards : managed {
     key user        : Association to Users;
     key slovo       : Association to Slova;

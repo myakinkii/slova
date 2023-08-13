@@ -52,7 +52,7 @@ sap.ui.define([
 
         clearFilter: function () {
             this.getView().byId("idFacetFilter").getLists().forEach(function (list) { list.setSelectedKeys() });
-            this.getView().byId("idCarousel").getBinding("pages").filter([])
+            this.getView().byId("idCarousel").getBinding("pages").filter([], 'Control')
             window.localStorage.setItem("deck", 'null')
         },
 
@@ -70,13 +70,16 @@ sap.ui.define([
                 return list.getSelectedItems().length;
             });
 
-            var filter = new Filter(selectedFilters.map(function (list) {
-                return new Filter(list.getSelectedItems().map(function (item) {
-                    return new Filter(list.getKey(), "EQ", item.getKey());
-                }), false);
-            }), true);
+            var filter = []
+            if (selectedFilters.length) {
+                filter = new Filter(selectedFilters.map(function (list) {
+                    return new Filter(list.getSelectedItems().map(function (item) {
+                        return new Filter(list.getKey(), "EQ", item.getKey());
+                    }), false);
+                }), true);
+            }
 
-            this.getView().byId("idCarousel").getBinding("pages").filter(filter)
+            this.getView().byId("idCarousel").getBinding("pages").filter(filter, 'Control')
         },
 
         forceRefresh: function () {

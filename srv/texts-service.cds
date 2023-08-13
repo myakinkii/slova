@@ -157,14 +157,37 @@ service TextsService {
 
     @readonly
     entity Slova @(restrict: [{
-        grant: ['READ'],
+        grant: [
+            'READ',
+            'toggleSkip'
+        ],
         to   : 'authenticated-user',
         where: 'createdBy = $user or status = 9'
-    }])                  as projection on db.ImportWords {
-        *,
-        import.createdBy,
-        import.status
-    };
+    }])                  as
+        select from db.ImportWords
+        mixin {
+            skip : Association to db.Skips
+                       on  skip.slovo.morphem = morphem
+                       and skip.slovo.lang    = lang
+                       and skip.slovo.pos     = pos
+                       and skip.user.id       = $user
+        }
+        into {
+            *,
+            import.createdBy,
+            import.status,
+            case
+                when
+                    skip.user.id is null
+                then
+                    false
+                else
+                    true
+            end as skip : Boolean
+        } actions {
+            @(Common.SideEffects: {TargetEntities: ['/TextsService.EntityContainer/Slova']})
+            action toggleSkip() returns Boolean;
+        };
 
     @readonly
     entity Forms         as projection on db.ImportForms;

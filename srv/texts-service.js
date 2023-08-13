@@ -14,6 +14,7 @@ class TextsService extends BaseService {
         this.on('parseText', this.parseTextHandler)
         this.on('generateText', this.generateTextHandler)
         this.on('createText', this.createTextHandler)
+        this.on('toggleSkip', this.skipWordToggleHandler)
         this.on('getDefinition', this.getDefinitionUrl)
         this.before('READ', 'Texts', async (req) => {
             // to ensure anonymous singleton works
@@ -47,6 +48,22 @@ class TextsService extends BaseService {
         const link = `${googleTranslateBaseUrl}?text=${encodeURIComponent(text)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
         if (data.text) data.translation = link
         else data.sent.translation = link
+    }
+
+    async skipWordToggleHandler(req){
+        const { morphem, pos, lang }  = req.params[0]
+        const key = {
+            user_id : req.user.id,
+            slovo_morphem : morphem,
+            slovo_lang : lang,
+            slovo_pos : pos
+        }
+        console.log(key)
+        const { Skips } = cds.entities("cc.slova.model")
+        const del = await cds.delete(Skips).where(key)
+        if ( del == 1 ) return false
+        await cds.create(Skips).entries(key)
+        return true
     }
 
     async createTextHandler(req, next) {
