@@ -68,6 +68,7 @@ entity Workbook                         as
         key morphem,
         key lang,
         key pos,
+            '' as definition: String,
             count,
             forms,
             sentences
@@ -101,7 +102,8 @@ entity WorkbookWordsWithSentencesTokens as
         key hash,
             text,
             count,
-            tokens
+            tokens,
+            '' as translation: String,
     };
 
 entity WorkbookWordsToSentences         as

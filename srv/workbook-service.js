@@ -1,14 +1,14 @@
 const cds = require('@sap/cds')
 const { BaseService } = require('./baseService')
 
-class AdminService extends BaseService {
+class WorkBookService extends BaseService {
 
     async init() {
         this.after('READ', 'Slova', this.addDefinition)
-        this.after('READ', 'Slova', this.addOccurence)
+        this.after('READ', 'Sentences', this.getGoogleTranslate)
         await super.init()
     }
 
 }
 
-module.exports = { AdminService }
+module.exports = { WorkBookService }

@@ -26,26 +26,29 @@ class BaseService extends cds.ApplicationService {
         data.occurence = `${fraction}% - ${data.occurence} occs of ${stat.tokens} for ${data.pos} (${stat.lemmas})`
     }
 
-    async getDefinition(results, req) {
+    async getDefinition(lang, lemma, user) {
+        const profile = await this.getProfile(user)
+        const userLang = profile.id == "anynoumous" ? "auto" : profile.defaultLang_code
+        const definitionUrl = await definitionFinder.get(lang, lemma).catch(() => { })
+        if (!definitionUrl) return ''
+        const googleTranslateBaseUrl = 'https://translate.google.com/translate'
+        return `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
+    }
+
+    async addDefinition(results, req) {
         if (!req.query.SELECT.one) return
         const data = results[0]
-        const lang = data.lang
-        const profile = await this.getProfile(req.user.id)
-        const userLang = profile.defaultLang_code
-        let definitionUrl = data.definition
-        if (!definitionUrl) definitionUrl = await definitionFinder.get(lang, data.morphem).catch( ()=>{} )
-        if (!definitionUrl) return
-        const googleTranslateBaseUrl = 'https://translate.google.com/translate'
-        data.definition = `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
+        const { lang, lemma, morphem } = data
+        if (!data.definition) data.definition = await this.getDefinition(lang, morphem || lemma, req.user.id)
     }
 
     async getGoogleTranslate(results, req) {
         if (!req.query.SELECT.one) return
         const data = results[0]
-        const lang = data["up__lang"]
+        const lang = data["lang"] || data["up__lang"]
         const profile = await this.getProfile(req.user.id)
         const userLang = profile.defaultLang_code
-        const text = data.sent?.text
+        const text = data.text || data.sent?.text
         if (!text) return
         const googleTranslateBaseUrl = 'https://translate.google.com/'
         data.translation = `${googleTranslateBaseUrl}?text=${encodeURIComponent(text)}&sl=${lang}&tl=${userLang}&hl=${userLang}`

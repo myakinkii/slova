@@ -20,20 +20,16 @@ class TextsService extends BaseService {
             // to ensure anonymous singleton works
             await this.getProfile(req.user.id)
         })
+        this.after('READ', 'Slova', this.addDefinition)
         this.after('READ', 'Sentences', this.getGoogleTranslate)
         this.after('READ', 'Slova.sentences', this.getGoogleTranslate)
         this.before('READ', 'Users', this.checkCreateProfile)
         await super.init()
     }
 
-    async getDefinitionUrl(req, next) {
+    async getDefinitionUrl(req) {
         const { lang, lemma } = req.data
-        const profile = await this.getProfile(req.user.id)
-        const userLang = profile.id == "anynoumous" ? "auto" : profile.defaultLang_code
-        let definitionUrl = await definitionFinder.get(lang, lemma).catch(() => { })
-        if (!definitionUrl) return ''
-        const googleTranslateBaseUrl = 'https://translate.google.com/translate'
-        return `${googleTranslateBaseUrl}?u=${encodeURIComponent(definitionUrl)}&sl=${lang}&tl=${userLang}&hl=${userLang}`
+        return this.getDefinition(lang, lemma, req.user.id)
     }
 
     async getGoogleTranslate(results, req) {

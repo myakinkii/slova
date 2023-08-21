@@ -176,6 +176,7 @@ service TextsService {
             *,
             import.createdBy,
             import.status,
+            '' as definition : String,
             case
                 when
                     skip.user.id is null

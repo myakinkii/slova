@@ -144,6 +144,18 @@ annotate TextsService.Slova with @UI: {
         Title         : {Value: morphem},
         Description   : {Value: lang}
     },
+    HeaderFacets        : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: '@UI.FieldGroup#External',
+    }],
+    FieldGroup #External: {Data: [
+        {
+            Label: '{i18n>definition}',
+            Value: definition,
+            Url  : definition,
+            $Type: 'UI.DataFieldWithUrl'
+        }
+    ]},
     Facets         : [
         {
             $Type : 'UI.ReferenceFacet',
