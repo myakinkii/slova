@@ -5,22 +5,11 @@ using {cc.slova.model as db} from '../db/schema';
 service WorkBookService {
 
     @readonly
-    entity PosFilter as select from Slova {
-        owner,
-        pos as code,
-        count(*) as count:Integer
-    } group by owner, pos;
-
-    @readonly
-    entity LangsFilter as select from Slova {
-        owner,
-        lang as code,
-        count(*) as count:Integer
-    } group by owner, lang;
-
-    @readonly
     entity Slova @(restrict: [{
-        grant: ['READ'],
+        grant: [
+            'READ',
+            'toggleSkip'
+        ],
         to   : 'authenticated-user',
         where: 'owner = $user'
     }])                                 as
@@ -29,11 +18,30 @@ service WorkBookService {
             translations : Association to many db.Translations
                                on  translations.slovo.morphem = morphem
                                and translations.slovo.lang    = lang
-                               and translations.slovo.pos     = pos
+                               and translations.slovo.pos     = pos;
+            skip         : Association to db.Skips
+                               on  skip.slovo.morphem = morphem
+                               and skip.slovo.lang    = lang
+                               and skip.slovo.pos     = pos
+                               and skip.user.id       = $user
         }
         into {
             *,
-            translations
+            translations,
+            case
+                when
+                    skip.user.id is null
+                then
+                    false
+                else
+                    true
+            end as skip : Boolean
+        } actions {
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {TargetProperties: ['_it/skip']}
+            )
+            action toggleSkip() returns Boolean;
         };
 
     @readonly
@@ -68,7 +76,7 @@ entity Workbook                         as
         key morphem,
         key lang,
         key pos,
-            '' as definition: String,
+            '' as definition : String,
             count,
             forms,
             sentences
@@ -103,7 +111,7 @@ entity WorkbookWordsWithSentencesTokens as
             text,
             count,
             tokens,
-            '' as translation: String,
+            '' as translation : String,
     };
 
 entity WorkbookWordsToSentences         as

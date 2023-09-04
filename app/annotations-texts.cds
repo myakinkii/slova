@@ -137,7 +137,7 @@ annotate TextsService.Slova with @UI: {
         $Type : 'UI.DataFieldForAction',
         Action: 'TextsService.toggleSkip',
         Label : '{i18n>texts.toggleSkip}'
-    }, ],
+    }],
     HeaderInfo     : {
         TypeName      : '{i18n>Slovo}',
         TypeNamePlural: '{i18n>Slova}',

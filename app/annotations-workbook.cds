@@ -9,13 +9,27 @@ annotate WorkBookService.Slova with @UI: {
         {Value: lang},
         {Value: pos},
         {Value: morphem},
-        {Value: count}
+        {Value: count},
+        {Value: skip}
     ],
+    Identification      : [{
+        $Type : 'UI.DataFieldForAction',
+        Action: 'WorkBookService.toggleSkip',
+        Label : '{i18n>texts.toggleSkip}'
+    }],
     HeaderInfo          : {
         TypeName      : '{i18n>Slovo}',
         TypeNamePlural: '{i18n>Slova}',
         Title         : {Value: morphem},
-        Description   : {Value: count}
+        // Description   : {Value: count}
+        Description   : {Value: {$edmJson: {
+            $Apply   : [
+                {Path: 'count'},
+                ' / ',
+                {Path: 'skip'}
+            ],
+            $Function: 'odata.concat'
+        }}}
     },
     HeaderFacets        : [{
         $Type : 'UI.ReferenceFacet',
@@ -38,14 +52,12 @@ annotate WorkBookService.Slova with @UI: {
             Label : '{i18n>sentences}'
         }
     ],
-    FieldGroup #External: {Data: [
-        {
-            Label: '{i18n>definition}',
-            Value: definition,
-            Url  : definition,
-            $Type: 'UI.DataFieldWithUrl'
-        }
-    ]},
+    FieldGroup #External: {Data: [{
+        Label: '{i18n>definition}',
+        Value: definition,
+        Url  : definition,
+        $Type: 'UI.DataFieldWithUrl'
+    }]},
 };
 
 annotate WorkBookService.Forms with @UI: {
@@ -54,25 +66,23 @@ annotate WorkBookService.Forms with @UI: {
         TypeNamePlural: '{i18n>Forms}',
         Title         : {Value: form}
     },
-    LineItem  : [
-        {Value: form}
-    ]
+    LineItem  : [{Value: form}]
 };
 
 annotate WorkBookService.Sentences with @UI: {
-    HeaderInfo         : {
+    HeaderInfo             : {
         TypeName      : '{i18n>Sentence}',
         TypeNamePlural: '{i18n>Sentences}',
         Title         : {Value: text},
         Description   : {Value: hash}
     },
-    LineItem           : [{Value: text}],
-    Facets             : [{
+    LineItem               : [{Value: text}],
+    Facets                 : [{
         $Type : 'UI.ReferenceFacet',
         Target: 'tokens/@UI.LineItem',
-        // Label : '{i18n>Tokens}'
+    // Label : '{i18n>Tokens}'
     }],
-    HeaderFacets        : [{
+    HeaderFacets           : [{
         $Type : 'UI.ReferenceFacet',
         Target: '@UI.FieldGroup#Translation',
     }],
@@ -85,11 +95,11 @@ annotate WorkBookService.Sentences with @UI: {
 };
 
 annotate WorkBookService.Tokens with @UI: {
-    HeaderInfo         : {
+    HeaderInfo: {
         TypeName      : '{i18n>Token}',
         TypeNamePlural: '{i18n>Tokens}'
     },
-    LineItem           : [
+    LineItem  : [
         {Value: index},
         {Value: form},
         {Value: lemma},

@@ -46,22 +46,6 @@ class TextsService extends BaseService {
         else data.sent.translation = link
     }
 
-    async skipWordToggleHandler(req){
-        const { morphem, pos, lang }  = req.params[0]
-        const key = {
-            user_id : req.user.id,
-            slovo_morphem : morphem,
-            slovo_lang : lang,
-            slovo_pos : pos
-        }
-        console.log(key)
-        const { Skips } = cds.entities("cc.slova.model")
-        const del = await cds.delete(Skips).where(key)
-        if ( del == 1 ) return false
-        await cds.create(Skips).entries(key)
-        return true
-    }
-
     async createTextHandler(req, next) {
         if (req.user.id == 'anonymous') throw new Error('FORBIDDEN')
         const profile = await this.getProfile(req.user.id)

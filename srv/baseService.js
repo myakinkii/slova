@@ -99,6 +99,22 @@ class BaseService extends cds.ApplicationService {
             translation: translations[0]
         })
     }
+
+    async skipWordToggleHandler(req){
+        // add me to workbook as well
+        const { morphem, pos, lang }  = req.params[0]
+        const key = {
+            user_id : req.user.id,
+            slovo_morphem : morphem,
+            slovo_lang : lang,
+            slovo_pos : pos
+        }
+        const { Skips } = cds.entities("cc.slova.model")
+        const del = await cds.delete(Skips).where(key)
+        if ( del == 1 ) return false
+        await cds.create(Skips).entries(key)
+        return true
+    }
 }
 
 module.exports = { BaseService }
