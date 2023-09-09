@@ -14,13 +14,13 @@
                     <FacetFilterItem text="{text}" key="{code}" count="{count}" />
                 </FacetFilterList>
                 <FacetFilterList title="AUTHOR" key="createdBy" mode="MultiSelect" listClose="setFilter" items="{/AuthorsFilter}" >
-                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                    <FacetFilterItem text="{text}" key="{code}" count="{count}" />
                 </FacetFilterList>
                 <FacetFilterList title="POS" key="pos" mode="MultiSelect" listClose="setFilter" items="{/PosFilter}" >
-                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                    <FacetFilterItem text="{text}" key="{code}" count="{count}" />
                 </FacetFilterList>
                 <FacetFilterList title="LANG" key="lang" mode="MultiSelect" listClose="setFilter" items="{/LangsFilter}" >
-                    <FacetFilterItem text="{code}" key="{code}" count="{count}" />
+                    <FacetFilterItem text="{text}" key="{code}" count="{count}" />
                 </FacetFilterList>
             </lists>
         </FacetFilter >            
