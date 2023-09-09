@@ -121,19 +121,19 @@ annotate UserService.Forms with @UI: {
 };
 
 annotate UserService.Slova.sentences with @UI: {
-    HeaderInfo         : {
+    HeaderInfo             : {
         TypeName      : '{i18n>Sentence}',
         TypeNamePlural: '{i18n>Sentences}',
         Title         : {Value: sent.text},
         Description   : {Value: sent.hash}
     },
-    LineItem           : [{Value: sent.text}],
-    Facets             : [{
+    LineItem               : [{Value: sent.text}],
+    Facets                 : [{
         $Type : 'UI.ReferenceFacet',
         Target: 'sent/tokens/@UI.LineItem',
-        // Label : '{i18n>Tokens}'
+    // Label : '{i18n>Tokens}'
     }],
-    HeaderFacets        : [{
+    HeaderFacets           : [{
         $Type : 'UI.ReferenceFacet',
         Target: '@UI.FieldGroup#Translation',
     }],
@@ -146,11 +146,11 @@ annotate UserService.Slova.sentences with @UI: {
 };
 
 annotate UserService.Tokens with @UI: {
-    HeaderInfo         : {
+    HeaderInfo: {
         TypeName      : '{i18n>Token}',
         TypeNamePlural: '{i18n>Tokens}'
     },
-    LineItem           : [
+    LineItem  : [
         {Value: index},
         {Value: form},
         {Value: lemma},
@@ -227,11 +227,11 @@ annotate UserService.Translations with @UI: {
 };
 
 annotate UserService.Cards with @UI: {
-    HeaderInfo         : {
+    HeaderInfo: {
         TypeName      : '{i18n>Card}',
         TypeNamePlural: '{i18n>Cards}'
     },
-    LineItem           : [
+    LineItem  : [
         {Value: slovo.morphem},
         {Value: slovo.lang},
         {Value: slovo.pos}
@@ -239,14 +239,26 @@ annotate UserService.Cards with @UI: {
 };
 
 annotate UserService.Skips with @UI: {
-    HeaderInfo         : {
+    HeaderInfo: {
         TypeName      : '{i18n>Skip}',
         TypeNamePlural: '{i18n>Skips}'
     },
-    LineItem           : [
+    LineItem  : [
         {Value: slovo.morphem},
         {Value: slovo.lang},
         {Value: slovo.pos}
+    ]
+};
+
+annotate UserService.Texts with @UI: {
+    HeaderInfo: {
+        TypeName      : '{i18n>Text}',
+        TypeNamePlural: '{i18n>Texts}'
+    },
+    LineItem  : [
+        {Value: name},
+        {Value: lang_code},
+        {Value: status}
     ]
 };
 
@@ -296,21 +308,26 @@ annotate UserService.Users with @UI: {
             Value: pos
         }
     ]},
-    Facets              : [
+    Facets            : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target: 'texts/@UI.LineItem',
+            Label : '{i18n>texts}'
+        },
         {
             $Type : 'UI.ReferenceFacet',
             Target: 'skips/@UI.LineItem',
             Label : '{i18n>skips}'
         },
-        // {
-        //     $Type : 'UI.ReferenceFacet',
-        //     Target: 'translations/@UI.LineItem',
-        //     Label : '{i18n>translations}'
-        // },
-        // {
-        //     $Type : 'UI.ReferenceFacet',
-        //     Target: 'cards/@UI.LineItem',
-        //     Label : '{i18n>cards}'
-        // }
+    // {
+    //     $Type : 'UI.ReferenceFacet',
+    //     Target: 'translations/@UI.LineItem',
+    //     Label : '{i18n>translations}'
+    // },
+    // {
+    //     $Type : 'UI.ReferenceFacet',
+    //     Target: 'cards/@UI.LineItem',
+    //     Label : '{i18n>cards}'
+    // }
     ]
 };

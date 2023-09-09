@@ -66,21 +66,42 @@ service UserService {
         }
     ])               as projection on db.Skips;
 
-    entity Users @(restrict: [{
-        grant: [
-            'READ',
-            'UPDATE'
-        ],
-        to   : 'authenticated-user',
-        where: 'id = $user'
-    }])              as
+    entity Texts @(restrict: [
+        {
+            grant: ['READ'],
+            to   : 'authenticated-user'
+        },
+        {
+            grant: ['WRITE'],
+            to   : 'authenticated-user',
+            where: 'createdBy = $user'
+        }
+    ])               as projection on db.Import;
+
+    entity Users @(restrict: [
+        {
+            grant: [
+                'READ',
+                'UPDATE'
+            ],
+            to   : 'authenticated-user',
+            where: 'id = $user'
+        },
+        {
+            grant: '*',
+            to   : 'admin-user'
+        }
+    ])               as
         select from db.Users
         mixin {
-            skips        : Association to many Skips
-                               on skips.user.id = id;
+            skips : Association to many Skips
+                        on skips.user.id = id;
+            texts : Association to many Texts
+                        on texts.createdBy = id;
         }
         into {
             *,
+            texts,
             skips,
             translations,
             cards
