@@ -13,6 +13,7 @@ service TextsService {
     }])                  as
         select from SlovaDistinct {
             pos        as code,
+            pos        as text,
             createdBy,
             status,
             count( * ) as count : Integer
@@ -28,6 +29,7 @@ service TextsService {
     }])                  as
         select from SlovaDistinct {
             lang       as code,
+            lang       as text,
             createdBy,
             status,
             count( * ) as count : Integer
@@ -74,6 +76,7 @@ service TextsService {
     }])                  as
         select from Texts {
             createdBy  as code,
+            authorName as text,
             createdBy,
             status,
             count( * ) as count : Integer
@@ -117,31 +120,48 @@ service TextsService {
             to   : 'authenticated-user',
             where: 'createdBy = $user'
         }
-    ])                   as projection on db.Import order by
-        name asc
-    actions {
+    ])                   as
+        select from db.Import
+        mixin {
+            author : Association to db.Users
+                         on author.id = createdBy
+        }
+        into {
+            *,
+            case
+                when
+                    author.name is null
+                then
+                    author.id
+                else
+                    author.name
+            end as authorName : String
+        }
+        order by
+            Import.name asc
+        actions {
 
-        @(
-            cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {
-                TargetEntities  : [
-                    '_it/sentences',
-                    '_it/words'
-                ],
-                TargetProperties: [
-                    '_it/text',
-                    '_it/input'
-                ]
-            }
-        )
-        action parseText();
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {
+                    TargetEntities  : [
+                        '_it/sentences',
+                        '_it/words'
+                    ],
+                    TargetProperties: [
+                        '_it/text',
+                        '_it/input'
+                    ]
+                }
+            )
+            action parseText();
 
-        @(
-            cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {TargetProperties: ['_it/input']}
-        )
-        action generateText();
-    };
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {TargetProperties: ['_it/input']}
+            )
+            action generateText();
+        };
 
     @readonly
     entity Sentences @(restrict: [{
@@ -176,7 +196,8 @@ service TextsService {
             *,
             import.createdBy,
             import.status,
-            '' as definition : String,
+            import.name as textName,
+            ''          as definition : String,
             case
                 when
                     skip.user.id is null
@@ -184,7 +205,7 @@ service TextsService {
                     false
                 else
                     true
-            end as skip : Boolean
+            end         as skip       : Boolean
         } actions {
             @(Common.SideEffects: {TargetEntities: ['/TextsService.EntityContainer/Slova']})
             action toggleSkip() returns Boolean;

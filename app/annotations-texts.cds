@@ -16,7 +16,7 @@ annotate TextsService.Texts with @UI: {
         //     Action: 'TextsService.EntityContainer/createText',
         //     Label : '{i18n>createText}',
         // },
-        {Value: createdBy},
+        {Value: authorName},
         {Value: name},
         {Value: lang_code}
     ],
@@ -123,40 +123,47 @@ annotate TextsService.Slova.sentences with @UI: {
 };
 
 annotate TextsService.Slova with @UI: {
-    SelectionFields: [
+    SelectionFields     : [
         pos,
         morphem
     ],
-    LineItem       : [
+    LineItem            : [
         {Value: pos},
         {Value: morphem},
         {Value: count},
         {Value: skip},
+        {Value: textName}
     ],
-    Identification : [{
+    Identification      : [{
         $Type : 'UI.DataFieldForAction',
         Action: 'TextsService.toggleSkip',
         Label : '{i18n>texts.toggleSkip}'
     }],
-    HeaderInfo     : {
+    HeaderInfo          : {
         TypeName      : '{i18n>Slovo}',
         TypeNamePlural: '{i18n>Slova}',
         Title         : {Value: morphem},
-        Description   : {Value: lang}
+        // Description   : {Value: lang}
+        Description   : {Value: {$edmJson: {
+            $Apply   : [
+                {Path: 'pos'},
+                ' / ',
+                {Path: 'lang'}
+            ],
+            $Function: 'odata.concat'
+        }}}
     },
     HeaderFacets        : [{
         $Type : 'UI.ReferenceFacet',
         Target: '@UI.FieldGroup#External',
     }],
-    FieldGroup #External: {Data: [
-        {
-            Label: '{i18n>definition}',
-            Value: definition,
-            Url  : definition,
-            $Type: 'UI.DataFieldWithUrl'
-        }
-    ]},
-    Facets         : [
+    FieldGroup #External: {Data: [{
+        Label: '{i18n>definition}',
+        Value: definition,
+        Url  : definition,
+        $Type: 'UI.DataFieldWithUrl'
+    }]},
+    Facets              : [
         {
             $Type : 'UI.ReferenceFacet',
             Target: 'forms/@UI.LineItem',
