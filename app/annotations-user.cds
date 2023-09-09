@@ -226,6 +226,30 @@ annotate UserService.Translations with @UI: {
     }]
 };
 
+annotate UserService.Cards with @UI: {
+    HeaderInfo         : {
+        TypeName      : '{i18n>Card}',
+        TypeNamePlural: '{i18n>Cards}'
+    },
+    LineItem           : [
+        {Value: slovo.morphem},
+        {Value: slovo.lang},
+        {Value: slovo.pos}
+    ]
+};
+
+annotate UserService.Skips with @UI: {
+    HeaderInfo         : {
+        TypeName      : '{i18n>Skip}',
+        TypeNamePlural: '{i18n>Skips}'
+    },
+    LineItem           : [
+        {Value: slovo.morphem},
+        {Value: slovo.lang},
+        {Value: slovo.pos}
+    ]
+};
+
 annotate UserService.Users with {
     defaultLang @(
         ValueList.entity: 'Languages',
@@ -266,6 +290,27 @@ annotate UserService.Users with @UI: {
         {
             Label: '{i18n>lang}',
             Value: defaultLang_code
+        },
+        {
+            Label: '{i18n>pos}',
+            Value: pos
         }
-    ]}
+    ]},
+    Facets              : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target: 'skips/@UI.LineItem',
+            Label : '{i18n>skips}'
+        },
+        // {
+        //     $Type : 'UI.ReferenceFacet',
+        //     Target: 'translations/@UI.LineItem',
+        //     Label : '{i18n>translations}'
+        // },
+        // {
+        //     $Type : 'UI.ReferenceFacet',
+        //     Target: 'cards/@UI.LineItem',
+        //     Label : '{i18n>cards}'
+        // }
+    ]
 };

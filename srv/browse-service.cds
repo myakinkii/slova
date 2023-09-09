@@ -42,6 +42,30 @@ service UserService {
         }
     ])               as projection on db.Translations;
 
+    entity Cards @(restrict: [
+        {
+            grant: ['READ'],
+            to   : 'authenticated-user'
+        },
+        {
+            grant: ['WRITE'],
+            to   : 'authenticated-user',
+            where: 'user_id = $user'
+        }
+    ])               as projection on db.Cards;
+
+    entity Skips @(restrict: [
+        {
+            grant: ['READ'],
+            to   : 'authenticated-user'
+        },
+        {
+            grant: ['WRITE'],
+            to   : 'authenticated-user',
+            where: 'user_id = $user'
+        }
+    ])               as projection on db.Skips;
+
     entity Users @(restrict: [{
         grant: [
             'READ',
@@ -49,6 +73,17 @@ service UserService {
         ],
         to   : 'authenticated-user',
         where: 'id = $user'
-    }])              as projection on db.Users;
+    }])              as
+        select from db.Users
+        mixin {
+            skips        : Association to many Skips
+                               on skips.user.id = id;
+        }
+        into {
+            *,
+            skips,
+            translations,
+            cards
+        };
 
 }
