@@ -11,6 +11,12 @@ sap.ui.define([
             PageController.prototype.onInit.apply(this);
         },
 
+        onAfterRendering: function (oEvent) {
+            var oView = this.getView()
+            oView.byId("FilterBar").setFilterValues("status", "NE", 9)
+            oView.byId("FilterBar2").setFilterValues("status", "EQ", 9)
+        },
+
         onPressed: function (oEvent) {
             var src = oEvent.getSource()
             this.routing.navigate(src.getBindingContext());
@@ -36,6 +42,8 @@ sap.ui.define([
         },
 
         forceRefresh:function(){
+            // this.getView().byId("macroTable").refresh() // does not exist until 1.117.0
+            // this.getView().byId("macroTable2").refresh() // but there odata.concat is broken in macors.Field
             this.getView().byId("idCarousel").getBinding("pages").refresh()
             this.getView().byId("idFacetFilter").getLists().forEach(function (list) {
                 list.getBinding("items").refresh()

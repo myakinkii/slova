@@ -10,6 +10,17 @@ annotate TextsService.Texts with @UI: {
         name,
         lang_code
     ],
+    PresentationVariant :{
+        SortOrder : [
+            {
+                Property : createdAt,
+                Descending : true
+            },
+        ],
+        Visualizations : [
+            '@UI.LineItem'
+        ]
+    },
     LineItem       : [
         // {
         //     $Type : 'UI.DataFieldForAction',
@@ -18,7 +29,8 @@ annotate TextsService.Texts with @UI: {
         // },
         {Value: authorName},
         {Value: name},
-        {Value: lang_code}
+        {Value: lang_code},
+        {Value: createdAt}
     ],
     Facets         : [
         {
