@@ -62,6 +62,11 @@
                     <macros:FilterBar metaPath="/Texts/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar" liveMode="true" />
                     <macros:Table metaPath="/Texts/@com.sap.vocabularies.UI.v1.PresentationVariant" id="macroTable" filterBar="FilterBar" />
                 </IconTabFilter>
+                <IconTabSeparator/>
+                <IconTabFilter text="Decks" key="DECKS" count="{ path:'/Decks/$count' }" >
+                    <macros:FilterBar metaPath="/Decks/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar3" liveMode="false" />
+                    <macros:Table metaPath="/Decks/@com.sap.vocabularies.UI.v1.LineItem" id="macroTable3" filterBar="FilterBar3" />
+                </IconTabFilter>
             </items>
 	    </IconTabBar>
     <footer>

@@ -4,6 +4,58 @@ using {cc.slova.model as db} from '../db/schema';
 @requires: 'authenticated-user'
 service TextsService {
 
+    type TextFilter : {
+        ids : many UUID
+    }
+
+    @(Common.SideEffects: {TargetEntities: ['/TextsService.EntityContainer/Decks']})
+    action createDeck(name : String)                    returns Decks;
+
+    entity Decks @(restrict: [{
+        grant: [
+            'READ',
+            'addToParent'
+        ],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user'
+    }])                  as projection on db.Decks actions {
+        action addToParent( @(
+                                title:'{i18n>deck}',
+                                Common:{
+                                    ValueListWithFixedValues: true,
+                                    ValueList               : {
+                                        Label         : '{i18n>deck}',
+                                        CollectionPath: 'Decks',
+                                        Parameters    : [
+                                            {
+                                                $Type            : 'Common.ValueListParameterInOut',
+                                                ValueListProperty: 'ID',
+                                                LocalDataProperty: deck
+                                            },
+                                            {
+                                                $Type            : 'Common.ValueListParameterDisplayOnly',
+                                                ValueListProperty: 'name'
+                                            }
+                                        ]
+                                    }
+                                }
+                            ) deck : UUID);
+    };
+
+    action resolveDeckFilter(deck : UUID)               returns TextFilter;
+
+    @readonly
+    entity DecksFilter @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user'
+    }])                  as
+        select from db.Decks {
+            ID   as code,
+            name as text,
+            createdBy,
+            1    as count : Integer
+        };
 
     @readonly
     entity PosFilter @(restrict: [{
@@ -115,7 +167,8 @@ service TextsService {
             grant: [
                 'WRITE',
                 'parseText',
-                'generateText'
+                'generateText',
+                'addToDeck'
             ],
             to   : 'authenticated-user',
             where: 'createdBy = $user'
@@ -161,6 +214,28 @@ service TextsService {
                 Common.SideEffects             : {TargetProperties: ['_it/input']}
             )
             action generateText();
+
+            action addToDeck( @(
+                                  title:'{i18n>deck}',
+                                  Common:{
+                                      ValueListWithFixedValues: true,
+                                      ValueList               : {
+                                          Label         : '{i18n>deck}',
+                                          CollectionPath: 'Decks',
+                                          Parameters    : [
+                                              {
+                                                  $Type            : 'Common.ValueListParameterInOut',
+                                                  ValueListProperty: 'ID',
+                                                  LocalDataProperty: deck
+                                              },
+                                              {
+                                                  $Type            : 'Common.ValueListParameterDisplayOnly',
+                                                  ValueListProperty: 'name'
+                                              }
+                                          ]
+                                      }
+                                  }
+                              ) deck : UUID);
         };
 
     @readonly

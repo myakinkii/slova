@@ -1,49 +1,68 @@
-annotate TextsService.Texts with @UI: {
+annotate TextsService.Decks with @UI: {
     HeaderInfo     : {
+        TypeName      : '{i18n>Deck}',
+        TypeNamePlural: '{i18n>Decks}',
+        Title         : {Value: name}
+    },
+    SelectionFields: [name],
+    LineItem       : [
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'TextsService.addToParent',
+            Label : '{i18n>decks.addToParent}'
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'TextsService.EntityContainer/createDeck',
+            Label : '{i18n>decks.createDeck}'
+        },
+        {Value: name},
+        {Value: createdAt}
+    ],
+};
+
+annotate TextsService.Texts with @UI: {
+    HeaderInfo         : {
         TypeName      : '{i18n>Text}',
         TypeNamePlural: '{i18n>Texts}',
         Title         : {Value: lang_code},
         Description   : {Value: name}
     },
-    SelectionFields: [
+    SelectionFields    : [
         createdBy,
         name,
         lang_code
     ],
-    PresentationVariant :{
-        SortOrder : [
-            {
-                Property : createdAt,
-                Descending : true
-            },
-        ],
-        Visualizations : [
-            '@UI.LineItem'
-        ]
+    PresentationVariant: {
+        SortOrder     : [{
+            Property  : createdAt,
+            Descending: true
+        }, ],
+        Visualizations: ['@UI.LineItem']
     },
-    LineItem       : [
-        // {
-        //     $Type : 'UI.DataFieldForAction',
-        //     Action: 'TextsService.EntityContainer/createText',
-        //     Label : '{i18n>createText}',
-        // },
+    LineItem           : [
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'TextsService.addToDeck',
+            Label : '{i18n>texts.addToDeck}'
+        },
         {Value: authorName},
         {Value: name},
         {Value: lang_code},
         {Value: createdAt}
     ],
-    Facets         : [
+    Facets             : [
         {
-            $Type        : 'UI.ReferenceFacet',
-            Target       : 'words/@UI.LineItem',
-            Label        : '{i18n>Words}',
-            ![@UI.Hidden]: HasDraftEntity
+            $Type         : 'UI.ReferenceFacet',
+            Target        : 'words/@UI.LineItem',
+            Label         : '{i18n>Words}',
+            ![@UI.Hidden] : HasDraftEntity
         },
         {
-            $Type        : 'UI.ReferenceFacet',
-            Target       : 'sentences/@UI.LineItem',
-            Label        : '{i18n>Sentences}',
-            ![@UI.Hidden]: HasDraftEntity
+            $Type         : 'UI.ReferenceFacet',
+            Target        : 'sentences/@UI.LineItem',
+            Label         : '{i18n>Sentences}',
+            ![@UI.Hidden] : HasDraftEntity
         }
     ]
 };
@@ -56,8 +75,8 @@ annotate TextsService.Sentences with @UI: {
         Description   : {Value: lang_code}
     },
     LineItem               : [{
-        Value                : text,
-        ![@HTML5.CssDefaults]: {width: 'auto'}
+        Value                 : text,
+        ![@HTML5.CssDefaults] : {width: 'auto'}
     }],
     Facets                 : [{
         $Type : 'UI.ReferenceFacet',
@@ -83,10 +102,10 @@ annotate TextsService.Sentences.tokens with @UI: {
     },
     LineItem          : [
         {
-            $Type                : 'UI.DataFieldForAnnotation',
-            Target               : '@UI.FieldGroup#Mobile',
-            Label                : 'Type Information',
-            ![@HTML5.CssDefaults]: {width: '25rem'}
+            $Type                 : 'UI.DataFieldForAnnotation',
+            Target                : '@UI.FieldGroup#Mobile',
+            Label                 : 'Type Information',
+            ![@HTML5.CssDefaults] : {width: '25rem'}
         },
         {Value: index},
     // {Value: form},
@@ -114,8 +133,8 @@ annotate TextsService.Slova.sentences with @UI: {
         Description   : {Value: sent.lang_code}
     },
     LineItem               : [{
-        Value                : sent.text,
-        ![@HTML5.CssDefaults]: {width: 'auto'}
+        Value                 : sent.text,
+        ![@HTML5.CssDefaults] : {width: 'auto'}
     }],
     Facets                 : [{
         $Type : 'UI.ReferenceFacet',

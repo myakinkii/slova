@@ -105,8 +105,8 @@ entity Users {
 }
 
 entity Skips {
-    key user        : Association to Users;
-    key slovo       : Association to Slova;
+    key user  : Association to Users;
+    key slovo : Association to Slova;
 }
 
 entity Cards : managed {
@@ -202,4 +202,24 @@ entity ImportSentences {
                               feats         : String;
                               sentence_hash : String;
                       }
+}
+
+entity Decks : managed, cuid {
+    name  : String;
+    words : Composition of many {
+                key word : Association to ImportWords;
+            };
+    texts : Composition of many {
+                key text : Association to Import;
+            };
+    decks : Composition of many {
+                key deck : Association to Decks;
+            };
+    tags  : Composition of many {
+                key tag : Association to Tags;
+            };
+}
+
+entity Tags : managed {
+    text : String
 }

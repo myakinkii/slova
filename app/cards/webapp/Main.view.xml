@@ -10,6 +10,9 @@
     <content>
         <FacetFilter width="100%" id="idFacetFilter" type="Light" showPersonalization="true" showReset="true" reset="clearFilter">
             <lists>
+                <FacetFilterList title="DECK" key="deck" multiSelect="false" mode="SingleSelectLeft" listClose="setFilter" items="{/DecksFilter}" >
+                    <FacetFilterItem text="{text}" key="{code}" count="?" />
+                </FacetFilterList>
                 <FacetFilterList title="TEXT" key="import_ID" mode="MultiSelect" listClose="setFilter" items="{/TextsFilter}" >
                     <FacetFilterItem text="{text}" key="{code}" count="{count}" />
                 </FacetFilterList>

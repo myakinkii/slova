@@ -11,6 +11,10 @@ class TextsService extends BaseService {
     async init() {
         this.importHandler = new ImportHandler(cds)
         this.on('syncToken', this.syncAndReparseConllu)
+        this.on('resolveDeckFilter', this.resolveDeckHandler)
+        this.on('createDeck', this.createDeckHandler)
+        this.on('addToParent', this.addToParentHandler)
+        this.on('addToDeck', this.addToDeckHandler)
         this.on('parseText', this.parseTextHandler)
         this.on('generateText', this.generateTextHandler)
         this.on('createText', this.createTextHandler)
@@ -25,6 +29,64 @@ class TextsService extends BaseService {
         this.after('READ', 'Slova.sentences', this.getGoogleTranslate)
         this.before('READ', 'Users', this.checkCreateProfile)
         await super.init()
+    }
+
+    async createDeckHandler(req) {
+        if (req.user.id == 'anonymous') throw new Error('FORBIDDEN')
+        const { Decks } = cds.entities("cc.slova.model")
+        const ID = cds.utils.uuid()
+        const name = req.data.name
+        return cds.create(Decks).entries({ ID: ID, name: name })
+    }
+
+    async resolveDeckHandler(req) {
+        const deckId = req.data.deck
+        const { Decks } = cds.entities("cc.slova.model")
+
+        let results = {}
+
+        const recursiveRead = async (ID) => {
+            const deck = await cds.read(Decks, { ID }).columns(d => {
+                d.texts(t => { t`.*` }),
+                    d.decks(c => { c`.*` })
+            })
+
+            if (!deck) return Promise.resolve()
+
+            if (deck.texts.length) {
+                deck.texts.forEach(t => results[t.text_ID] = true)
+            }
+
+            if (deck.decks.length) {
+                return Promise.all(deck.decks.map(child => recursiveRead(child.deck_ID)))
+            }
+
+            return Promise.resolve()
+        }
+
+        await recursiveRead(deckId)
+        return { ids: Object.keys(results) }
+    }
+
+    async addToParentHandler(req) {
+        const ID = req.params[0]
+        const deckId = req.data.deck
+        const { Decks } = cds.entities("cc.slova.model")
+        if (ID == deckId) throw new Error('FORBIDDEN')
+        return cds.create(Decks.elements.decks.target).entries({
+            up__ID: deckId,
+            deck_ID: ID
+        })
+    }
+
+    async addToDeckHandler(req) {
+        const ID = req.params[0]
+        const deckId = req.data.deck
+        const { Decks } = cds.entities("cc.slova.model")
+        return cds.create(Decks.elements.texts.target).entries({
+            up__ID: deckId,
+            text_ID: ID
+        })
     }
 
     async getDefinitionUrl(req) {
