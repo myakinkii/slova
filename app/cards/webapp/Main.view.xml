@@ -32,7 +32,7 @@
                 loop="true" 
                 pages="{ 
                     path:'/Slova',
-                    filters:[{ path:'skip', operator:'EQ', value1: false }]
+                    _filters:[{ path:'skip', operator:'EQ', value1: false }]
                 }">
             <pages>
                 <FlexBox height="100%" alignItems="Center" justifyContent="Center">
@@ -59,6 +59,13 @@
         <Toolbar >
             <Button icon="sap-icon://user-settings" press="showUserDialog" />
             <ToolbarSpacer />
+                <SegmentedButton selectedKey="all" selectionChange="forceRefresh" >
+                    <items>
+                        <SegmentedButtonItem icon="sap-icon://initiative" key="new" />
+                        <SegmentedButtonItem icon="sap-icon://bo-strategy-management" key="all" />
+                        <SegmentedButtonItem icon="sap-icon://arrow-down" key="learned" />
+                    </items>
+                </SegmentedButton>
                 <Button text="refresh" press="forceRefresh" />
             <ToolbarSpacer />
             <Button visible="{= %{/Profile/id} !== 'anonymous' }" icon="sap-icon://add" press="addText" />

@@ -124,8 +124,16 @@ sap.ui.define([
             })  
         },
 
-        forceRefresh: function () {
-            this.getView().byId("idCarousel").getBinding("pages").refresh()
+        forceRefresh: function (e) {
+            
+            var carousel = this.getView().byId("idCarousel")
+            if (e.getParameter("item")) {
+                var key = e.getParameter("item").getKey()
+                var filter = []
+                if( key != 'all' ) filter.push(new Filter("skip", "EQ", key == 'new' ? false : true))
+                carousel.getBinding("pages").filter(filter, 'Application')
+            } else carousel.getBinding("pages").refresh()
+
             this.getView().byId("idFacetFilter").getLists().forEach(function (list) {
                 list.getBinding("items").refresh()
             })
