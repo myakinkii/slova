@@ -14,6 +14,7 @@ service TextsService {
     entity Decks @(restrict: [{
         grant: [
             'READ',
+            'WRITE',
             'addToParent'
         ],
         to   : 'authenticated-user',

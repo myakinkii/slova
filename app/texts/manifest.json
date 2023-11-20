@@ -79,6 +79,11 @@
                     "target": "listReport"
                 },
                 {
+                    "pattern": "/Decks({key}):?query:",
+                    "name": "deckPage",
+                    "target": "deckPage"
+                },
+                {
                     "pattern": "/Texts({key}):?query:",
                     "name": "customPage",
                     "target": "customPage"
@@ -106,6 +111,11 @@
                             "entitySet": "Texts",
                             "initialLoad": true,
                             "navigation": {
+                                "Decks": {
+                                    "detail": {
+                                        "route": "deckPage"
+                                    }
+                                },
                                 "Texts": {
                                     "detail": {
                                         "route": "customPage"
@@ -136,6 +146,16 @@
                                     }
                                 }
                             }
+                        }
+                    }
+                },
+                "deckPage": {
+                    "type": "Component",
+                    "id": "deckPage",
+                    "name": "sap.fe.templates.ObjectPage",
+                    "options": {
+                        "settings": {
+                            "entitySet": "Decks"
                         }
                     }
                 },

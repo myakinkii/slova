@@ -1,3 +1,5 @@
+// annotate TextsService.Decks with @odata.draft.enabled;
+
 annotate TextsService.Decks with @UI: {
     HeaderInfo     : {
         TypeName      : '{i18n>Deck}',
@@ -19,6 +21,55 @@ annotate TextsService.Decks with @UI: {
         {Value: name},
         {Value: createdAt}
     ],
+    Facets         : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target: 'texts/@UI.LineItem',
+            Label : '{i18n>Texts}'
+        },
+        {
+            $Type : 'UI.ReferenceFacet',
+            Target: 'decks/@UI.LineItem',
+            Label : '{i18n>Decks}'
+        }
+    ]
+};
+
+annotate TextsService.Decks.texts with @(
+    Capabilities.DeleteRestrictions: {Deletable: true},
+    Capabilities.InsertRestrictions: {Insertable: false},
+    Capabilities.UpdateRestrictions: {Updatable: false}
+);
+
+annotate TextsService.Decks.texts with @UI: {
+    HeaderInfo: {
+        TypeName      : '{i18n>Text}',
+        TypeNamePlural: '{i18n>Texts}',
+        Title         : {Value: text.name},
+        Description   : {Value: text.lang_code}
+    },
+    LineItem  : [{
+        Value                 : text.name,
+        ![@HTML5.CssDefaults] : {width: 'auto'}
+    }]
+};
+
+annotate TextsService.Decks.decks with @(
+    Capabilities.DeleteRestrictions: {Deletable: true},
+    Capabilities.InsertRestrictions: {Insertable: false},
+    Capabilities.UpdateRestrictions: {Updatable: false}
+);
+
+annotate TextsService.Decks.decks with @UI: {
+    HeaderInfo: {
+        TypeName      : '{i18n>Deck}',
+        TypeNamePlural: '{i18n>Decks}',
+        Title         : {Value: deck.name}
+    },
+    LineItem  : [{
+        Value                 : deck.name,
+        ![@HTML5.CssDefaults] : {width: 'auto'}
+    }]
 };
 
 annotate TextsService.Texts with @UI: {
