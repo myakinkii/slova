@@ -10,26 +10,32 @@ sap.ui.define([
 
         onInit: function () {
             var deck = JSON.parse(window.localStorage.getItem("deck") || 'null')
-            var filterModel = new JSONModel({
-                import_ID: { key: "import_ID", vals: {} },
-                createdBy: { key: "createdBy", vals: {} },
-                pos: { key: "pos", vals: {} },
-                lang: { key: "lang", vals: {} },
-                deck: { key: "deck", vals: {} }
-            })
-            if (deck) filterModel.setData(deck)
+            var filterModel = new JSONModel( deck || this.getEmptyModel())
             this.getView().setModel(filterModel, "deck")
             PageController.prototype.onInit.apply(this);
         },
 
         onBeforeRendering: function () {
-            var filterModel = this.getView().getModel("deck")
-            var deck = filterModel.getData()
+            var filterData = this.getView().getModel("deck").getData()
+            this.syncFacetFilter(filterData)
+            this.applyFilter(filterData)
+        },
+
+        getEmptyModel: function(){
+            return {
+                import_ID: { key: "import_ID", vals: {} },
+                createdBy: { key: "createdBy", vals: {} },
+                pos: { key: "pos", vals: {} },
+                lang: { key: "lang", vals: {} },
+                deck: { key: "deck", vals: {} }
+            }
+        },
+
+        syncFacetFilter : function(filterData){
             this.getView().byId("idFacetFilter").getLists().forEach(function (list) {
-                var vals = deck[list.getKey()].vals
+                var vals = filterData[list.getKey()].vals
                 list.setSelectedKeys(vals);
             });
-            this.applyFilter()
         },
 
         getRandomForm: function (form1) {
@@ -52,8 +58,9 @@ sap.ui.define([
         },
 
         clearFilter: function () {
-            this.getView().byId("idFacetFilter").getLists().forEach(function (list) { list.setSelectedKeys() });
+            // this.getView().byId("idFacetFilter").getLists().forEach(function (list) { list.setSelectedKeys() });
             this.getView().byId("idCarousel").getBinding("pages").filter([], 'Control')
+            this.syncFacetFilter(this.getEmptyModel())
             window.localStorage.setItem("deck", 'null')
         },
 
@@ -61,30 +68,22 @@ sap.ui.define([
             var filterModel = this.getView().getModel("deck")
             var key = e.getSource().getKey()
             var vals = e.getSource().getSelectedKeys()
+            
             filterModel.setProperty("/" + key + "/vals", vals)
-            if (key == 'deck') filterModel.setData({ 
-                import_ID: { key: "import_ID", vals: {} },
-                createdBy: { key: "createdBy", vals: {} },
-                pos: { key: "pos", vals: {} },
-                lang: { key: "lang", vals: {} },
-                deck: { vals: vals }
-            })
-            window.localStorage.setItem("deck", JSON.stringify(filterModel.getData()))
-            this.applyFilter()
+            if (key == 'deck') filterModel.setProperty("/import_ID/vals", {})
+            if (key == 'import_ID') filterModel.setProperty("/deck/vals", {})
+            
+            var filterData = filterModel.getData()
+            window.localStorage.setItem("deck", JSON.stringify(filterData))
+            this.syncFacetFilter(filterData)
+            this.applyFilter(filterData)
         },
 
-        applyFilter: function () {
-
-            var facetFilter = this.getView().byId("idFacetFilter")
-            var odata = facetFilter.getModel()
-
-            var selectedFilters = facetFilter.getLists().filter(function (list) {
-                return list.getSelectedItems().length;
-            });
+        calculateFilters: function(filterData, odataModel){
 
             function resolveDeckFilter(deck){
                 return new Promise(function(resolve,reject){
-                    var action = odata.bindContext("/resolveDeckFilter(...)")
+                    var action = odataModel.bindContext("/resolveDeckFilter(...)")
                     action.setParameter("deck", deck)
                     action.execute().then(function () {
                         var ctx = action.getBoundContext().getObject()
@@ -96,30 +95,42 @@ sap.ui.define([
                 })
             }
 
-            var filterPromise = new Promise(function(resolve,reject){
-                var filter = []
-                if (selectedFilters.length == 0){
-                    return resolve(filter)
-                } else if (selectedFilters.length==1 && selectedFilters[0].getKey()=='deck') {
-                    var deck = selectedFilters[0].getSelectedItems()[0].getKey()
-                    return resolveDeckFilter(deck).then(function(texts){
-                        if (texts.length) filter = new Filter(texts.map(function (text) {
-                            return new Filter("import_ID", "EQ", text);
-                        }), false);
-                        return resolve(filter)
+            return new Promise(function(resolve,reject){
+
+                var selectedFilters = Object.values(filterData).reduce(function(prev, cur){
+                    if (cur.key=='deck') return prev // skip deck
+                    var keys = Object.keys(cur.vals)
+                    if (keys.length > 0) prev[cur.key]=keys
+                    return prev
+                },{})
+
+                var resolved = Promise.resolve(selectedFilters)
+
+                var deck = Object.keys(filterData['deck'].vals)[0]
+                if (deck) {
+                    resolved = resolveDeckFilter(deck, odataModel).then(function(texts){
+                        selectedFilters["import_ID"]=texts
+                        return Promise.resolve(selectedFilters)
                     })
-                } else if (selectedFilters.length) {
-                    filter = new Filter(selectedFilters.map(function (list) {
-                        return new Filter(list.getSelectedItems().map(function (item) {
-                            return new Filter(list.getKey(), "EQ", item.getKey());
+                }
+
+                return resolved.then(function(selectedFilters){
+                    var filter = []
+                    var entries = Object.entries(selectedFilters)
+                    if (entries.length==0) return resolve(filter)
+                    filter = new Filter(entries.map(function (item) {
+                        return new Filter(item[1].map(function (val) {
+                            return new Filter(item[0], "EQ", val);
                         }), false);
                     }), true);
                     return resolve(filter)
-                }
-            })
+                })
+            }) 
+        },
 
+        applyFilter: function (filterData) {
             var carousel = this.getView().byId("idCarousel")
-            filterPromise.then(function(filter){
+            this.calculateFilters(filterData, carousel.getModel()).then(function(filter){
                 carousel.getBinding("pages").filter(filter, 'Control')
             })  
         },
