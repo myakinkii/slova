@@ -22,13 +22,10 @@ sap.ui.define([
         },
 
         getEmptyModel: function(){
-            return {
-                import_ID: { key: "import_ID", vals: {} },
-                createdBy: { key: "createdBy", vals: {} },
-                pos: { key: "pos", vals: {} },
-                lang: { key: "lang", vals: {} },
-                deck: { key: "deck", vals: {} }
-            }
+            return ['import_ID', 'createdBy', 'pos', 'lang', 'deck'].reduce(function(prev,cur){
+                prev[cur] = { key: cur, vals:{} }
+                return prev
+            },{})
         },
 
         syncFacetFilter : function(filterData){
@@ -58,17 +55,18 @@ sap.ui.define([
         },
 
         clearFilter: function () {
-            // this.getView().byId("idFacetFilter").getLists().forEach(function (list) { list.setSelectedKeys() });
-            this.getView().byId("idCarousel").getBinding("pages").filter([], 'Control')
-            this.syncFacetFilter(this.getEmptyModel())
+            var filterData = this.getEmptyModel()
+            this.getView().getModel("deck").setData(filterData)
             window.localStorage.setItem("deck", 'null')
+            this.syncFacetFilter(filterData)
+            this.applyFilter(filterData)
         },
 
         setFilter: function (e) {
             var filterModel = this.getView().getModel("deck")
             var key = e.getSource().getKey()
             var vals = e.getSource().getSelectedKeys()
-            
+
             filterModel.setProperty("/" + key + "/vals", vals)
             if (key == 'deck') filterModel.setProperty("/import_ID/vals", {})
             if (key == 'import_ID') filterModel.setProperty("/deck/vals", {})
