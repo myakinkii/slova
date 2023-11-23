@@ -36,7 +36,7 @@
                                 <l:HorizontalLayout class="sapUiContentPadding" 
                                     content="{path:'tokens', sorter: { path: 'index', descending: false} }">
                                     <l:content>
-                                        <Link text="{parts:[
+                                        <Link accessibleRole="Button" text="{parts:[
                                             {path:'form'},
                                             {path:'pos'},
                                             {path: '/Profile/pos'}
