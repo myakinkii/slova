@@ -64,7 +64,7 @@
                 </IconTabFilter>
                 <IconTabSeparator/>
                 <IconTabFilter text="Decks" key="DECKS" count="{ path:'/Decks/$count' }" >
-                    <macros:FilterBar metaPath="/Decks/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar3" liveMode="false" />
+                    <macros:FilterBar metaPath="/Decks/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar3" liveMode="true" />
                     <macros:Table metaPath="/Decks/@com.sap.vocabularies.UI.v1.LineItem" id="macroTable3" filterBar="FilterBar3" />
                 </IconTabFilter>
             </items>

@@ -42,7 +42,10 @@ sap.ui.define([
         },
 
         forceRefresh:function(){
-            // this.getView().byId("macroTable").refresh() // does not exist until 1.117.0
+            this.getView().byId("macroTable").getAggregation("content").getRowBinding().refresh()
+            this.getView().byId("macroTable2").getAggregation("content").getRowBinding().refresh()
+            this.getView().byId("macroTable3").getAggregation("content").getRowBinding().refresh()
+            // this.getView().byId("macroTable").refresh() // does not exist until 1.117.0 (but ^ this works)
             // this.getView().byId("macroTable2").refresh() // but there odata.concat is broken in macors.Field
             this.getView().byId("idCarousel").getBinding("pages").refresh()
             this.getView().byId("idFacetFilter").getLists().forEach(function (list) {
