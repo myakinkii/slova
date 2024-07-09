@@ -1,6 +1,7 @@
 const langs = {
-    hr: require('./definitions/hjp'),
-    ru: require('./definitions/gramota')
+    cs: require('./definitions/cs_prirucka'),
+    hr: require('./definitions/hr_hjp'),
+    ru: require('./definitions/ru_gramota')
 }
 
 module.exports = {
