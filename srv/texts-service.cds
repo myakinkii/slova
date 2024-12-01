@@ -52,7 +52,7 @@ service TextsService {
         where: 'createdBy = $user'
     }])                  as
         select from db.Decks {
-            ID   as code,
+            key ID   as code,
             name as text,
             createdBy,
             1    as count : Integer
@@ -65,7 +65,7 @@ service TextsService {
         where: 'createdBy = $user or status = 9'
     }])                  as
         select from SlovaDistinct {
-            pos        as code,
+            key pos        as code,
             pos        as text,
             createdBy,
             status,
@@ -81,7 +81,7 @@ service TextsService {
         where: 'createdBy = $user or status = 9'
     }])                  as
         select from SlovaDistinct {
-            lang       as code,
+            key lang       as code,
             lang       as text,
             createdBy,
             status,
@@ -93,11 +93,11 @@ service TextsService {
     @readonly
     entity SlovaDistinct as
         select distinct
-            pos,
-            morphem,
-            lang,
-            createdBy,
-            status
+            key pos,
+            key morphem,
+            key lang,
+            key createdBy,
+            key status
         from Slova
         where
                createdBy = $user
@@ -110,7 +110,7 @@ service TextsService {
         where: 'createdBy = $user or status = 9'
     }])                  as
         select from Slova {
-            import.ID   as code,
+            key import.ID   as code,
             import.name as text,
             createdBy,
             status,
@@ -128,7 +128,7 @@ service TextsService {
         where: 'createdBy = $user or status = 9'
     }])                  as
         select from Texts {
-            createdBy  as code,
+            key createdBy  as code,
             authorName as text,
             createdBy,
             status,

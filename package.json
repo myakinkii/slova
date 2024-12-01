@@ -7,7 +7,7 @@
   "private": true,
   "dependencies": {
     "@cap-js/sqlite": "^1.0.1",
-    "@sap/cds": "^7.0.2",
+    "@sap/cds": "^8.5.0",
     "axios": "^1.4.0",
     "conllu": "^0.1.2",
     "cors": "^2.8.5",
@@ -16,7 +16,7 @@
     "python-shell": "^5.0.0"
   },
   "devDependencies": {
-    "cds-swagger-ui-express": "^0.6.0"
+    "cds-swagger-ui-express": "^0.10.0"
   },
   "scripts": {
     "start": "cds run"
@@ -37,9 +37,11 @@
       },
       "db": {
         "kind": "sqlite",
-        "credentials": { "url": "db.sqlite" },
-        "schema_evolution": "auto" 
-     }
+        "credentials": {
+          "url": "db.sqlite"
+        },
+        "schema_evolution": "auto"
+      }
     }
   },
   "eslintConfig": {
