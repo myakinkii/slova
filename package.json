@@ -19,7 +19,7 @@
     "cds-swagger-ui-express": "^0.10.0"
   },
   "scripts": {
-    "start": "cds run"
+    "start": "cds-serve"
   },
   "cds": {
     "requires": {
