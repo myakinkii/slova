@@ -154,15 +154,17 @@ annotate TextsService.Sentences.tokens with @UI: {
     LineItem          : [
         {
             $Type                 : 'UI.DataFieldForAnnotation',
-            Target                : '@UI.FieldGroup#Mobile',
+            Target                : '@UI.FieldGroup#MobileFixConcat',
             Label                 : 'Type Information',
             ![@HTML5.CssDefaults] : {width: '25rem'}
         },
         {Value: index},
-    // {Value: form},
-    // {Value: lemma},
-    // {Value: pos}
     ],
+    FieldGroup #MobileFixConcat: {Data: [
+        {Value: form},
+        {Value: lemma},
+        {Value: pos}
+    ]},
     FieldGroup #Mobile: {Data: [{Value: {$edmJson: {
         $Apply   : [
             {Path: 'form'},
