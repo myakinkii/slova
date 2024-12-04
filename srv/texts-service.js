@@ -15,6 +15,7 @@ class TextsService extends BaseService {
         this.on('createDeck', this.createDeckHandler)
         this.on('addToParent', this.addToParentHandler)
         this.on('addToDeck', this.addToDeckHandler)
+        this.on('mergeToText', this.mergeToTextHandler)
         this.on('parseText', this.parseTextHandler)
         this.on('generateText', this.generateTextHandler)
         this.on('createText', this.createTextHandler)
@@ -87,6 +88,17 @@ class TextsService extends BaseService {
             up__ID: deckId,
             text_ID: ID
         })
+    }
+
+    async mergeToTextHandler(req) {
+        const ID = req.params[0]
+        const targetId = req.data.text
+        const { Import:Texts } = cds.entities("cc.slova.model")
+        const source = await cds.read(Texts, {ID})
+        const target = await cds.read(Texts, {ID: targetId })
+        await cds.update(Texts, {ID:targetId}).with({ input: target.input + '\n' + source.input })
+        await cds.delete(Texts, {ID})
+        return {ID:targetId}
     }
 
     async getDefinitionUrl(req) {

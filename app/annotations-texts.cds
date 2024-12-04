@@ -94,6 +94,11 @@ annotate TextsService.Texts with @UI: {
     LineItem           : [
         {
             $Type : 'UI.DataFieldForAction',
+            Action: 'TextsService.mergeToText',
+            Label : '{i18n>texts.mergeToText}'
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
             Action: 'TextsService.addToDeck',
             Label : '{i18n>texts.addToDeck}'
         },

@@ -169,7 +169,8 @@ service TextsService {
                 'WRITE',
                 'parseText',
                 'generateText',
-                'addToDeck'
+                'addToDeck',
+                'mergeToText'
             ],
             to   : 'authenticated-user',
             where: 'createdBy = $user'
@@ -237,6 +238,36 @@ service TextsService {
                                       }
                                   }
                               ) deck : UUID);
+
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {
+                    TargetEntities  : [
+                        '/TextsService.EntityContainer/Texts'
+                    ]
+                }
+            )
+            action mergeToText( @(
+                                  title:'{i18n>text}',
+                                  Common:{
+                                      ValueListWithFixedValues: true,
+                                      ValueList               : {
+                                          Label         : '{i18n>text}',
+                                          CollectionPath: 'Texts',
+                                          Parameters    : [
+                                              {
+                                                  $Type            : 'Common.ValueListParameterInOut',
+                                                  ValueListProperty: 'ID',
+                                                  LocalDataProperty: text
+                                              },
+                                              {
+                                                  $Type            : 'Common.ValueListParameterDisplayOnly',
+                                                  ValueListProperty: 'name'
+                                              }
+                                          ]
+                                      }
+                                  }
+                              ) text : UUID);
         };
 
     @readonly
