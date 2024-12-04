@@ -98,7 +98,7 @@ class TextsService extends BaseService {
         const target = await cds.read(Texts, {ID: targetId })
         await cds.update(Texts, {ID:targetId}).with({ input: target.input + '\n' + source.input })
         await cds.delete(Texts, {ID})
-        return {ID:targetId}
+        return {ID}
     }
 
     async getDefinitionUrl(req) {
