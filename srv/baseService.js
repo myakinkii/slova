@@ -1,4 +1,5 @@
 const cds = require('@sap/cds')
+const crypto = require('crypto')
 const definitionFinder = require('./lib/definitionFinder')
 
 class BaseService extends cds.ApplicationService {
@@ -7,11 +8,15 @@ class BaseService extends cds.ApplicationService {
         await this.getProfile(req.user.id)
     }
 
+    getPwdHash (pwdString) {
+        return crypto.createHash('md5').update(pwdString).digest("hex")
+    }
+
     async getProfile(userId) {
         const { Users } = cds.entities("cc.slova.model")
         let profile = await this.read(Users, { id: userId })
         if (!profile) {
-            profile = { id: userId, pwd:userId, defaultLang_code: 'en' }
+            profile = { id: userId, pwd: this.getPwdHash(userId), defaultLang_code: 'en' }
             await this.create(Users).entries(profile)
         }
         return profile
