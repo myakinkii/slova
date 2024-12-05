@@ -66,9 +66,9 @@ class ImportService extends BaseService {
         const all = await cds.read(Import).columns('createdBy','lang_code','name','text')
         all.forEach( t => {
             let exportDir = './test/export'
-            if (!fs.existsSync(exportDir=`${exportDir}/${t.createdBy}`)) fs.mkdirSync(exportDir)
-            if (!fs.existsSync(exportDir=`${exportDir}/${t.lang_code}`)) fs.mkdirSync(exportDir)
             try {
+                if (!fs.existsSync(exportDir=`${exportDir}/${t.createdBy}`)) fs.mkdirSync(exportDir)
+                if (!fs.existsSync(exportDir=`${exportDir}/${t.lang_code}`)) fs.mkdirSync(exportDir)
                 const fileName = `${exportDir}/${t.name}.conllu`
                 const content = t.text || ''
                 fs.writeFileSync(fileName, content)
