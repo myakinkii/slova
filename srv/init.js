@@ -98,7 +98,8 @@ module.exports = async (db) => {
         if (exists.length) return exists[0].ID
         const ID = cds.utils.uuid()
         const data = fs.readFileSync(`./test/conllu/${lang}/${dir}/${fileName}`, 'utf8')
-        await cds.create(Import).entries({ ID: ID, name: name, text: data, lang_code: lang, createdBy: owner })
+        const input = data.split('\n').filter( s => s.startsWith("#")).map( s => s.replace("# text = ","")).join("\n")
+        await cds.create(Import).entries({ ID: ID, name: name, text: data, lang_code: lang, createdBy: owner, input })
         return ID
     }
 
