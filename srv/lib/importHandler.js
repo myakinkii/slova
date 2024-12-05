@@ -167,7 +167,7 @@ class ImportHandler {
                     token.pos = merge.pos
                     token.feats = merge.feats
                 }
-                text+= `${token.index}\t${token.form}\t${token.lemma}\t${token.pos}\t_\t${token.feats||'_'}\n`
+                text+= `${token.index+1}\t${token.form}\t${token.lemma}\t${token.pos}\t_\t${token.feats||'_'}\n`
             })
             text+=`\n`
         })
