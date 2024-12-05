@@ -1,5 +1,6 @@
 const cds = require('@sap/cds')
 const ImportHandler = require('./lib/importHandler')
+const fs = require('fs')
 
 const { BaseService } = require('./baseService')
 
@@ -16,6 +17,7 @@ class ImportService extends BaseService {
         this.on('parseText', this.parseTextHandler)
         this.on('parseInput', this.parseInputHandler)
         this.on('mergeResults', this.performImportHandler)
+        this.on('exportAll', this.performExportHandler)
         this.after('READ', 'Sentences', this.getGoogleTranslate)
         await super.init()
     }
@@ -57,6 +59,24 @@ class ImportService extends BaseService {
     async performImportHandler(req, next) {
         const {ID} = req.params[0]
         return this.importHandler.performImport(ID)
+    }
+
+    async performExportHandler(req, next) {
+        const { Import } = this.entities
+        const all = await cds.read(Import).columns('createdBy','lang_code','name','text')
+        all.forEach( t => {
+            let exportDir = './test/export'
+            if (!fs.existsSync(exportDir=`${exportDir}/${t.createdBy}`)) fs.mkdirSync(exportDir)
+            if (!fs.existsSync(exportDir=`${exportDir}/${t.lang_code}`)) fs.mkdirSync(exportDir)
+            try {
+                const fileName = `${exportDir}/${t.name}.conllu`
+                const content = t.text || ''
+                fs.writeFileSync(fileName, content)
+            } catch (e){
+                console.log(e)
+            }
+        })
+        return all.length
     }
 
     async addSentence(entity, pars) {
