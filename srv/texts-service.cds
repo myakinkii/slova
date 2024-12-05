@@ -158,9 +158,24 @@ service TextsService {
     ]})
     action createText(input : String)                   returns Texts;
 
-    entity Texts @(restrict: [
+    entity TextsVH @(restrict: [
         {
             grant: ['READ'],
+            to   : 'authenticated-user',
+            where: 'createdBy = $user'
+        }]) as select from db.Import {
+            key ID, name,
+            createdBy, createdAt
+        } where status <> 9 order by createdAt desc;
+
+    @cds.redirection.target
+    entity Texts @(restrict: [
+        {
+            grant: [
+                'READ',
+                'addToDeck',
+                'mergeToText'
+            ],
             to   : 'authenticated-user',
             where: 'createdBy = $user or status = 9'
         },
@@ -168,9 +183,7 @@ service TextsService {
             grant: [
                 'WRITE',
                 'parseText',
-                'generateText',
-                'addToDeck',
-                'mergeToText'
+                'generateText'
             ],
             to   : 'authenticated-user',
             where: 'createdBy = $user'
@@ -253,7 +266,7 @@ service TextsService {
                                       ValueListWithFixedValues: true,
                                       ValueList               : {
                                           Label         : '{i18n>text}',
-                                          CollectionPath: 'Texts',
+                                          CollectionPath: 'TextsVH',
                                           Parameters    : [
                                               {
                                                   $Type            : 'Common.ValueListParameterInOut',

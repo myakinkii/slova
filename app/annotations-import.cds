@@ -113,6 +113,11 @@ annotate ImportService.Import with @UI: {
         Description   : {Value: name}
     },
     LineItem              : [
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'ImportService.EntityContainer/exportAll',
+            Label : '{i18n>exportAll}',
+        },
         {Value: createdBy},
         {Value: name},
         {Value: lang_code}

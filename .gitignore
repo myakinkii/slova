@@ -12,6 +12,7 @@ target/
 #ui5 build
 dist/
 
+test/export
 test/conllu
 test/reports
 
