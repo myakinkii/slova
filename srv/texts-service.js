@@ -93,11 +93,12 @@ class TextsService extends BaseService {
     async mergeToTextHandler(req) {
         const ID = req.params[0]
         const targetId = req.data.text
+        if (targetId == ID) throw new Error('FORBIDDEN')
         const { Import:Texts } = cds.entities("cc.slova.model")
         const source = await cds.read(Texts, {ID})
         const target = await cds.read(Texts, {ID: targetId })
         await cds.update(Texts, {ID:targetId}).with({ input: target.input + '\n' + source.input })
-        await cds.delete(Texts, {ID})
+        if (source.status != 9) await cds.delete(Texts, {ID}) // delete unpublished import
         return {ID}
     }
 
