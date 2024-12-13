@@ -19,7 +19,8 @@
     "cds-swagger-ui-express": "^0.10.0"
   },
   "scripts": {
-    "start": "cds-serve"
+    "start": "cds-serve",
+    "export": "curl -X POST 'http://localhost:4004/import/exportAll' -H 'Authorization: Basic YWRtaW46c2VjcmV0' -H 'Content-Type: application/json'"
   },
   "cds": {
     "server": {
