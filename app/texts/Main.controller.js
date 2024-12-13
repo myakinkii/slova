@@ -85,6 +85,24 @@ sap.ui.define([
             }
         },
 
+        googleTranslate:function(e){
+
+            var src = e.getSource()
+            var mdl = this.getView().getModel("ui")
+            var odata = src.getModel()
+
+            var action = odata.bindContext("TextsService.getGoogleTranslateLink(...)", src.getBindingContext() )
+            action.setParameter("text", mdl.getProperty("/speechToTextResult"))
+            action.setParameter("lang", src.getBindingContext().getProperty("lang_code"))
+
+            action.execute().then(function(){
+                var url = action.getBoundContext().getObject()
+                if (url.value) sap.m.URLHelper.redirect(url.value, true)
+            }).catch(function(err){
+                MessageToast.show(err.message)
+            })
+        },
+
         parseText:function(e){
             var src = e.getSource()
             var odata = src.getModel()

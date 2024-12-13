@@ -96,7 +96,8 @@
                     <Link target="_blank" href="{ui>/mediaLink}"
                         text="{= !!${ui>/mediaLink} ? ${i18n>captureAudioResultListen} : ${i18n>captureAudioResultPending} }" />
                     <Label text="{i18n>speechToTextResult}" />
-                    <Input value="{ui>/speechToTextResult}" />
+                    <Input value="{ui>/speechToTextResult}" showValueHelp="true" 
+                        valueHelpIconSrc="sap-icon://translate" valueHelpRequest="googleTranslate"/>
                 </f:SimpleForm>
 
                 <f:SimpleForm visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">

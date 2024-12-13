@@ -174,7 +174,9 @@ service TextsService {
             grant: [
                 'READ',
                 'addToDeck',
-                'mergeToText'
+                'mergeToText',
+                'speechToText',
+                'getGoogleTranslateLink'
             ],
             to   : 'authenticated-user',
             where: 'createdBy = $user or status = 9'
@@ -182,7 +184,6 @@ service TextsService {
         {
             grant: [
                 'WRITE',
-                'speechToText',
                 'parseText',
                 'generateText'
             ],
@@ -211,6 +212,7 @@ service TextsService {
         actions {
 
             action   speechToText(content : LargeString) returns String;
+            action getGoogleTranslateLink(lang:String, text: String) returns String;
 
             @(
                 cds.odata.bindingparameter.name: '_it',

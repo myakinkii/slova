@@ -17,6 +17,7 @@ class TextsService extends BaseService {
         this.on('addToDeck', this.addToDeckHandler)
         this.on('mergeToText', this.mergeToTextHandler)
         this.on('speechToText', this.speechToTextHandler)
+        this.on('getGoogleTranslateLink', this.getGoogleTranslateLinkHandler)
         this.on('parseText', this.parseTextHandler)
         this.on('generateText', this.generateTextHandler)
         this.on('createText', this.createTextHandler)
@@ -138,6 +139,14 @@ class TextsService extends BaseService {
         const data = await cds.read(Import, ID)
         const transcription = await speechRecognition.get(data.lang_code, req.data.content).catch(() => { })
         return transcription
+    }
+
+    async getGoogleTranslateLinkHandler (req, next) {
+        const { lang, text } = req.data
+        if (!text) return
+        const profile = await this.getProfile(req.user.id)
+        const googleTranslateBaseUrl = 'https://translate.google.com/'
+        return `${googleTranslateBaseUrl}?text=${encodeURIComponent(text)}&sl=${lang}&tl=${profile.defaultLang_code}&hl=${profile.defaultLang_code}`
     }
 
     async parseTextHandler(req, next) {
