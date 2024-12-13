@@ -59,16 +59,38 @@
                 </IconTabBar>
             </l:mainContent>
             <l:sideContent>
+
+                <f:SimpleForm _visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
+                    <Toolbar>
+                        <ToolbarSpacer/>
+                        <Label text="{i18n>special}"/>
+                        <ToolbarSpacer/>
+                    </Toolbar>
+                    <Label text="{i18n>special}"/>
+                    <Input value="č ć dž đ š ž  - Č Ć DŽ Đ Š Ž" />
+                </f:SimpleForm>
+                
+                <f:SimpleForm _visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
+                    <Toolbar>
+                        <ToolbarSpacer/>
+                        <ToggleButton text="{i18n>captureAudio}" press="captureAudio"/>
+                        <Button text="{i18n>speechToText}" press="speechToText" enabled="{= !!${ui>/mediaLink} }" />
+                        <ToolbarSpacer/>
+                    </Toolbar>
+
+                    <Label text="{i18n>captureAudioResult}" />
+                    <Link target="_blank" href="{ui>/mediaLink}"
+                        text="{= !!${ui>/mediaLink} ? ${i18n>captureAudioResultListen} : ${i18n>captureAudioResultPending} }" />
+                    <Label text="{i18n>speechToTextResult}" />
+                    <Input value="{ui>/speechToTextResult}" />
+                </f:SimpleForm>
+
                 <f:SimpleForm _visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
                     <Toolbar>
                         <ToolbarSpacer/>
                         <Button text="{i18n>parseText}" press="parseText"/>
                         <ToolbarSpacer/>
                     </Toolbar>
-
-                    <!-- <Label text="{i18n>special}"/>
-                    <Input value="č ć dž đ š ž" /> -->
-
                     <Label text="{i18n>pos}" />
                     <MultiComboBox binding="{/Profile}" selectedKeys="{path:'pos', targetType:'any', formatter:'.splitPosTokens' }" 
                             selectionChange=".changePos"

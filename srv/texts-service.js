@@ -1,6 +1,6 @@
 const cds = require('@sap/cds')
 const ImportHandler = require('./lib/importHandler')
-const definitionFinder = require('./lib/definitionFinder')
+const speechRecognition = require('./lib/externalSpeechRecognition')
 
 const { BaseService } = require('./baseService')
 
@@ -16,6 +16,7 @@ class TextsService extends BaseService {
         this.on('addToParent', this.addToParentHandler)
         this.on('addToDeck', this.addToDeckHandler)
         this.on('mergeToText', this.mergeToTextHandler)
+        this.on('speechToText', this.speechToTextHandler)
         this.on('parseText', this.parseTextHandler)
         this.on('generateText', this.generateTextHandler)
         this.on('createText', this.createTextHandler)
@@ -129,6 +130,14 @@ class TextsService extends BaseService {
         const textNameCreated = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'medium', hour12: false }).format(new Date());
         await cds.create(Import).entries({ ID: ID, name: textNameCreated, input: req.data.input, lang_code: profile.defaultLang_code, createdBy: profile.id })
         return { ID: ID }
+    }
+
+    async speechToTextHandler(req, next) {
+        const ID = req.params[0]
+        const { Import } = cds.entities("cc.slova.model")
+        const data = await cds.read(Import, ID)
+        const transcription = await speechRecognition.get(data.lang_code, req.data.content).catch(() => { })
+        return transcription
     }
 
     async parseTextHandler(req, next) {
