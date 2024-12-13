@@ -164,11 +164,11 @@ class TextsService extends BaseService {
         // so we will use this cds.tx() magic to commit before calling chatgpt
         // https://cap.cloud.sap/docs/node.js/cds-tx#srv-tx-fn
         let data, profile
-        await cds.tx(async (tx) => {
-            data = await tx.read(Import, ID)
+        // await cds.tx(async (tx) => {
+            data = await cds.read(Import, ID)
             if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
-            profile = await tx.read(Users, { id: req.user.id })
-        })
+            profile = await cds.read(Users, { id: req.user.id })
+        // })
         const chatGptResponse = await this.importHandler.callExternalGenerator(data.lang_code, profile.gptSize, profile.gptType, profile.gptLocation, profile.gptModifier)
         return cds.update(Import, ID).with({ input: chatGptResponse.replaceAll('\n\n', '\n') })
     }
