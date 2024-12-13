@@ -8,6 +8,8 @@ sap.ui.define([
 ], function (PageController, Fragment, JSONModel, MessageToast, BusyIndicator) {
     "use strict";
 
+    var mediaRecorder, chunks, blob
+
     return PageController.extend("cc.slova.textEditor.Main", {
 
         onInit: function () {
@@ -22,7 +24,7 @@ sap.ui.define([
 			this.getAppComponent().getRouter().getRoute("customPage").attachPatternMatched(function(e){
                 var query = e.getParameter("arguments")["?query"] || {}
                 var tab = query.selectedTab || "output"
-                uiModel.setData({ showSidePanel:tab=="input", selectedTab:tab })
+                uiModel.setData({ showSidePanel:tab=="input", selectedTab:tab, mediaLink:null, speechToTextResult:'' })
             });
 
             // document.addEventListener("selectionchange",this.onSelectText.bind(this))
@@ -31,6 +33,56 @@ sap.ui.define([
         onSelectText:function(e){
             var text = this.getView().byId("inputText").getSelectedText()
             console.log(text)
+        },
+
+        captureAudio:function(e){
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                console.log("getUserMedia not supported!")
+                return
+            }
+            var mdl = this.getView().getModel("ui")
+            var record = e.getSource().getPressed()
+            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                if (record) {
+                    mediaRecorder = new MediaRecorder(stream)
+                    chunks = []
+                    mediaRecorder.start(300) // sample at least every 300ms
+                    mediaRecorder.ondataavailable = (e) => { chunks.push(e.data) }
+                    mdl.setProperty("/mediaLink",null)
+                } else {
+                    mediaRecorder.stop()
+                    blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
+                    chunks = []
+                    mdl.setProperty("/mediaLink",window.URL.createObjectURL(blob))
+                }
+            }).catch((err) => {
+                console.log(err)
+            })
+        },
+
+        speechToText:function(e){
+
+            var src = e.getSource()
+            var mdl = this.getView().getModel("ui")
+            var odata = src.getModel()
+            var action = odata.bindContext("TextsService.speechToText(...)", src.getBindingContext() );
+
+            var fileReader = new FileReader()
+            fileReader.readAsDataURL(blob)
+            fileReader.onloadend = function(){
+                var base64 = fileReader.result.replace('data:audio/ogg; codecs=opus;base64,','')
+                action.setParameter("content", base64)
+                BusyIndicator.show(100)
+                action.execute().then(function(){
+                    var result = action.getBoundContext().getObject()
+                    mdl.setProperty("/speechToTextResult", result.value)
+                    BusyIndicator.hide();
+                }).catch(function(err){
+                    // console.log(err)
+                    BusyIndicator.hide();
+                    MessageToast.show(err.message)
+                })
+            }
         },
 
         parseText:function(e){

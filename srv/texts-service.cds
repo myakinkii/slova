@@ -182,6 +182,7 @@ service TextsService {
         {
             grant: [
                 'WRITE',
+                'speechToText',
                 'parseText',
                 'generateText'
             ],
@@ -208,6 +209,8 @@ service TextsService {
         order by
             Import.name asc
         actions {
+
+            action   speechToText(content : LargeString) returns String;
 
             @(
                 cds.odata.bindingparameter.name: '_it',
