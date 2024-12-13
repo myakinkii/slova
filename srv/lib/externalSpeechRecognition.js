@@ -6,7 +6,9 @@ const callGoogleCloud = async (lang, input) => {
 
     const payload = {
         config: {
-            languageCode: lang
+            languageCode: lang,
+            enableAutomaticPunctuation: true,
+            enableWordTimeOffsets: true
         },
         audio: {
             content: input
@@ -21,7 +23,7 @@ const callGoogleCloud = async (lang, input) => {
             'Accept': 'application/json'
         }
     })
-    return data.results[0].alternatives[0].transcript
+    return data.results.map( r => r.alternatives[0].transcript).join(" ")
 }
 
 module.exports = {
