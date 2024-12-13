@@ -22,6 +22,11 @@
     "start": "cds-serve"
   },
   "cds": {
+    "server": {
+      "body_parser": {
+        "limit": "1mb"
+      }
+    },
     "requires": {
       "auth": {
         "impl": "srv/custom-auth.js",
