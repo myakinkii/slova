@@ -241,13 +241,27 @@ annotate UserService.Cards with @UI: {
 annotate UserService.Skips with @UI: {
     HeaderInfo: {
         TypeName      : '{i18n>Skip}',
-        TypeNamePlural: '{i18n>Skips}'
+        TypeNamePlural: '{i18n>Skips}',
+        Title         : {Value: _slovo_morphem},
+
+        Description   : {Value: {$edmJson: {
+            $Apply   : [
+                {Path: '_slovo_pos'},
+                ' - ',
+                {Path: '_slovo_lang'}
+            ],
+            $Function: 'odata.concat'
+        }}}
     },
     LineItem  : [
-        {Value: slovo_morphem},
-        {Value: slovo_lang},
-        {Value: slovo_pos}
-    ]
+        {Value: _slovo_morphem},
+        {Value: _slovo_lang},
+        {Value: _slovo_pos}
+    ],
+    Facets              : [{
+        $Type : 'UI.ReferenceFacet',
+        Target: 'words/@UI.LineItem'
+    }]
 };
 
 annotate UserService.Texts with @UI: {
@@ -259,6 +273,18 @@ annotate UserService.Texts with @UI: {
         {Value: name},
         {Value: lang_code},
         {Value: status}
+    ]
+};
+
+annotate UserService.Words with @UI: {
+    HeaderInfo: {
+        TypeName      : '{i18n>Text}',
+        TypeNamePlural: '{i18n>Texts}'
+    },
+    LineItem  : [
+        {Value: count },
+        {Value: createdAt },
+        {Value: textName }
     ]
 };
 
