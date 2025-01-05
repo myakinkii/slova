@@ -36,9 +36,9 @@ sap.ui.define([
             sap.ushell.Container.getRenderer("fiori2").addUserAction({
                 controlType: "sap.m.Button",
                 oControlProperties: {
-                    text: i18n.getResourceBundle().getText("FLPUserActionButtonText"),
-                    icon: "sap-icon://customer",
-                    press: function() { dialogPromise.then(function(dialog) { 
+                    text: i18n.getResourceBundle().getText("FLPUserOnboardButtonText"),
+                    icon: "sap-icon://qr-code",
+                    press: function() { dialogPromise.then(function(dialog) {
                         dialog.open() }); 
                         self.syncAuthData(authModel)
                     }
@@ -46,12 +46,33 @@ sap.ui.define([
                 bIsVisible: true,
                 bCurrentState: false
             });
+
+            sap.ushell.Container.getRenderer("fiori2").addUserAction({
+                controlType: "sap.m.Button",
+                oControlProperties: {
+                    id: "FLPUserProfileButton",
+                    text: i18n.getResourceBundle().getText("FLPUserProfileButtonText"),
+                    icon: "sap-icon://customer",
+                    press: function() {
+                        var auth = self.getAuthData()
+                        if (auth.id) sap.ushell.Container.getService('CrossApplicationNavigation').toExternal({
+                            target: { semanticObject: "user", action: "profile" }, 
+                            params: { id: auth.id , IsActiveEntity: true }
+                        })
+                        else MessageToast.show(i18n.getResourceBundle().getText("FLPUserProfileOnboardFirstText"))
+                    }
+                },
+                bIsVisible: true,
+                bCurrentState: false
+            });
+        },
+
+        getAuthData: function(){
+            return JSON.parse(window.localStorage.getItem("auth") || '{}') 
         },
 
         syncAuthData:function(authModel, auth){
-            if(!auth) {
-                auth = JSON.parse(window.localStorage.getItem("auth") || '{}') 
-            }
+            if(!auth) auth = this.getAuthData()
             if (!auth.user) auth.user = authModel.getProperty("/user")
             if (!auth.id) auth.id = auth.pwd = auth.user
             authModel.setData(auth)
