@@ -244,9 +244,9 @@ annotate UserService.Skips with @UI: {
         TypeNamePlural: '{i18n>Skips}'
     },
     LineItem  : [
-        {Value: slovo.morphem},
-        {Value: slovo.lang},
-        {Value: slovo.pos}
+        {Value: slovo_morphem},
+        {Value: slovo_lang},
+        {Value: slovo_pos}
     ]
 };
 
