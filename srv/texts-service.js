@@ -17,6 +17,7 @@ class TextsService extends BaseService {
         this.on('addToDeck', this.addToDeckHandler)
         this.on('mergeToText', this.mergeToTextHandler)
         this.on('speechToText', this.speechToTextHandler)
+        this.on('addSpeechToInput', this.addSpeechToInputHandler)
         this.on('getGoogleTranslateLink', this.getGoogleTranslateLinkHandler)
         this.on('parseText', this.parseTextHandler)
         this.on('generateText', this.generateTextHandler)
@@ -136,9 +137,16 @@ class TextsService extends BaseService {
     async speechToTextHandler(req, next) {
         const ID = req.params[0]
         const { Import } = cds.entities("cc.slova.model")
-        const data = await cds.read(Import, ID)
+        const data = await cds.read(Import, ID).columns('lang_code')
         const transcription = await speechRecognition.get(data.lang_code, req.data.content).catch(() => { })
         return transcription
+    }
+
+    async addSpeechToInputHandler(req, next) {
+        const ID = req.params[0]
+        const { Import } = cds.entities("cc.slova.model")
+        const data = await cds.read(Import, ID).columns('input')
+        return cds.update(Import, ID).with({ input: ( data.input ? data.input + '\n' : '') + req.data.content })
     }
 
     async getGoogleTranslateLinkHandler (req, next) {

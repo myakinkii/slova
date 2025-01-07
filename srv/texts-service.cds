@@ -185,7 +185,8 @@ service TextsService {
             grant: [
                 'WRITE',
                 'parseText',
-                'generateText'
+                'generateText',
+                'addSpeechToInput'
             ],
             to   : 'authenticated-user',
             where: 'createdBy = $user'
@@ -213,6 +214,16 @@ service TextsService {
 
             action   speechToText(content : LargeString) returns String;
             action getGoogleTranslateLink(lang:String, text: String) returns String;
+            
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {
+                    TargetProperties: [
+                        '_it/input'
+                    ]
+                }
+            )
+            action addSpeechToInput(content : String);
 
             @(
                 cds.odata.bindingparameter.name: '_it',

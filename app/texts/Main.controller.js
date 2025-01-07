@@ -85,6 +85,23 @@ sap.ui.define([
             }
         },
 
+        addSpeechToInput:function(e){
+
+            var src = e.getSource()
+            var mdl = this.getView().getModel("ui")
+            var odata = src.getModel()
+            var action = odata.bindContext("TextsService.addSpeechToInput(...)", src.getBindingContext() )
+            action.setParameter("content", mdl.getProperty("/speechToTextResult"))
+
+            action.execute().then(function(){
+                mdl.setProperty("/speechToTextResult", '')
+                src.getBindingContext().refresh()
+            }).catch(function(err){
+                // console.log(err)
+                MessageToast.show(err.message)
+            })
+        },
+
         googleTranslate:function(e){
 
             var src = e.getSource()

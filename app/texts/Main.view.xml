@@ -90,6 +90,8 @@
                         <ToggleButton text="{i18n>captureAudio}" press="captureAudio"/>
                         <Button text="{i18n>speechToText}" press="speechToText" enabled="{= !!${ui>/mediaLink} }" />
                         <ToolbarSpacer/>
+                        <Button text="{i18n>addSpeechToInput}" press="addSpeechToInput" enabled="{= !!${ui>/speechToTextResult} }" />
+                        <ToolbarSpacer/>
                     </Toolbar>
 
                     <Label text="{i18n>captureAudioResult}" />
