@@ -176,6 +176,7 @@ service TextsService {
                 'addToDeck',
                 'mergeToText',
                 'speechToText',
+                'textToSpeech',
                 'getGoogleTranslateLink'
             ],
             to   : 'authenticated-user',
@@ -213,6 +214,8 @@ service TextsService {
         actions {
 
             action   speechToText(content : LargeString) returns String;
+            action   textToSpeech(text : String) returns LargeString;
+            
             action getGoogleTranslateLink(lang:String, text: String) returns String;
             
             @(

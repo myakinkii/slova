@@ -24,7 +24,11 @@ sap.ui.define([
 			this.getAppComponent().getRouter().getRoute("customPage").attachPatternMatched(function(e){
                 var query = e.getParameter("arguments")["?query"] || {}
                 var tab = query.selectedTab || "output"
-                uiModel.setData({ showSidePanel:tab=="input", selectedTab:tab, mediaLink:null, speechToTextResult:'' })
+                uiModel.setData({ 
+                    showSidePanel:tab=="input", selectedTab:tab, 
+                    mediaLink:null, mediaLink2:null,
+                    speechToTextResult:''
+                })
             });
 
             // document.addEventListener("selectionchange",this.onSelectText.bind(this))
@@ -60,29 +64,68 @@ sap.ui.define([
             })
         },
 
+        getBase64Voice:function(){
+            var fileReader = new FileReader()
+            fileReader.readAsDataURL(blob)
+            return new Promise(function(resolve, reject){
+                fileReader.onloadend = function(){
+                    resolve(fileReader.result.replace('data:audio/ogg; codecs=opus;base64,',''))
+                }
+            })
+        },
+
+        textToSpeech:function(e){
+
+            var src = e.getSource()
+            var mdl = this.getView().getModel("ui")
+            var odata = src.getModel()
+
+            if (mdl.getProperty("/mediaLink2")) return
+
+            var action = odata.bindContext("TextsService.textToSpeech(...)", src.getBindingContext() )
+            action.setParameter("text", mdl.getProperty("/speechToTextResult"))
+
+            BusyIndicator.show(100)
+            action.execute().then(function(){
+                var result = action.getBoundContext().getObject()
+                var byteArray = Uint8Array.from(atob(result.value), c => c.charCodeAt(0))
+                var speech = new Blob([byteArray], { type: "audio/ogg; codecs=opus" })
+                mdl.setProperty("/mediaLink2", window.URL.createObjectURL(speech))
+                BusyIndicator.hide();
+            }).catch(function(err){
+                // console.log(err)
+                BusyIndicator.hide();
+                MessageToast.show(err.message)
+            })
+
+            // to use our own voice
+            // this.getBase64Voice().then(function(base64Voice){
+            //     var byteArray = Uint8Array.from(atob(base64Voice), c => c.charCodeAt(0))
+            //     var speech = new Blob([byteArray], { type: "audio/ogg; codecs=opus" })
+            //     mdl.setProperty("/mediaLink2", window.URL.createObjectURL(speech))
+            // })
+        },
+
         speechToText:function(e){
 
             var src = e.getSource()
             var mdl = this.getView().getModel("ui")
             var odata = src.getModel()
             var action = odata.bindContext("TextsService.speechToText(...)", src.getBindingContext() );
-
-            var fileReader = new FileReader()
-            fileReader.readAsDataURL(blob)
-            fileReader.onloadend = function(){
-                var base64 = fileReader.result.replace('data:audio/ogg; codecs=opus;base64,','')
-                action.setParameter("content", base64)
+            this.getBase64Voice().then(function(base64Voice){
+                action.setParameter("content", base64Voice)
                 BusyIndicator.show(100)
-                action.execute().then(function(){
-                    var result = action.getBoundContext().getObject()
-                    mdl.setProperty("/speechToTextResult", result.value)
-                    BusyIndicator.hide();
-                }).catch(function(err){
-                    // console.log(err)
-                    BusyIndicator.hide();
-                    MessageToast.show(err.message)
-                })
-            }
+                return action.execute()
+            }).then(function(){
+                var result = action.getBoundContext().getObject()
+                mdl.setProperty("/speechToTextResult", result.value)
+                mdl.setProperty("/mediaLink2", null)
+                BusyIndicator.hide();
+            }).catch(function(err){
+                // console.log(err)
+                BusyIndicator.hide();
+                MessageToast.show(err.message)
+            })
         },
 
         addSpeechToInput:function(e){

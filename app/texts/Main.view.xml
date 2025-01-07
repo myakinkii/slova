@@ -90,8 +90,8 @@
                         <ToggleButton text="{i18n>captureAudio}" press="captureAudio"/>
                         <Button text="{i18n>speechToText}" press="speechToText" enabled="{= !!${ui>/mediaLink} }" />
                         <ToolbarSpacer/>
-                        <Button text="{i18n>addSpeechToInput}" press="addSpeechToInput" enabled="{= !!${ui>/speechToTextResult} }" />
-                        <ToolbarSpacer/>
+                        <!-- <Button text="{i18n>addSpeechToInput}" press="addSpeechToInput" enabled="{= !!${ui>/speechToTextResult} }" /> -->
+                        <!-- <ToolbarSpacer/> -->
                     </Toolbar>
 
                     <Label text="{i18n>captureAudioResult}" />
@@ -99,7 +99,22 @@
                         text="{= !!${ui>/mediaLink} ? ${i18n>captureAudioResultListen} : ${i18n>captureAudioResultPending} }" />
                     <Label text="{i18n>speechToTextResult}" />
                     <Input value="{ui>/speechToTextResult}" showValueHelp="true" 
-                        valueHelpIconSrc="sap-icon://translate" valueHelpRequest="googleTranslate"/>
+                        valueHelpIconSrc="sap-icon://translate" valueHelpRequest="googleTranslate">
+                        <layoutData>
+                            <l:GridData span="XL4 L4 M6 S11" />
+                        </layoutData>
+                    </Input>
+                    <Button _text="{i18n>addSpeechToInput}" icon="sap-icon://edit-outside" press="addSpeechToInput" enabled="{= !!${ui>/speechToTextResult} }">
+
+                        <layoutData>
+                            <l:GridData span="XL1 L1 M1 S1" />
+                        </layoutData>
+                    </Button>
+
+                    <Label text="{i18n>captureAudioSpeak}" />
+                    <Link target="_blank" href="{ui>/mediaLink2}" press="textToSpeech" enabled="{= !!${ui>/speechToTextResult} }"
+                        text="{= !!${ui>/speechToTextResult} ? ${i18n>captureAudioResultListen} : ${i18n>captureAudioResultPending} }" />
+
                 </f:SimpleForm>
 
                 <f:SimpleForm visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
