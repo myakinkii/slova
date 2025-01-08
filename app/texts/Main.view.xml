@@ -30,21 +30,20 @@
                     <TextArea enabled="{= %{/Profile/id} !== 'anonymous' }" id="inputText" width="100%" rows="20" value="{input}"/>
                     </IconTabFilter>
                     <IconTabFilter text="Output" key="output">
-                        <Panel _headerText="Text" expandable="false" expanded="true" _class="sapUiMediumMarginTop" 
-                            content="{path:'sentences', sorter: { path: 'index', descending: false} }">
-                            <content>
-                                <l:HorizontalLayout class="sapUiContentPadding" 
-                                    content="{path:'tokens', sorter: { path: 'index', descending: false} }">
-                                    <l:content>
-                                        <Link accessibleRole="Button" text="{parts:[
-                                            {path:'form'},
-                                            {path:'pos'},
-                                            {path: '/Profile/pos'}
-                                        ],formatter:'cc.slova.textEditor.globalFormatter.linkFormat'}" 
-                                        press="showWordPopover" />
-                                    </l:content>
+                        <Panel _headerText="Text" expandable="false" expanded="true" _class="sapUiMediumMarginTop" >
+                            <l:VerticalLayout class="sapUiContentPadding" content="{path:'sentences', sorter: { path: 'index', descending: false} }">
+                                    <l:HorizontalLayout> 
+                                        <Link text="..." emphasized="true" press="showSentencePopover" />
+                                        <l:HorizontalLayout content="{path:'tokens', sorter: { path: 'index', descending: false} }">
+                                            <Link class="sapUiSmallMarginBegin" accessibleRole="Button" text="{parts:[
+                                                {path:'form'},
+                                                {path:'pos'},
+                                                {path: '/Profile/pos'}
+                                            ],formatter:'cc.slova.textEditor.globalFormatter.linkFormat'}" 
+                                            press="showWordPopover" />
+                                    </l:HorizontalLayout>
                                 </l:HorizontalLayout>
-                            </content>
+                            </l:VerticalLayout>
                         </Panel>
                         <Panel headerText="Sentences" expandable="true" expanded="false" class="sapUiMediumMarginTop">
                             <macros:FilterBar metaPath="sentences/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarSent" liveMode="true" />

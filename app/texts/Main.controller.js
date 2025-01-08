@@ -19,6 +19,11 @@ sap.ui.define([
             this.popoverPromise.then(function(popover){
                 popover.setModel(uiModel,"ui")
             })
+
+            this.popoverSentPromise = Fragment.load({ name: "cc.slova.textEditor.SentencePopover", controller: this })
+            this.popoverSentPromise.then(function(popover){
+                popover.setModel(uiModel,"ui")
+            })
             this.getView().setModel(uiModel,"ui")
 
 			this.getAppComponent().getRouter().getRoute("customPage").attachPatternMatched(function(e){
@@ -74,36 +79,38 @@ sap.ui.define([
             })
         },
 
-        textToSpeech:function(e){
+        getGoogleSpeechResult:function(ctx, text){
 
-            var src = e.getSource()
-            var mdl = this.getView().getModel("ui")
-            var odata = src.getModel()
-
-            if (mdl.getProperty("/mediaLink2")) return
-
-            var action = odata.bindContext("TextsService.textToSpeech(...)", src.getBindingContext() )
-            action.setParameter("text", mdl.getProperty("/speechToTextResult"))
+            var action = ctx.getModel().bindContext("TextsService.textToSpeech(...)", ctx )
+            action.setParameter("text", text)
 
             BusyIndicator.show(100)
-            action.execute().then(function(){
-                var result = action.getBoundContext().getObject()
-                var byteArray = Uint8Array.from(atob(result.value), c => c.charCodeAt(0))
-                var speech = new Blob([byteArray], { type: "audio/ogg; codecs=opus" })
-                mdl.setProperty("/mediaLink2", window.URL.createObjectURL(speech))
-                BusyIndicator.hide();
+            return new Promise(function(resolve, reject){
+                action.execute().then(function(){
+                    BusyIndicator.hide()
+                    var result = action.getBoundContext().getObject()
+                    var byteArray = Uint8Array.from(atob(result.value), c => c.charCodeAt(0))
+                    var speech = new Blob([byteArray], { type: "audio/ogg; codecs=opus" })
+                    resolve(window.URL.createObjectURL(speech))
+                }).catch(function(err){
+                    BusyIndicator.hide()
+                    MessageToast.show(err.message)
+                    reject(err)
+                })
+            })
+        },
+
+        textToSpeech:function(e){
+            var mdl = this.getView().getModel("ui")
+            if (mdl.getProperty("/mediaLink2")) return
+
+            var odataCtx = e.getSource().getBindingContext()
+            var text = mdl.getProperty("/speechToTextResult")
+            this.getGoogleSpeechResult(odataCtx, text).then(function(speech){ 
+                mdl.setProperty("/mediaLink2", speech)
             }).catch(function(err){
                 // console.log(err)
-                BusyIndicator.hide();
-                MessageToast.show(err.message)
             })
-
-            // to use our own voice
-            // this.getBase64Voice().then(function(base64Voice){
-            //     var byteArray = Uint8Array.from(atob(base64Voice), c => c.charCodeAt(0))
-            //     var speech = new Blob([byteArray], { type: "audio/ogg; codecs=opus" })
-            //     mdl.setProperty("/mediaLink2", window.URL.createObjectURL(speech))
-            // })
         },
 
         speechToText:function(e){
@@ -230,6 +237,33 @@ sap.ui.define([
                 // console.log(err)
                 BusyIndicator.hide();
                 MessageToast.show(err.message)
+            })
+        },
+
+        showSentencePopover:function(e){
+            var link = e.getSource()
+            this.popoverSentPromise.then(function(popover){
+                var uiModel = popover.getModel("ui")
+                popover.setModel(link.getModel())
+                popover.bindElement({ path: link.getBindingContext().getPath() })
+                popover.openBy(link)
+            })
+        },
+
+        translateSentence:function(e){
+            // this comes from our after handler for which we need lang_code in odata $select
+            var url = e.getSource().getBindingContext().getProperty("translation")
+            if (url) sap.m.URLHelper.redirect(url, true)
+        },
+
+        speakSentence:function(e){
+            var odataCtx = this.getView().getBindingContext()
+            var text = e.getSource().getBindingContext().getProperty("text")
+            this.getGoogleSpeechResult(odataCtx, text).then(function(speech){ 
+                sap.m.URLHelper.redirect(speech, true)
+                // window.open(speech, '_blank')
+            }).catch(function(err){
+                // console.log(err)
             })
         },
 
