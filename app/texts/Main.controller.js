@@ -15,14 +15,18 @@ sap.ui.define([
         onInit: function () {
             PageController.prototype.onInit.apply(this);
             var uiModel = new JSONModel()
-            this.popoverPromise = Fragment.load({ name: "cc.slova.textEditor.WordPopover", controller: this })
-            this.popoverPromise.then(function(popover){
+            this.wordPopoverPromise = Fragment.load({ name: "cc.slova.textEditor.WordPopover", controller: this })
+            this.wordPopoverPromise.then(function(popover){
                 popover.setModel(uiModel,"ui")
             })
 
-            this.popoverSentPromise = Fragment.load({ name: "cc.slova.textEditor.SentencePopover", controller: this })
-            this.popoverSentPromise.then(function(popover){
-                popover.setModel(uiModel,"ui")
+            this.sentenceDialogPromise = Fragment.load({ name: "cc.slova.textEditor.SentenceDialog", controller: this })
+            this.sentenceDialogPromise.then(function(dlg){
+                dlg.setModel(uiModel,"ui")
+                dlg.getEndButton().attachPress(function(){ 
+                    dlg.close()
+                })
+                return dlg
             })
             this.getView().setModel(uiModel,"ui")
 
@@ -242,11 +246,10 @@ sap.ui.define([
 
         showSentencePopover:function(e){
             var link = e.getSource()
-            this.popoverSentPromise.then(function(popover){
-                var uiModel = popover.getModel("ui")
-                popover.setModel(link.getModel())
-                popover.bindElement({ path: link.getBindingContext().getPath() })
-                popover.openBy(link)
+            this.sentenceDialogPromise.then(function(dlg){
+                dlg.setModel(link.getModel())
+                dlg.bindElement({ path: link.getBindingContext().getPath() })
+                dlg.open()
             })
         },
 
@@ -269,7 +272,7 @@ sap.ui.define([
 
         showWordPopover:function(e){
             var link = e.getSource()
-            this.popoverPromise.then(function(popover){
+            this.wordPopoverPromise.then(function(popover){
                 var uiModel = popover.getModel("ui")
                 popover.setModel(link.getModel())
                 popover.bindElement({

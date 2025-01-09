@@ -34,7 +34,7 @@
                             <l:VerticalLayout class="sapUiContentPadding" content="{path:'sentences', sorter: { path: 'index', descending: false} }">
                                     <l:HorizontalLayout> 
                                         <Link text="..." emphasized="true" press="showSentencePopover" />
-                                        <l:HorizontalLayout content="{path:'tokens', sorter: { path: 'index', descending: false} }">
+                                        <l:HorizontalLayout allowWrapping="true" content="{path:'tokens', sorter: { path: 'index', descending: false} }">
                                             <Link class="sapUiSmallMarginBegin" accessibleRole="Button" text="{parts:[
                                                 {path:'form'},
                                                 {path:'pos'},
@@ -57,7 +57,7 @@
                     </items>
                 </IconTabBar>
             </l:mainContent>
-            <l:sideContent>
+            <l:sideContent id="withinArea">
 
                 <f:SimpleForm visible="{= ${ui>/selectedTab}==='input' }" editable="true" layout="ResponsiveGridLayout">
                     <Toolbar>

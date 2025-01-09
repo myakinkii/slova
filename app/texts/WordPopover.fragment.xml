@@ -1,6 +1,4 @@
-    <core:FragmentDefinition
-    xmlns="sap.m"
-    xmlns:core="sap.ui.core">
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
     <Popover
         title="[{pos}] {lemma}"
         class="sapUiResponsivePadding--header sapUiResponsivePadding--footer"
@@ -14,4 +12,4 @@
         </customHeader>
         <Text class="sapUiSmallMargin" text="{path:'feats', formatter:'cc.slova.textEditor.globalFormatter.featsFormat'}" />
     </Popover>
-    </core:FragmentDefinition>
+</core:FragmentDefinition>
