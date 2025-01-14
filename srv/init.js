@@ -7,6 +7,7 @@ const LOG = cds.log('init')
 
 const CONLLU_USER = process.env.CONLLU_USER // import texts for any user id
 const CONLLU_DIRS = process.env.CONLLU_DIRS?.split(',') || [] // dirs with conllu files in form {LANG}/{SET_NAME}
+const CONLLU_DIRS_ROOT = process.env.CONLLU_DIRS_ROOT // root dir for folder import
 
 const CONLLU_SETS = process.env.CONLLU_SETS?.split(',') || [] // ud sets in form {SET_NAME}-ud-{CHUNK}.conllu
 const SET_CHUNKS = ['train', 'dev', 'test'] // sets in order of precedence (usually 80/10/10 % of treebank size)
@@ -87,17 +88,19 @@ module.exports = async (db) => {
     }
 
     async function readFolder(lang, dir) {
+        const importDir = CONLLU_DIRS_ROOT || './test/conllu'
         return new Promise((resolve, reject) => {
-            fs.readdir(`./test/conllu/${lang}/${dir}`, (err, files) => err ? reject(err) : resolve(files))
+            fs.readdir(`${importDir}/${lang}/${dir}`, (err, files) => err ? resolve([]) : resolve(files))
         })
     }
 
     async function createImportText(lang, dir, fileName, owner) {
         const name = dir + " - " + fileName.slice(0, -7) // remove ".conllu"
-        const exists = await cds.read(Import,['ID']).where({ name: name, createdBy: owner })
+        const exists = await cds.read(Import,['ID']).where({ lang_code:lang, name: name, createdBy: owner })
         if (exists.length) return exists[0].ID
         const ID = cds.utils.uuid()
-        const data = fs.readFileSync(`./test/conllu/${lang}/${dir}/${fileName}`, 'utf8')
+        const importDir = CONLLU_DIRS_ROOT || './test/conllu'
+        const data = fs.readFileSync(`${importDir}/${lang}/${dir}/${fileName}`, 'utf8')
         const input = data.split('\n').filter( s => s.startsWith("#")).map( s => s.replace("# text = ","")).join("\n")
         await cds.create(Import).entries({ ID: ID, name: name, text: data, lang_code: lang, createdBy: owner, input })
         return ID

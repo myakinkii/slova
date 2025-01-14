@@ -22,7 +22,7 @@ const generateTexts = async (langCodes, topics, apiKey) => {
             all.push({
                 form: form,
                 lang: langCode,
-                name: `generated ${form} - ${topic}`,
+                topic: topic,
                 input: input
             })
         }

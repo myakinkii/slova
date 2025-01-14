@@ -34,7 +34,7 @@ class ImportHandler {
         const owner = 'admin'
         return this.cdsRef.run(source.map( s => INSERT.into(Import).entries({ 
                 ID: cds.utils.uuid(), createdBy: owner, 
-                name: s.name, lang_code: s.lang, input: s.input.join("\n")
+                name: `generated-${s.form} - ${s.topic}`, lang_code: s.lang, input: s.input.join("\n")
             })
         ))
     }

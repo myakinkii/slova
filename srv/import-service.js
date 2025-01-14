@@ -93,12 +93,16 @@ class ImportService extends BaseService {
         const query = cds.read(Import).columns('createdBy','lang_code','name','text')
         if (req.data.user) query.where({ createdBy: req.data.user })
         const all = await query
+        const nameSeparator = ' - ' // we treat first part as dir (set name)
         all.forEach( t => {
             let exportDir = './test/export'
             try {
                 if (!fs.existsSync(exportDir=`${exportDir}/${t.createdBy}`)) fs.mkdirSync(exportDir)
                 if (!fs.existsSync(exportDir=`${exportDir}/${t.lang_code}`)) fs.mkdirSync(exportDir)
-                const fileName = `${exportDir}/${t.name}.conllu`
+                const nameArr = t.name.split(nameSeparator)
+                const dir = nameArr.length > 1 ? nameArr.shift() : null
+                if (dir && !fs.existsSync(exportDir=`${exportDir}/${dir}`)) fs.mkdirSync(exportDir)
+                const fileName = `${exportDir}/${ nameArr.join(nameSeparator) }.conllu`
                 const content = t.text || ''
                 fs.writeFileSync(fileName, content)
             } catch (e){
