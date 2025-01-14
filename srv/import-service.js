@@ -17,6 +17,9 @@ class ImportService extends BaseService {
         this.on('parseText', this.parseTextHandler)
         this.on('parseInput', this.parseInputHandler)
         this.on('mergeResults', this.performImportHandler)
+        this.on('generateAll', this.performMassGenerationHandler)
+        this.on('parseAll', this.performMassParsingHandler)
+        this.on('defineAll', this.performMassDefinitionHandler)
         this.on('exportAll', this.performExportHandler)
         this.after('READ', 'Sentences', this.getGoogleTranslate)
         await super.init()
@@ -59,6 +62,30 @@ class ImportService extends BaseService {
     async performImportHandler(req, next) {
         const {ID} = req.params[0]
         return this.importHandler.performImport(ID)
+    }
+
+    async performMassGenerationHandler(req, next) {
+        const { Import } = this.entities
+        const generatedTexts = await this.importHandler.callExternalMassGenerator()
+        const result = await this.importHandler.massCreateImportsFrom(generatedTexts)
+        return result.length
+    }
+
+    async performMassParsingHandler(req, next) {
+        const { Import } = this.entities
+        const profile = await this.getProfile(req.user.id) // admin
+        const all = await cds.read(Import).columns('ID', 'lang_code', 'input').where({ createdBy : req.user.id })
+        for (let imp of all){
+            const text = await this.importHandler.parseMultiline(imp.input.split("\n"), imp.lang_code)
+            await cds.update(Import, imp.ID).with({ text })
+            await this.importHandler.parseInput(imp.ID, profile.pos)
+        }
+        return all.length     
+    }
+
+    async performMassDefinitionHandler(req, next) {
+        const { Import } = this.entities
+        // coming soon
     }
 
     async performExportHandler(req, next) {

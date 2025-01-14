@@ -1,0 +1,34 @@
+@serviceUrl = http://localhost:4004/import
+@username = admin:secret
+
+# generate some topics in some langs
+###
+POST {{serviceUrl}}/generateAll
+Authorization: Basic {{username}}
+Content-Type: application/json
+
+{}
+
+# parse them to get connlu and words
+###
+POST {{serviceUrl}}/parseAll
+Authorization: Basic {{username}}
+Content-Type: application/json
+
+{}
+
+# then loop through texts and generate definitions for words
+###
+POST {{serviceUrl}}/defineAll
+Authorization: Basic {{username}}
+Content-Type: application/json
+
+{}
+
+# then export all stuff
+###
+POST {{serviceUrl}}/exportAll
+Authorization: Basic {{username}}
+Content-Type: application/json
+
+{}

@@ -8,7 +8,7 @@ const callChatGpt = async (prompt, apiKey) => {
     LOG.debug("Asking to generate prompt:", prompt)
     try {
         const completion = await openai.createChatCompletion({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
             messages: [{ role: "user", content: prompt }]
         })
         return completion.data.choices[0].message.content

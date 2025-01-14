@@ -24,6 +24,21 @@ class ImportHandler {
         return externalGenerator.get(lang, textSize || 'small', textType || 'text', location || 'shop', modifier || 'typical')
     }
 
+    async callExternalMassGenerator() {
+        return externalGenerator.getAll()
+    }
+
+    async massCreateImportsFrom(source){
+        const { Import } = this.cdsRef.entities("cc.slova.model")
+        const { INSERT, UPSERT, UPDATE} = this.cdsRef.ql
+        const owner = 'admin'
+        return this.cdsRef.run(source.map( s => INSERT.into(Import).entries({ 
+                ID: cds.utils.uuid(), createdBy: owner, 
+                name: s.name, lang_code: s.lang, input: s.input.join("\n")
+            })
+        ))
+    }
+
     async parseSentence(sentence, lang) {
         const stanzaTokens = await this.callExternalParser(sentence, lang)
         const conlluTokens = stanzaTokens.map( t => `${t.id||t.index}\t${t.text||t.word}\t${t.lemma}\t${t.upos}\t_\t${t.feats||'_'}` )
