@@ -90,7 +90,9 @@ class ImportService extends BaseService {
 
     async performExportHandler(req, next) {
         const { Import } = this.entities
-        const all = await cds.read(Import).columns('createdBy','lang_code','name','text')
+        const query = cds.read(Import).columns('createdBy','lang_code','name','text')
+        if (req.data.user) query.where({ createdBy: req.data.user })
+        const all = await query
         all.forEach( t => {
             let exportDir = './test/export'
             try {

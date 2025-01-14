@@ -10,7 +10,7 @@ service ImportService {
     action generateAll @(requires: 'admin-user') () returns Integer;
     action parseAll @(requires: 'admin-user') () returns Integer;
     action defineAll @(requires: 'admin-user') () returns Integer;
-    action exportAll @(requires: 'admin-user') () returns Integer;
+    action exportAll @(requires: 'admin-user') (user : String) returns Integer;
 
     entity Import @(restrict: [
         {
