@@ -28,10 +28,9 @@ class ImportHandler {
         return externalGenerator.getAll()
     }
 
-    async massCreateImportsFrom(source){
+    async massCreateImportsFrom(source, owner){
         const { Import } = this.cdsRef.entities("cc.slova.model")
         const { INSERT, UPSERT, UPDATE} = this.cdsRef.ql
-        const owner = 'admin'
         return this.cdsRef.run(source.map( s => INSERT.into(Import).entries({ 
                 ID: cds.utils.uuid(), createdBy: owner, 
                 name: `generated-${s.form} - ${s.topic}`, lang_code: s.lang, input: s.input.join("\n")

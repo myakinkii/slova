@@ -66,15 +66,17 @@ class ImportService extends BaseService {
 
     async performMassGenerationHandler(req, next) {
         const { Import } = this.entities
+        const owner = req.data.user || 'admin'
         const generatedTexts = await this.importHandler.callExternalMassGenerator()
-        const result = await this.importHandler.massCreateImportsFrom(generatedTexts)
+        const result = await this.importHandler.massCreateImportsFrom(generatedTexts, owner)
         return result.length
     }
 
     async performMassParsingHandler(req, next) {
         const { Import } = this.entities
-        const profile = await this.getProfile(req.user.id) // admin
-        const all = await cds.read(Import).columns('ID', 'lang_code', 'input').where({ createdBy : req.user.id })
+        const owner = req.data.user || 'admin'
+        const profile = await this.getProfile(owner)
+        const all = await cds.read(Import).columns('ID', 'lang_code', 'input').where({ createdBy : owner })
         for (let imp of all){
             const text = await this.importHandler.parseMultiline(imp.input.split("\n"), imp.lang_code)
             await cds.update(Import, imp.ID).with({ text })
@@ -85,6 +87,7 @@ class ImportService extends BaseService {
 
     async performMassDefinitionHandler(req, next) {
         const { Import } = this.entities
+        const owner = req.data.user || 'admin'
         // coming soon
     }
 
