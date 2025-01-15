@@ -140,9 +140,7 @@ class TextsService extends BaseService {
         const ID = req.params[0]
         const { Import } = cds.entities("cc.slova.model")
         const data = await cds.read(Import, ID).columns('lang_code')
-        const speech = await speechGenerator.get(data.lang_code, req.data.text).catch((e) => { 
-            console.log(e)
-        })
+        const speech = await speechGenerator.get(data.lang_code, req.data.text).catch((e) => { })
         return speech
     }
 
