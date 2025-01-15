@@ -42,6 +42,6 @@ POST {{serviceUrl}}/fetchCreds
 Content-Type: {{contentType}}
 
 {
-  "name": "{{username}}",
-  "pin": "{{pin}}"
+  "pin": "{{pin}}",
+  "name": "{{username}}"
 }

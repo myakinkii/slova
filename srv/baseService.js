@@ -16,7 +16,7 @@ class BaseService extends cds.ApplicationService {
         const { Users } = cds.entities("cc.slova.model")
         let profile = await this.read(Users, { id: userId })
         if (!profile) {
-            profile = { id: userId, pwd: this.getPwdHash(userId), defaultLang_code: 'en' }
+            profile = { id: userId, pwd: '', defaultLang_code: 'en' }
             await this.create(Users).entries(profile)
         }
         return profile

@@ -4,7 +4,8 @@ using {cc.slova.model as db} from '../db/schema';
 service OnboardService {
     type Creds {
         id  : UUID;
-        pwd : String
+        pwd : String;
+        user : String;
     };
 
     action generateUser()                                    returns Creds;

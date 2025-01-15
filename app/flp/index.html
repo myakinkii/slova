@@ -363,7 +363,7 @@
                     try {
                         var creds = JSON.parse(auth);
                         if (!creds.id) return
-                        $.ajaxSetup({ headers: { Authorization: 'Basic '+btoa(creds.id+":"+(creds.pwd||creds.id)) } });
+                        $.ajaxSetup({ headers: { Authorization: 'Basic '+btoa(creds.id+":"+(creds.pwd||'')) } });
                     } catch(e){
                         console.log('invalid json',auth)
                     }

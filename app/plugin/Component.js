@@ -19,6 +19,8 @@ sap.ui.define([
             var i18n = this.getModel("i18n")
             var authModel = new JSONModel({ "user":"", "pin":"" })
 
+            var self=this;
+
             dialogPromise = Fragment.load({
                 name: "flpPlugin.fragment.User",
                 controller: this
@@ -26,13 +28,15 @@ sap.ui.define([
                 dlg.setModel(i18n,"i18n");
                 dlg.setModel(authModel, "auth")
                 dlg.getEndButton().attachPress(function(){ 
+                    var data = authModel.getData()
+                    // hacky local user mode without pwd
+                    if (!data.id && data.user) self.syncAuthData(authModel, {id:data.user, pwd:'' })
                     dlg.close();
                     window.location.reload() // for now we will do it like this
                 })
                 return Promise.resolve(dlg)
             });
 
-            var self=this;
             sap.ushell.Container.getRenderer("fiori2").addUserAction({
                 controlType: "sap.m.Button",
                 oControlProperties: {
@@ -73,8 +77,8 @@ sap.ui.define([
 
         syncAuthData:function(authModel, auth){
             if(!auth) auth = this.getAuthData()
-            if (!auth.user) auth.user = authModel.getProperty("/user")
-            if (!auth.id) auth.id = auth.pwd = auth.user
+            // if (!auth.user) auth.user = authModel.getProperty("/user")
+            // if (!auth.id) auth.id = auth.pwd = auth.user
             authModel.setData(auth)
             window.localStorage.setItem("auth",JSON.stringify(auth))
             var self=this;
@@ -115,7 +119,7 @@ sap.ui.define([
                 authModel=dlg.getModel("auth")
                 var data = authModel.getData();
                 ctx = odata.bindContext("/fetchCreds(...)");
-                ctx.setParameter("name", data.user).setParameter("pin", data.pin)
+                ctx.setParameter("pin", data.pin).setParameter("name", data.user)
                 return ctx.execute()
             }).then(function(){
                 return Promise.resolve(ctx.getBoundContext().getObject());

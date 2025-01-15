@@ -40,7 +40,7 @@ class OnboardService extends cds.ApplicationService {
         const user = await cds.read(Users,{ name: name, pin: pin })
         if (!user) return {}
         await cds.update(Users, { id: user.id, pwd: user.pwd }).set({ pin: 0 })
-        return { id: user.id, pwd: user.pwd}
+        return { id: user.id, pwd: user.pwd, user: name }
     }
 }
 
