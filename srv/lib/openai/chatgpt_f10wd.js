@@ -52,7 +52,10 @@ const generateTexts = async (langCodes, topics, apiKey) => {
 
 const langs = {
     en: "English",
+    de: "German",
+    el: "Greek",
     hr: "Croatian",
+    pl: "Polish",
     ru: "Russian"
 }
 

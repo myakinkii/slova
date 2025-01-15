@@ -7,7 +7,7 @@ using {cc.slova.model as db} from '../db/schema';
 ]
 service ImportService {
 
-    action generateAll @(requires: 'admin-user') (user : String) returns Integer;
+    action generateAll @(requires: 'admin-user') (user : String, langs:String, topics:String) returns Integer;
     action parseAll @(requires: 'admin-user') (user : String) returns Integer;
     action defineAll @(requires: 'admin-user') (user : String) returns Integer;
     action exportAll @(requires: 'admin-user') (user : String) returns Integer;

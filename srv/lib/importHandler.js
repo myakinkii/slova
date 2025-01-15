@@ -24,8 +24,8 @@ class ImportHandler {
         return externalGenerator.get(lang, textSize || 'small', textType || 'text', location || 'shop', modifier || 'typical')
     }
 
-    async callExternalMassGenerator() {
-        return externalGenerator.getAll()
+    async callExternalMassGenerator(langs, topics) {
+        return externalGenerator.getAll(langs, topics)
     }
 
     async massCreateImportsFrom(source, owner){

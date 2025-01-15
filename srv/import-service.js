@@ -67,7 +67,9 @@ class ImportService extends BaseService {
     async performMassGenerationHandler(req, next) {
         const { Import } = this.entities
         const owner = req.data.user || 'admin'
-        const generatedTexts = await this.importHandler.callExternalMassGenerator()
+        const langs = req.data.langs?.split("|")
+        const topics = req.data.topics?.split("|")
+        const generatedTexts = await this.importHandler.callExternalMassGenerator(langs, topics)
         const result = await this.importHandler.massCreateImportsFrom(generatedTexts, owner)
         return result.length
     }

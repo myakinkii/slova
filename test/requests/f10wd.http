@@ -7,7 +7,11 @@ POST {{serviceUrl}}/generateAll
 Authorization: Basic {{username}}
 Content-Type: application/json
 
-{}
+{
+    "user":"alice",
+    "langs":"en|el|ru",
+    "topics":"Greek Culture|Ancient World"
+}
 
 # parse them to get connlu and words
 ###
@@ -15,7 +19,7 @@ POST {{serviceUrl}}/parseAll
 Authorization: Basic {{username}}
 Content-Type: application/json
 
-{}
+{"user":"alice"}
 
 # then loop through texts and generate definitions for words
 ###
