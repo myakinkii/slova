@@ -100,7 +100,7 @@ class ImportService extends BaseService {
         const all = await query
         const nameSeparator = ' - ' // we treat first part as dir (set name)
         all.forEach( t => {
-            let exportDir = './test/export'
+            let exportDir = './test/conllu/users'
             try {
                 if (!fs.existsSync(exportDir=`${exportDir}/${t.createdBy}`)) fs.mkdirSync(exportDir)
                 if (!fs.existsSync(exportDir=`${exportDir}/${t.lang_code}`)) fs.mkdirSync(exportDir)

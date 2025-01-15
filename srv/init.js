@@ -73,7 +73,7 @@ module.exports = async (db) => {
         let dataSet = null
         for (const chunk of SET_CHUNKS) {
             try {
-                const data = require('fs').readFileSync(`./test/conllu/${lang}/${dir}/${setName}-ud-${chunk}.conllu`, 'utf8')
+                const data = require('fs').readFileSync(`./test/conllu/sets/${lang}/${dir}/${setName}-ud-${chunk}.conllu`, 'utf8')
                 LOG.debug('parsing conllu set', setName, chunk)
                 dataSet = parseConllu(lang, data)
                 Object.assign(sentencesRef, dataSet.sentences)
