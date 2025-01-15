@@ -24,11 +24,11 @@ module.exports = async (db) => {
         LOG.debug(`got ${words.length} words and ${sentences.length} sentences`)
 
         if (words.length > 0 && sentences.length > 0) {
-            await cds.run[
+            await cds.run([
                 INSERT.into(Slova).entries(words),
                 INSERT.into(Sentences).entries(sentences),
                 INSERT.into(Stat).entries(stat)
-            ]
+            ])
         }
     } else if (CONLLU_DIRS.length) {
         const importHandler = new ImportHandler(cds)
