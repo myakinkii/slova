@@ -59,6 +59,7 @@ const generateDefinitions = async (langCode, sentences, apiKey) => {
 
 const langs = {
     en: "English",
+    cs: "Czech",
     de: "German",
     el: "Greek",
     hr: "Croatian",
