@@ -1,14 +1,19 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout">
     <Dialog contentWidth="30rem" showHeader="false">
         <customHeader>
             <Toolbar>
                 <Button text="translate ({lang_code})" press="translateSentence" />
                 <ToolbarSpacer />
+                <Button text="define words" press="generateDefinition" />
+                <ToolbarSpacer />
                 <Button text="speak" press="speakSentence" />
             </Toolbar>
         </customHeader>
         <content>
-            <Text class="sapUiSmallMargin" text="{text}" />
+            <l:VerticalLayout>
+                <Text class="sapUiSmallMargin" text="{text}" />
+                <Text class="sapUiSmallMarginBeginEnd" id="definitionText" />
+            </l:VerticalLayout>
         </content>
         <endButton>
             <Button text="close" />

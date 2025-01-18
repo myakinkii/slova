@@ -22,6 +22,7 @@ class TextsService extends BaseService {
         this.on('addSpeechToInput', this.addSpeechToInputHandler)
         this.on('getGoogleTranslateLink', this.getGoogleTranslateLinkHandler)
         this.on('parseText', this.parseTextHandler)
+        this.on('generateDefinition', this.generateDefinitionHandler)
         this.on('generateText', this.generateTextHandler)
         this.on('createText', this.createTextHandler)
         this.on('toggleSkip', this.skipWordToggleHandler)
@@ -180,6 +181,17 @@ class TextsService extends BaseService {
         await cds.update(Import, ID).with({ text })
         const profile = await this.getProfile(req.user.id)
         await this.importHandler.parseInput(ID, profile.pos)
+    }
+
+    async generateDefinitionHandler(req, next) {
+        const { ID, hash } = req.data
+        const { ImportSentences } = cds.entities("cc.slova.model")
+        const sentence = await cds.read(ImportSentences, {import_ID: ID, hash: hash }).columns( s => {
+            s.text,
+            s.lang,
+            s.tokens(  t => { t`.*` })
+        })
+        return this.importHandler.callExternalDefinitionsGenerator(sentence.lang_code, [sentence])
     }
 
     async generateTextHandler(req, next) {

@@ -177,6 +177,7 @@ service TextsService {
                 'mergeToText',
                 'speechToText',
                 'textToSpeech',
+                'generateDefinition',
                 'getGoogleTranslateLink'
             ],
             to   : 'authenticated-user',
@@ -215,6 +216,7 @@ service TextsService {
 
             action   speechToText(content : LargeString) returns String;
             action   textToSpeech(text : String) returns LargeString;
+            action   generateDefinition(ID: UUID, hash: String) returns String;
             
             action getGoogleTranslateLink(lang:String, text: String) returns String;
             

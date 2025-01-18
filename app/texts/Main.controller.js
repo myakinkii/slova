@@ -24,6 +24,7 @@ sap.ui.define([
             this.sentenceDialogPromise.then(function(dlg){
                 dlg.setModel(uiModel,"ui")
                 dlg.getEndButton().attachPress(function(){ 
+                    sap.ui.getCore().byId("definitionText").setText('')
                     dlg.close()
                 })
                 return dlg
@@ -257,6 +258,34 @@ sap.ui.define([
             // this comes from our after handler for which we need lang_code in odata $select
             var url = e.getSource().getBindingContext().getProperty("translation")
             if (url) sap.m.URLHelper.redirect(url, true)
+        },
+
+        callActionPromised:function(action){
+            BusyIndicator.show(100)
+            return new Promise(function(resolve, reject){
+                action.execute().then(function(){
+                    BusyIndicator.hide()
+                    resolve(action.getBoundContext().getObject())
+                }).catch(function(err){
+                    BusyIndicator.hide()
+                    MessageToast.show(err.message)
+                    reject(err)
+                })
+            })
+        },
+
+        generateDefinition:function(e){
+            var odataCtx = this.getView().getBindingContext()
+            var pars = e.getSource().getBindingContext().getObject()
+
+            var action = odataCtx.getModel().bindContext("TextsService.generateDefinition(...)", odataCtx )
+            action.setParameter("ID", pars.import_ID).setParameter("hash", pars.hash)
+
+            this.callActionPromised(action).then(function(definition){
+                sap.ui.getCore().byId("definitionText").setText(definition.value)
+            }).catch(function(err){
+                // console.log(err)
+            })
         },
 
         speakSentence:function(e){
