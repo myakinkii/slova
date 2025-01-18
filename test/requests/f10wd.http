@@ -27,7 +27,7 @@ POST {{serviceUrl}}/defineAll
 Authorization: Basic {{username}}
 Content-Type: application/json
 
-{}
+{"user":"alice"}
 
 # then export all stuff
 ###

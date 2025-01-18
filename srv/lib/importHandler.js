@@ -28,6 +28,16 @@ class ImportHandler {
         return externalGenerator.getAll(langs, topics)
     }
 
+    async callExternalDefinitionsGenerator(lang, sentences){
+        const pos = ['VERB', 'NOUN', 'ADJ', 'ADV'] // for now we try to define only that stuff
+        return externalGenerator.getDefinitions(lang, Object.values(sentences.map( s => {
+            return { 
+                text: s.text, 
+                words: s.tokens.filter( t => pos.indexOf(t.pos)> -1 ).map( t=> ({ pos: t.pos, morphem: t.lemma }))
+            }
+        }) )) // can have gaps sentence indices (or does it just stat with 1?)
+    }
+
     async massCreateImportsFrom(source, owner){
         const { Import } = this.cdsRef.entities("cc.slova.model")
         const { INSERT, UPSERT, UPDATE} = this.cdsRef.ql

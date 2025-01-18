@@ -50,6 +50,13 @@ const generateTexts = async (langCodes, topics, apiKey) => {
     return all
 }
 
+const generateDefinitions = async (langCode, sentences, apiKey) => {
+    const all = await Promise.all(sentences.map( s=> {
+        return callChatGpt(generatePromptDefinition(langCode, s.words.map (w => w.morphem), s.text), apiKey)
+    }))
+    return all.map( d => d.split("\n").filter( s => !!s ).join("\n") ).join("\n\n")
+}
+
 const langs = {
     en: "English",
     de: "German",
@@ -92,8 +99,19 @@ const generatePromptTopic = (topic, form, langs) => {
     Please use plain text instead of formatting and add one line with three dashes '---' to separate languages.`
 }
 
+const generatePromptDefinition = (langCode, words, sentence) => {
+    return `Imagine you are a dictionary. Your language is ${langs[langCode]}. 
+    Please, define words "${words.join('", "')}" one by one in one sentence each, 
+    using simple lexicon in context of the following sentence: '${sentence}'. 
+    Please, respond in a form of a dictionary article: "word - definition". 
+    Start each definition from a new line, don't capitalize words and use only plain text.
+    For example, "to read - to look at and comprehend the meaning of written text".`
+    // still it sometimes cannot properly use context regarding the part of speech of a word in a sentence (
+}
+
 module.exports = {
     getLangs,
     getTopics,
-    generateTexts
+    generateTexts,
+    generateDefinitions
 }

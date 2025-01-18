@@ -90,7 +90,28 @@ class ImportService extends BaseService {
     async performMassDefinitionHandler(req, next) {
         const { Import } = this.entities
         const owner = req.data.user || 'admin'
-        // coming soon
+        const profile = await this.getProfile(owner)
+        const all = await cds.read(Import).columns('ID')
+        for (let imp of all){
+            const text = await cds.read(Import, imp.ID).columns( i => { 
+                i.name,
+                i.input,
+                i.lang_code,
+                i.sentences( s => {
+                    s.index,
+                    s.text,
+                    s.tokens(  t => { t`.*` })
+                })
+            })
+            const defId = cds.utils.uuid()
+            const definition = await this.importHandler.callExternalDefinitionsGenerator(text.lang_code, text.sentences)            
+            const conllu = await this.importHandler.parseMultiline(definition.split("\n").filter(d => !!d ), text.lang_code)
+            await cds.create(Import).entries({ 
+                ID: defId, createdBy: owner, input: definition, text: conllu,
+                name: `${text.name} (definitions)`, lang_code: text.lang_code
+            })
+            await this.importHandler.parseInput(defId, profile.pos)
+        }
     }
 
     async performExportHandler(req, next) {
