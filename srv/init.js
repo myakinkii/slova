@@ -39,7 +39,7 @@ module.exports = async (db) => {
             LOG.debug(`got ${files.length} files in ${dir}`)
             for (var file of files) {
                 LOG.debug(`importing [${lang}] ${file}`)
-                const ID = await createImportText(lang, dir, file, owner)
+                const ID = await createOrUpdateImportText(lang, dir, file, owner)
                 await importHandler.parseInput(ID)
                 if (owner=='admin') await importHandler.performImport(ID)
             }
@@ -94,16 +94,20 @@ module.exports = async (db) => {
         })
     }
 
-    async function createImportText(lang, dir, fileName, owner) {
-        const name = dir + " - " + fileName.slice(0, -7) // remove ".conllu"
-        const exists = await cds.read(Import,['ID']).where({ lang_code:lang, name: name, createdBy: owner })
-        if (exists.length) return exists[0].ID
-        const ID = cds.utils.uuid()
+    async function createOrUpdateImportText(lang, dir, fileName, owner) {
         const importDir = CONLLU_DIRS_ROOT || './test/conllu'
+        const name = dir + " - " + fileName.slice(0, -7) // remove ".conllu"
         const data = fs.readFileSync(`${importDir}/${lang}/${dir}/${fileName}`, 'utf8')
         const input = data.split('\n').filter( s => s.startsWith("#")).map( s => s.replace("# text = ","")).join("\n")
-        await cds.create(Import).entries({ ID: ID, name: name, text: data, lang_code: lang, createdBy: owner, input })
-        return ID
+        const exists = await cds.read(Import,{ lang_code:lang, name: name, createdBy: owner }).columns('ID')
+        if (exists){
+            await cds.update(Import,{ ID: exists.ID }).with({ input, text: data })
+            return exists.ID
+        } else {
+            const ID = cds.utils.uuid()
+            await cds.create(Import).entries({ ID: ID, name: name, text: data, lang_code: lang, createdBy: owner, input })
+            return ID
+        }
     }
 
 }
