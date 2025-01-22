@@ -78,6 +78,7 @@ entity Workbook                         as
         key pos,
             '' as definition : String,
             count,
+            countTexts,
             forms,
             sentences
     };
@@ -88,7 +89,8 @@ entity WorkbookWords                    as
         key morphem,
         key lang,
         key pos,
-            sum(count)       as count : Integer
+            count(count)     as countTexts : Integer,
+            sum(count)       as count      : Integer
     }
     group by
         import.createdBy,

@@ -10,6 +10,7 @@ annotate WorkBookService.Slova with @UI: {
         {Value: pos},
         {Value: morphem},
         {Value: count},
+        {Value: countTexts},
         {Value: skip}
     ],
     Identification      : [{
