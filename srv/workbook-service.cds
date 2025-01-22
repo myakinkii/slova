@@ -12,7 +12,7 @@ service WorkBookService {
         ],
         to   : 'authenticated-user',
         where: 'owner = $user'
-    }])                                 as
+    }])                 as
         select from Workbook
         mixin {
             translations : Association to many db.Translations
@@ -36,7 +36,8 @@ service WorkBookService {
                 else
                     true
             end as skip : Boolean
-        } actions {
+        }
+        actions {
             @(
                 cds.odata.bindingparameter.name: '_it',
                 Common.SideEffects             : {TargetProperties: ['_it/skip']}
@@ -45,16 +46,16 @@ service WorkBookService {
         };
 
     @readonly
-    entity Forms                        as projection on WorkbookForms;
+    entity Forms        as projection on WorkbookForms;
 
     @readonly
-    entity Sentences                    as projection on WorkbookWordsWithSentencesTokens;
+    entity Sentences    as projection on WorkbookWordsWithSentencesTokens;
 
     @readonly
-    entity Tokens                       as projection on WorkbookTokens;
+    entity Tokens       as projection on WorkbookTokens;
 
     @readonly
-    entity Translations                 as projection on db.Translations;
+    entity Translations as projection on db.Translations;
 }
 
 entity Workbook                         as

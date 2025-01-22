@@ -19,29 +19,30 @@ service TextsService {
         ],
         to   : 'authenticated-user',
         where: 'createdBy = $user'
-    }])                  as projection on db.Decks actions {
-        action addToParent( @(
-                                title:'{i18n>deck}',
-                                Common:{
-                                    ValueListWithFixedValues: true,
-                                    ValueList               : {
-                                        Label         : '{i18n>deck}',
-                                        CollectionPath: 'Decks',
-                                        Parameters    : [
-                                            {
-                                                $Type            : 'Common.ValueListParameterInOut',
-                                                ValueListProperty: 'ID',
-                                                LocalDataProperty: deck
-                                            },
-                                            {
-                                                $Type            : 'Common.ValueListParameterDisplayOnly',
-                                                ValueListProperty: 'name'
-                                            }
-                                        ]
+    }])                  as projection on db.Decks
+        actions {
+            action addToParent( @(
+                                    title:'{i18n>deck}',
+                                    Common:{
+                                        ValueListWithFixedValues: true,
+                                        ValueList               : {
+                                            Label         : '{i18n>deck}',
+                                            CollectionPath: 'Decks',
+                                            Parameters    : [
+                                                {
+                                                    $Type            : 'Common.ValueListParameterInOut',
+                                                    ValueListProperty: 'ID',
+                                                    LocalDataProperty: deck
+                                                },
+                                                {
+                                                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                                                    ValueListProperty: 'name'
+                                                }
+                                            ]
+                                        }
                                     }
-                                }
-                            ) deck : UUID);
-    };
+                                ) deck : UUID);
+        };
 
     action resolveDeckFilter(deck : UUID)               returns TextFilter;
 
@@ -53,9 +54,9 @@ service TextsService {
     }])                  as
         select from db.Decks {
             key ID   as code,
-            name as text,
-            createdBy,
-            1    as count : Integer
+                name as text,
+                createdBy,
+                1    as count : Integer
         };
 
     @readonly
@@ -66,10 +67,10 @@ service TextsService {
     }])                  as
         select from SlovaDistinct {
             key pos        as code,
-            pos        as text,
-            createdBy,
-            status,
-            count( * ) as count : Integer
+                pos        as text,
+                createdBy,
+                status,
+                count( * ) as count : Integer
         }
         group by
             pos;
@@ -82,10 +83,10 @@ service TextsService {
     }])                  as
         select from SlovaDistinct {
             key lang       as code,
-            lang       as text,
-            createdBy,
-            status,
-            count( * ) as count : Integer
+                lang       as text,
+                createdBy,
+                status,
+                count( * ) as count : Integer
         }
         group by
             lang;
@@ -111,10 +112,10 @@ service TextsService {
     }])                  as
         select from Slova {
             key import.ID   as code,
-            import.name as text,
-            createdBy,
-            status,
-            count( * )  as count : Integer
+                import.name as text,
+                createdBy,
+                status,
+                count( * )  as count : Integer
         }
         group by
             import.ID
@@ -129,10 +130,10 @@ service TextsService {
     }])                  as
         select from Texts {
             key createdBy  as code,
-            authorName as text,
-            createdBy,
-            status,
-            count( * ) as count : Integer
+                authorName as text,
+                createdBy,
+                status,
+                count( * ) as count : Integer
         }
         group by
             createdBy;
@@ -158,15 +159,21 @@ service TextsService {
     ]})
     action createText(input : String)                   returns Texts;
 
-    entity TextsVH @(restrict: [
-        {
-            grant: ['READ'],
-            to   : 'authenticated-user',
-            where: 'createdBy = $user'
-        }]) as select from db.Import {
-            key ID, name,
-            createdBy, createdAt
-        } where status <> 9 order by createdAt desc;
+    entity TextsVH @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user'
+    }])                  as
+        select from db.Import {
+            key ID,
+                name,
+                createdBy,
+                createdAt
+        }
+        where
+            status <> 9
+        order by
+            createdAt desc;
 
     @cds.redirection.target
     entity Texts @(restrict: [
@@ -214,19 +221,14 @@ service TextsService {
             Import.name asc
         actions {
 
-            action   speechToText(content : LargeString) returns String;
-            action   textToSpeech(text : String) returns LargeString;
-            action   generateDefinition(ID: UUID, hash: String) returns String;
-            
-            action getGoogleTranslateLink(lang:String, text: String) returns String;
-            
+            action speechToText(content : LargeString)                  returns String;
+            action textToSpeech(text : String)                          returns LargeString;
+            action generateDefinition(ID : UUID, hash : String)         returns String;
+            action getGoogleTranslateLink(lang : String, text : String) returns String;
+
             @(
                 cds.odata.bindingparameter.name: '_it',
-                Common.SideEffects             : {
-                    TargetProperties: [
-                        '_it/input'
-                    ]
-                }
+                Common.SideEffects             : {TargetProperties: ['_it/input']}
             )
             action addSpeechToInput(content : String);
 
@@ -275,33 +277,29 @@ service TextsService {
 
             @(
                 cds.odata.bindingparameter.name: '_it',
-                Common.SideEffects             : {
-                    TargetEntities  : [
-                        '/TextsService.EntityContainer/Texts'
-                    ]
-                }
+                Common.SideEffects             : {TargetEntities: ['/TextsService.EntityContainer/Texts']}
             )
             action mergeToText( @(
-                                  title:'{i18n>text}',
-                                  Common:{
-                                      ValueListWithFixedValues: true,
-                                      ValueList               : {
-                                          Label         : '{i18n>text}',
-                                          CollectionPath: 'TextsVH',
-                                          Parameters    : [
-                                              {
-                                                  $Type            : 'Common.ValueListParameterInOut',
-                                                  ValueListProperty: 'ID',
-                                                  LocalDataProperty: text
-                                              },
-                                              {
-                                                  $Type            : 'Common.ValueListParameterDisplayOnly',
-                                                  ValueListProperty: 'name'
-                                              }
-                                          ]
-                                      }
-                                  }
-                              ) text : UUID);
+                                    title:'{i18n>text}',
+                                    Common:{
+                                        ValueListWithFixedValues: true,
+                                        ValueList               : {
+                                            Label         : '{i18n>text}',
+                                            CollectionPath: 'TextsVH',
+                                            Parameters    : [
+                                                {
+                                                    $Type            : 'Common.ValueListParameterInOut',
+                                                    ValueListProperty: 'ID',
+                                                    LocalDataProperty: text
+                                                },
+                                                {
+                                                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                                                    ValueListProperty: 'name'
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ) text : UUID);
         };
 
     @readonly
@@ -309,12 +307,14 @@ service TextsService {
         grant: ['READ'],
         to   : 'authenticated-user',
         where: 'createdBy = $user or status = 9'
-    }])                  as projection on db.ImportSentences {
-        *,
-        import.createdBy,
-        import.status
-    } order by
-        index asc;
+    }])                  as
+        projection on db.ImportSentences {
+            *,
+            import.createdBy,
+            import.status
+        }
+        order by
+            index asc;
 
     @readonly
     entity Slova @(restrict: [{
@@ -347,7 +347,8 @@ service TextsService {
                 else
                     true
             end         as skip       : Boolean
-        } actions {
+        }
+        actions {
             @(Common.SideEffects: {TargetEntities: ['/TextsService.EntityContainer/Slova']})
             action toggleSkip() returns Boolean;
         };

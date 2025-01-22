@@ -7,10 +7,10 @@ using {cc.slova.model as db} from '../db/schema';
 ]
 service ImportService {
 
-    action generateAll @(requires: 'admin-user') (user : String, langs:String, topics:String) returns Integer;
-    action parseAll @(requires: 'admin-user') (user : String) returns Integer;
-    action defineAll @(requires: 'admin-user') (user : String) returns Integer;
-    action exportAll @(requires: 'admin-user') (user : String) returns Integer;
+    action generateAll @(requires: 'admin-user')(user : String, langs : String, topics : String) returns Integer;
+    action parseAll @(requires: 'admin-user')(user : String)                                     returns Integer;
+    action defineAll @(requires: 'admin-user')(user : String)                                    returns Integer;
+    action exportAll @(requires: 'admin-user')(user : String)                                    returns Integer;
 
     entity Import @(restrict: [
         {
@@ -35,86 +35,87 @@ service ImportService {
             ],
             to   : 'admin-user'
         }
-    ])                   as projection on db.Import actions {
+    ])                   as projection on db.Import
+        actions {
 
-        @(
-            cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {TargetEntities: [
-                '_it/sentences',
-                '_it/words'
-            ]}
-        )
-        action parseInput();
-
-        @(
-            cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {
-                TargetEntities  : [
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {TargetEntities: [
                     '_it/sentences',
                     '_it/words'
-                ],
-                TargetProperties: [
+                ]}
+            )
+            action parseInput();
+
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {
+                    TargetEntities  : [
+                        '_it/sentences',
+                        '_it/words'
+                    ],
+                    TargetProperties: [
+                        '_it/text',
+                        '_it/input'
+                    ]
+                }
+            )
+            action parseText();
+
+            action mergeResults();
+
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {TargetProperties: [
                     '_it/text',
-                    '_it/input'
-                ]
-            }
-        )
-        action parseText();
+                    '_it/sent',
+                    '_it/indx',
+                    '_it/lemma'
+                ]}
+            )
+            action askHelp();
 
-        action mergeResults();
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {TargetProperties: ['_it/input']}
+            )
+            action generateInput();
 
-        @(
-            cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {TargetProperties: [
-                '_it/text',
-                '_it/sent',
-                '_it/indx',
-                '_it/lemma'
-            ]}
-        )
-        action askHelp();
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {TargetProperties: [
+                    '_it/text',
+                    '_it/sent',
+                    '_it/indx',
+                    '_it/lemma',
+                    '_it/pos_code',
+                    '_it/feats'
+                ]}
+            )
+            action addSentence();
 
-        @(
-            cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {TargetProperties: ['_it/input']}
-        )
-        action generateInput();
-
-        @(
-            cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {TargetProperties: [
-                '_it/text',
-                '_it/sent',
-                '_it/indx',
-                '_it/lemma',
-                '_it/pos_code',
-                '_it/feats'
-            ]}
-        )
-        action addSentence();
-
-        @(
-            cds.odata.bindingparameter.name: '_it',
-            Common.SideEffects             : {TargetProperties: [
-                '_it/text',
-                '_it/indx',
-                '_it/lemma',
-                '_it/pos_code',
-                '_it/feats',
-                '_it/case_code',
-                '_it/gender_code',
-                '_it/number_code',
-                '_it/person_code',
-                '_it/tense_code',
-                '_it/aspect_code',
-                '_it/mood_code',
-                '_it/voice_code',
-                '_it/degree_code',
-                '_it/verbForm_code'
-            ]}
-        )
-        action addWord();
-    };
+            @(
+                cds.odata.bindingparameter.name: '_it',
+                Common.SideEffects             : {TargetProperties: [
+                    '_it/text',
+                    '_it/indx',
+                    '_it/lemma',
+                    '_it/pos_code',
+                    '_it/feats',
+                    '_it/case_code',
+                    '_it/gender_code',
+                    '_it/number_code',
+                    '_it/person_code',
+                    '_it/tense_code',
+                    '_it/aspect_code',
+                    '_it/mood_code',
+                    '_it/voice_code',
+                    '_it/degree_code',
+                    '_it/verbForm_code'
+                ]}
+            )
+            action addWord();
+        };
 
     @readonly
     entity TextTypes     as projection on db.TextTypes;
@@ -129,8 +130,9 @@ service ImportService {
     entity TextModifiers as projection on db.TextModifiers;
 
     @readonly
-    entity Sentences     as projection on db.ImportSentences order by
-        index asc;
+    entity Sentences     as projection on db.ImportSentences
+                            order by
+                                index asc;
 
     @readonly
     entity Slova         as projection on db.ImportWords;

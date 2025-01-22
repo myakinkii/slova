@@ -3,8 +3,8 @@ using {cc.slova.model as db} from '../db/schema';
 @path: '/onboard'
 service OnboardService {
     type Creds {
-        id  : UUID;
-        pwd : String;
+        id   : UUID;
+        pwd  : String;
         user : String;
     };
 
