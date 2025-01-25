@@ -4,11 +4,11 @@ const definitionFinder = require('./lib/definitionFinder')
 
 class BaseService extends cds.ApplicationService {
 
-    async checkCreateProfile(req){
+    async checkCreateProfile(req) {
         await this.getProfile(req.user.id)
     }
 
-    getPwdHash (pwdString) {
+    getPwdHash(pwdString) {
         return crypto.createHash('md5').update(pwdString).digest("hex")
     }
 
@@ -21,12 +21,12 @@ class BaseService extends cds.ApplicationService {
         }
         return profile
     }
-    
+
     async addOccurence(results, req) {
         if (!req.query.SELECT.one) return
         const data = results[0]
         const { Stat } = cds.entities("cc.slova.model")
-        const stat = await cds.read(Stat,{pos:data.pos, lang:data.lang})
+        const stat = await cds.read(Stat, { pos: data.pos, lang: data.lang })
         const fraction = (data.occurence / stat.tokens * 100).toFixed(1)
         data.occurence = `${fraction}% - ${data.occurence} occs of ${stat.tokens} for ${data.pos} (${stat.lemmas})`
     }
@@ -105,20 +105,39 @@ class BaseService extends cds.ApplicationService {
         })
     }
 
-    async skipWordToggleHandler(req){
+    async skipWordToggleHandler(req) {
         // add me to workbook as well
-        const { morphem, pos, lang }  = req.params[0]
+        const { morphem, pos, lang } = req.params[0]
         const key = {
-            user_id : req.user.id,
-            slovo_morphem : morphem,
-            slovo_lang : lang,
-            slovo_pos : pos
+            user_id: req.user.id,
+            slovo_morphem: morphem,
+            slovo_lang: lang,
+            slovo_pos: pos
         }
         const { Skips } = cds.entities("cc.slova.model")
         const del = await cds.delete(Skips).where(key)
-        if ( del == 1 ) return false
+        if (del == 1) return false
         await cds.create(Skips).entries(key)
         return true
+    }
+
+    async setImportComplexity(ID) {
+        const { Slova } = cds.entities("TextsService")
+        const words = await cds.read(Slova).where({ import_ID: ID }).columns('tier').then(res => res.reduce((prev, cur) => {
+            if (!prev.tiers[cur.tier]) prev.tiers[cur.tier] = 0
+            prev.tiers[cur.tier]++
+            prev.total++
+            return prev
+        }, { tiers: {}, total: 0 }))
+
+        const complexity = Object.entries(words.tiers).sort((w1, w2) => {
+            return w1[0] > w2[0] ? 1 : -1 // tier asc
+        }).map(([tier, total]) => {
+            return `${tier}: ${(total / words.total * 100).toFixed(0)}%`
+        }).join(", ")
+
+        const { Import } = cds.entities("cc.slova.model")
+        await cds.update(Import, ID).with({ complexity })
     }
 }
 

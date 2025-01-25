@@ -70,7 +70,14 @@ class AdminService extends BaseService {
 
         calcTiersFor(words, stats, ratios, tiers) // basically we just set tier here modifying words
         await Promise.all(words.map( ({morphem, lang, pos, tier}) => cds.update(Slova,{ morphem, lang, pos }).with({ tier })))
-        return `words total: ${words.length}`
+
+        const { Import } = cds.entities("cc.slova.model")
+        const texts = await cds.read(Import,['ID']).where({lang_code: lang})
+        for (let t of texts) {
+            await this.setImportComplexity(t.ID)
+        }
+
+        return `words total: ${words.length}, texts updated: ${texts.length}`
     }
 
 }
