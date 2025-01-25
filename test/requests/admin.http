@@ -1,0 +1,21 @@
+@baseUrl = http://localhost:4004
+@serviceUrl = {{baseUrl}}/admin
+@username = admin:secret
+
+# rank words from loaded sets for certain lang
+###
+POST {{serviceUrl}}/rankWords
+Authorization: Basic {{username}}
+Content-Type: application/json
+
+{
+    "lang":"hr"
+}
+
+# export all stuff (decide where it actually belongs)
+###
+POST {{baseUrl}}/import/exportAll
+Authorization: Basic {{username}}
+Content-Type: application/json
+
+{}

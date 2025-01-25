@@ -8,4 +8,7 @@ service AdminService {
     entity Translations as projection on db.Translations;
     entity Etymology    as projection on db.Etymology;
     entity Languages    as projection on db.Languages;
+
+    @(Common.SideEffects: {TargetEntities: ['/AdminService.EntityContainer/Slova']})
+    action rankWords(lang : String) returns String;
 }

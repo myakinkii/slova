@@ -46,6 +46,7 @@ entity Slova {
         definition   : String;
         occurence    : String;
         count        : Integer;
+        tier         : String;
         translations : Association to many Translations
                            on translations.slovo = $self;
         siblings     : Association to many Slova
@@ -139,6 +140,7 @@ entity Translations : cuid, managed {
 entity Import : managed, cuid {
     lang         : Association to Languages;
     name         : String;
+    complexity   : String;
     status       : Integer default 0;
     publishDate  : DateTime;
     textType     : Association to TextTypes;

@@ -30,7 +30,8 @@ module.exports = async (db) => {
                 INSERT.into(Stat).entries(stat)
             ])
         }
-    } else if (CONLLU_DIRS.length) {
+    }
+    if (CONLLU_DIRS.length) {
         const importHandler = new ImportHandler(cds)
         const owner = CONLLU_USER || 'admin'
         await Promise.all(CONLLU_DIRS.map(async set => {

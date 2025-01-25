@@ -327,11 +327,15 @@ service TextsService {
     }])                  as
         select from db.ImportWords
         mixin {
-            skip : Association to db.Skips
-                       on  skip.slovo.morphem = morphem
-                       and skip.slovo.lang    = lang
-                       and skip.slovo.pos     = pos
-                       and skip.user.id       = $user
+            skip  : Association to db.Skips
+                        on  skip.slovo.morphem = morphem
+                        and skip.slovo.lang    = lang
+                        and skip.slovo.pos     = pos
+                        and skip.user.id       = $user;
+            slovo : Association to db.Slova
+                        on  slovo.morphem = morphem
+                        and slovo.lang    = lang
+                        and slovo.pos     = pos
         }
         into {
             *,
@@ -346,7 +350,15 @@ service TextsService {
                     false
                 else
                     true
-            end         as skip       : Boolean
+            end         as skip       : Boolean,
+            case
+                when
+                    slovo.tier is null
+                then
+                    'C'
+                else
+                    slovo.tier
+            end         as tier       : String
         }
         actions {
             @(Common.SideEffects: {TargetEntities: ['/TextsService.EntityContainer/Slova']})

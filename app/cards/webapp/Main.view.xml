@@ -37,7 +37,7 @@
             <pages>
                 <FlexBox height="100%" alignItems="Center" justifyContent="Center">
                     <GenericTile press="onPressed" 
-                            subheader="{pos}" 
+                            subheader="[{tier}] {pos}" 
                             header="{parts:[
                                 {path:'forms/0/form', targetType:'any'},
                                 {path:'forms/1/form', targetType:'any'},

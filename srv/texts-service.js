@@ -181,6 +181,21 @@ class TextsService extends BaseService {
         await cds.update(Import, ID).with({ text })
         const profile = await this.getProfile(req.user.id)
         await this.importHandler.parseInput(ID, profile.pos)
+
+        // refactor me somewhere...
+        const { Slova } = this.entities
+        const words = await this.read(Slova).where({ import_ID:ID }).columns('tier').then( res => res.reduce( (prev,cur) => {
+            if (!prev.tiers[cur.tier]) prev.tiers[cur.tier] = 0
+            prev.tiers[cur.tier]++
+            prev.total++
+            return prev
+        }, { tiers: {}, total: 0 }))
+        const complexity = Object.entries(words.tiers).sort( (w1,w2) => {
+            return w1[0] > w2[0] ? 1 : -1 // tier asc
+        } ).map( ([tier,total]) => {
+            return `${tier}: ${(total/words.total*100).toFixed(0)}%`
+        }).join(", ")
+        await cds.update(Import, ID).with({ complexity })
     }
 
     async generateDefinitionHandler(req, next) {

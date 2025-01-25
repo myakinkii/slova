@@ -49,8 +49,8 @@ annotate TextsService.Decks.texts with @UI: {
         Description   : {Value: text.lang_code}
     },
     LineItem  : [{
-        Value                 : text.name,
-        ![@HTML5.CssDefaults] : {width: 'auto'}
+        Value                : text.name,
+        ![@HTML5.CssDefaults]: {width: 'auto'}
     }]
 };
 
@@ -67,8 +67,8 @@ annotate TextsService.Decks.decks with @UI: {
         Title         : {Value: deck.name}
     },
     LineItem  : [{
-        Value                 : deck.name,
-        ![@HTML5.CssDefaults] : {width: 'auto'}
+        Value                : deck.name,
+        ![@HTML5.CssDefaults]: {width: 'auto'}
     }]
 };
 
@@ -102,23 +102,24 @@ annotate TextsService.Texts with @UI: {
             Action: 'TextsService.addToDeck',
             Label : '{i18n>texts.addToDeck}'
         },
-        {Value: authorName},
-        {Value: name},
-        {Value: lang_code},
-        {Value: createdAt}
+        {Value: authorName, ![@HTML5.CssDefaults]: {width: '10rem'} },
+        {Value: complexity},
+        {Value: name, ![@HTML5.CssDefaults]: {width: 'auto'} },
+        {Value: lang_code, ![@HTML5.CssDefaults]: {width: '5rem'} },
+        {Value: createdAt, ![@HTML5.CssDefaults]: {width: '15rem'} }
     ],
     Facets             : [
         {
-            $Type         : 'UI.ReferenceFacet',
-            Target        : 'words/@UI.LineItem',
-            Label         : '{i18n>Words}',
-            ![@UI.Hidden] : HasDraftEntity
+            $Type        : 'UI.ReferenceFacet',
+            Target       : 'words/@UI.LineItem',
+            Label        : '{i18n>Words}',
+            ![@UI.Hidden]: HasDraftEntity
         },
         {
-            $Type         : 'UI.ReferenceFacet',
-            Target        : 'sentences/@UI.LineItem',
-            Label         : '{i18n>Sentences}',
-            ![@UI.Hidden] : HasDraftEntity
+            $Type        : 'UI.ReferenceFacet',
+            Target       : 'sentences/@UI.LineItem',
+            Label        : '{i18n>Sentences}',
+            ![@UI.Hidden]: HasDraftEntity
         }
     ]
 };
@@ -131,8 +132,8 @@ annotate TextsService.Sentences with @UI: {
         Description   : {Value: lang_code}
     },
     LineItem               : [{
-        Value                 : text,
-        ![@HTML5.CssDefaults] : {width: 'auto'}
+        Value                : text,
+        ![@HTML5.CssDefaults]: {width: 'auto'}
     }],
     Facets                 : [{
         $Type : 'UI.ReferenceFacet',
@@ -152,16 +153,16 @@ annotate TextsService.Sentences with @UI: {
 };
 
 annotate TextsService.Sentences.tokens with @UI: {
-    HeaderInfo        : {
+    HeaderInfo                 : {
         TypeName      : '{i18n>Token}',
         TypeNamePlural: '{i18n>Tokens}'
     },
-    LineItem          : [
+    LineItem                   : [
         {
-            $Type                 : 'UI.DataFieldForAnnotation',
-            Target                : '@UI.FieldGroup#MobileFixConcat',
-            Label                 : 'Type Information',
-            ![@HTML5.CssDefaults] : {width: '25rem'}
+            $Type                : 'UI.DataFieldForAnnotation',
+            Target               : '@UI.FieldGroup#MobileFixConcat',
+            Label                : 'Type Information',
+            ![@HTML5.CssDefaults]: {width: '25rem'}
         },
         {Value: index},
     ],
@@ -170,7 +171,7 @@ annotate TextsService.Sentences.tokens with @UI: {
         {Value: lemma},
         {Value: pos}
     ]},
-    FieldGroup #Mobile: {Data: [{Value: {$edmJson: {
+    FieldGroup #Mobile         : {Data: [{Value: {$edmJson: {
         $Apply   : [
             {Path: 'form'},
             ' -> ',
@@ -191,8 +192,8 @@ annotate TextsService.Slova.sentences with @UI: {
         Description   : {Value: sent.lang_code}
     },
     LineItem               : [{
-        Value                 : sent.text,
-        ![@HTML5.CssDefaults] : {width: 'auto'}
+        Value                : sent.text,
+        ![@HTML5.CssDefaults]: {width: 'auto'}
     }],
     Facets                 : [{
         $Type : 'UI.ReferenceFacet',
@@ -214,13 +215,27 @@ annotate TextsService.Slova.sentences with @UI: {
 annotate TextsService.Slova with @UI: {
     SelectionFields     : [
         pos,
+        tier,
         morphem
     ],
     LineItem            : [
-        {Value: pos},
+        {
+            Value                : pos,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
         {Value: morphem},
-        {Value: count},
-        {Value: skip},
+        {
+            Value                : tier,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : count,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : skip,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
         {Value: textName}
     ],
     Identification      : [{
@@ -235,6 +250,9 @@ annotate TextsService.Slova with @UI: {
         // Description   : {Value: lang}
         Description   : {Value: {$edmJson: {
             $Apply   : [
+                '[',
+                {Path: 'tier'},
+                '] ',
                 {Path: 'pos'},
                 ' / ',
                 {Path: 'lang'}

@@ -18,19 +18,37 @@ annotate AdminService.Slova with @UI: {
         lang,
         pos,
         morphem,
-        etymology
+        tier
     ],
     LineItem            : [
-        {Value: lang},
-        {Value: pos},
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'AdminService.EntityContainer/rankWords',
+            Label : '{i18n>slova.rankWords}'
+        },
+        {
+            Value                : lang,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : pos,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
         {Value: morphem},
-        {Value: count}
+        {
+            Value                : tier,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : count,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        }
     ],
     HeaderInfo          : {
         TypeName      : '{i18n>Slovo}',
         TypeNamePlural: '{i18n>Slova}',
         Title         : {Value: morphem},
-        Description   : {Value: occurence}
+        Description   : {Value: tier}
     },
     HeaderFacets        : [{
         $Type : 'UI.ReferenceFacet',
@@ -107,7 +125,10 @@ annotate AdminService.Etymology with {
 
 annotate AdminService.Etymology with @(
     Capabilities.DeleteRestrictions: {Deletable: false},
-    Capabilities.InsertRestrictions: {Insertable: true, RequiredProperties: ['ascii']},
+    Capabilities.InsertRestrictions: {
+        Insertable        : true,
+        RequiredProperties: ['ascii']
+    },
     Capabilities.UpdateRestrictions: {Updateable: true}
 );
 

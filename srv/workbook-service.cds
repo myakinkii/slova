@@ -71,17 +71,29 @@ entity Workbook                         as
                         and forms.morphem = morphem
                         and forms.lang    = lang
                         and forms.pos     = pos;
+        slovo     : Association to db.Slova
+                        on  slovo.morphem = morphem
+                        and slovo.lang    = lang
+                        and slovo.pos     = pos
     }
     into {
         key owner,
         key morphem,
         key lang,
         key pos,
-            '' as definition : String,
+            ''  as definition : String,
             count,
             countTexts,
             forms,
-            sentences
+            sentences,
+            case
+                when
+                    slovo.tier is null
+                then
+                    'C'
+                else
+                    slovo.tier
+            end as tier       : String
     };
 
 entity WorkbookWords                    as

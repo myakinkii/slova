@@ -2,16 +2,36 @@ annotate WorkBookService.Slova with @UI: {
     SelectionFields     : [
         lang,
         pos,
+        tier,
         morphem,
         etymology
     ],
     LineItem            : [
-        {Value: lang},
-        {Value: pos},
+        {
+            Value                : lang,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : pos,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
         {Value: morphem},
-        {Value: count},
-        {Value: countTexts},
-        {Value: skip}
+        {
+            Value                : tier,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : count,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : countTexts,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : skip,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        }
     ],
     Identification      : [{
         $Type : 'UI.DataFieldForAction',

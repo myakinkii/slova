@@ -6,6 +6,7 @@ annotate db.Slova with {
     pos       @Common.Label: '{i18n>pos}';
     etymology @Common.Label: '{i18n>etymology}';
     count     @Common.Label: '{i18n>count}';
+    tier     @Common.Label: '{i18n>tier}';
 }
 
 annotate db.Forms with {

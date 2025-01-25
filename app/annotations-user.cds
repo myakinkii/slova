@@ -16,7 +16,7 @@ annotate UserService.Slova with @UI: {
         lang,
         pos,
         morphem,
-        etymology
+        tier
     ],
     Identification      : [
         {
@@ -31,16 +31,37 @@ annotate UserService.Slova with @UI: {
         }
     ],
     LineItem            : [
-        {Value: lang},
-        {Value: pos},
+        {
+            Value                : lang,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : pos,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
         {Value: morphem},
-        {Value: count}
+        {
+            Value                : tier,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        },
+        {
+            Value                : count,
+            ![@HTML5.CssDefaults]: {width: '5rem'}
+        }
     ],
     HeaderInfo          : {
         TypeName      : '{i18n>Slovo}',
         TypeNamePlural: '{i18n>Slova}',
         Title         : {Value: morphem},
-        Description   : {Value: occurence}
+        Description   : {Value: {$edmJson: {
+            $Apply   : [
+                '[',
+                {Path: 'tier'},
+                '] ',
+                {Path: 'occurence'}
+            ],
+            $Function: 'odata.concat'
+        }}}
     },
     HeaderFacets        : [{
         $Type : 'UI.ReferenceFacet',
@@ -243,7 +264,6 @@ annotate UserService.Skips with @UI: {
         TypeName      : '{i18n>Skip}',
         TypeNamePlural: '{i18n>Skips}',
         Title         : {Value: _slovo_morphem},
-
         Description   : {Value: {$edmJson: {
             $Apply   : [
                 {Path: '_slovo_pos'},
@@ -258,7 +278,7 @@ annotate UserService.Skips with @UI: {
         {Value: _slovo_lang},
         {Value: _slovo_pos}
     ],
-    Facets              : [{
+    Facets    : [{
         $Type : 'UI.ReferenceFacet',
         Target: 'words/@UI.LineItem'
     }]
@@ -282,9 +302,9 @@ annotate UserService.Words with @UI: {
         TypeNamePlural: '{i18n>Texts}'
     },
     LineItem  : [
-        {Value: count },
-        {Value: createdAt },
-        {Value: textName }
+        {Value: count},
+        {Value: createdAt},
+        {Value: textName}
     ]
 };
 
