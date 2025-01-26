@@ -22,6 +22,9 @@
                 <FacetFilterList title="POS" key="pos" mode="MultiSelect" listClose="setFilter" items="{/PosFilter}" >
                     <FacetFilterItem text="{text}" key="{code}" count="{count}" />
                 </FacetFilterList>
+                <FacetFilterList title="TIER" key="tier" mode="MultiSelect" listClose="setFilter" items="{/TiersFilter}" >
+                    <FacetFilterItem text="{text}" key="{code}" count="{count}" />
+                </FacetFilterList>
                 <FacetFilterList title="LANG" key="lang" mode="MultiSelect" listClose="setFilter" items="{/LangsFilter}" >
                     <FacetFilterItem text="{text}" key="{code}" count="{count}" />
                 </FacetFilterList>

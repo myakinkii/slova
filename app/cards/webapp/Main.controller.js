@@ -22,7 +22,7 @@ sap.ui.define([
         },
 
         getEmptyModel: function(){
-            return ['import_ID', 'createdBy', 'pos', 'lang', 'deck'].reduce(function(prev,cur){
+            return ['import_ID', 'createdBy', 'pos', 'lang', 'tier', 'deck'].reduce(function(prev,cur){
                 prev[cur] = { key: cur, vals:{} }
                 return prev
             },{})

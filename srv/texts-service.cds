@@ -92,11 +92,28 @@ service TextsService {
             lang;
 
     @readonly
+    entity TiersFilter @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'createdBy = $user or status = 9'
+    }])                  as
+        select from SlovaDistinct {
+            key tier       as code,
+                tier       as text,
+                createdBy,
+                status,
+                count( * ) as count : Integer
+        }
+        group by
+            tier;
+
+    @readonly
     entity SlovaDistinct as
         select distinct
             key pos,
             key morphem,
             key lang,
+            key tier,
             key createdBy,
             key status
         from Slova
@@ -355,7 +372,7 @@ service TextsService {
                 when
                     slovo.tier is null
                 then
-                    'C'
+                    'X'
                 else
                     slovo.tier
             end         as tier       : String
