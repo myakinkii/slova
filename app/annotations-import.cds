@@ -11,7 +11,7 @@ annotate ImportService.Import with @(
 
 annotate ImportService.Import with {
     input @UI.MultiLineText;
-    text @UI.MultiLineText;
+    text  @UI.MultiLineText;
 }
 
 annotate ImportService.TextSizes with {
@@ -51,55 +51,55 @@ annotate ImportService.Import with {
         ValueList.entity: 'TextTypes',
         Common.ValueListWithFixedValues
     );
-    textLocation     @(
+    textLocation @(
         ValueList.entity: 'TextLocations',
         Common.ValueListWithFixedValues
     );
-    textModifier     @(
+    textModifier @(
         ValueList.entity: 'TextModifiers',
         Common.ValueListWithFixedValues
     );
-    pos     @(
+    pos          @(
         ValueList.entity: 'PartsOfSpeech',
         Common.ValueListWithFixedValues
     );
-    ![case] @(
+    ![case]      @(
         ValueList.entity: 'Cases',
         Common.ValueListWithFixedValues
     );
-    gender  @(
+    gender       @(
         ValueList.entity: 'Genders',
         Common.ValueListWithFixedValues
     );
-    number  @(
+    number       @(
         ValueList.entity: 'Numbers',
         Common.ValueListWithFixedValues
     );
-    person  @(
+    person       @(
         ValueList.entity: 'Persons',
         Common.ValueListWithFixedValues
     );
-    tense   @(
+    tense        @(
         ValueList.entity: 'Tenses',
         Common.ValueListWithFixedValues
     );
-    aspect  @(
+    aspect       @(
         ValueList.entity: 'Aspects',
         Common.ValueListWithFixedValues
     );
-    mood    @(
+    mood         @(
         ValueList.entity: 'Moods',
         Common.ValueListWithFixedValues
     );
-    degree  @(
+    degree       @(
         ValueList.entity: 'Degrees',
         Common.ValueListWithFixedValues
     );
-    voice   @(
+    voice        @(
         ValueList.entity: 'Voices',
         Common.ValueListWithFixedValues
     );
-    verbForm   @(
+    verbForm     @(
         ValueList.entity: 'VerbForms',
         Common.ValueListWithFixedValues
     );
@@ -115,12 +115,23 @@ annotate ImportService.Import with @UI: {
     LineItem              : [
         {
             $Type : 'UI.DataFieldForAction',
-            Action : 'ImportService.EntityContainer/exportAll',
+            Action: 'ImportService.generateDefinitions',
+            Label : '{i18n>import.generateDefinitions}'
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'ImportService.mergeResults',
+            Label : '{i18n>import.mergeResults}'
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'ImportService.EntityContainer/exportAll',
             Label : '{i18n>exportAll}',
         },
         {Value: createdBy},
         {Value: name},
-        {Value: lang_code}
+        {Value: lang_code},
+        {Value: status}
     ],
     Identification        : [
         {
@@ -139,11 +150,13 @@ annotate ImportService.Import with @UI: {
             $Type : 'UI.ReferenceFacet',
             Target: '@UI.FieldGroup#Input',
             Label : '{i18n>input}'
-        },{
+        },
+        {
             $Type : 'UI.ReferenceFacet',
             Target: '@UI.FieldGroup#Text',
             Label : '{i18n>output}'
-        },{
+        },
+        {
             $Type        : 'UI.CollectionFacet',
             Label        : '{i18n>Config}',
             ID           : 'ConfigFacet',
@@ -197,7 +210,7 @@ annotate ImportService.Import with @UI: {
             ![@UI.Hidden]: HasDraftEntity
         }
     ],
-    FieldGroup #Input      : {Data: [
+    FieldGroup #Input     : {Data: [
         {
             $Type            : 'UI.DataFieldForAction',
             Action           : 'ImportService.generateInput',

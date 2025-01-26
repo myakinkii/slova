@@ -20,6 +20,7 @@ class ImportService extends BaseService {
         this.on('generateAll', this.performMassGenerationHandler)
         this.on('parseAll', this.performMassParsingHandler)
         this.on('defineAll', this.performMassDefinitionHandler)
+        this.on('generateDefinitions', this.performTextDefinitionHandler)
         this.on('exportAll', this.performExportHandler)
         this.after('READ', 'Sentences', this.getGoogleTranslate)
         await super.init()
@@ -64,6 +65,13 @@ class ImportService extends BaseService {
         return this.importHandler.performImport(ID)
     }
 
+    async performTextDefinitionHandler(req, next) {
+        const {ID} = req.params[0]
+        // for now only admin is allowed to create definition texts
+        const defId = await this.importHandler.createDefinitionsFor(ID, 'admin')
+        return this.importHandler.parseInput(defId)
+    }
+
     async performMassGenerationHandler(req, next) {
         const { Import } = this.entities
         const owner = req.data.user || 'admin'
@@ -93,23 +101,7 @@ class ImportService extends BaseService {
         const profile = await this.getProfile(owner)
         const all = await cds.read(Import).columns('ID')
         for (let imp of all){
-            const text = await cds.read(Import, imp.ID).columns( i => { 
-                i.name,
-                i.input,
-                i.lang_code,
-                i.sentences( s => {
-                    s.index,
-                    s.text,
-                    s.tokens(  t => { t`.*` })
-                })
-            })
-            const defId = cds.utils.uuid()
-            const definition = await this.importHandler.callExternalDefinitionsGenerator(text.lang_code, text.sentences)            
-            const conllu = await this.importHandler.parseMultiline(definition.split("\n").filter(d => !!d ), text.lang_code)
-            await cds.create(Import).entries({ 
-                ID: defId, createdBy: owner, input: definition, text: conllu,
-                name: `${text.name} (definitions)`, lang_code: text.lang_code
-            })
+            const defId = await this.importHandler.createDefinitionsFor(imp.ID, owner)
             await this.importHandler.parseInput(defId, profile.pos)
         }
     }

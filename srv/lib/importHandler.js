@@ -38,11 +38,33 @@ class ImportHandler {
         }) )) // can have gaps sentence indices (or does it just stat with 1?)
     }
 
+    async createDefinitionsFor(ID, owner){
+        const { Import } = this.cdsRef.entities("cc.slova.model")
+        const text = await this.cdsRef.read(Import, ID).columns( i => { 
+            i.name,
+            i.input,
+            i.lang_code,
+            i.sentences( s => {
+                s.index,
+                s.text,
+                s.tokens(  t => { t`.*` })
+            })
+        })
+        const defId = this.cdsRef.utils.uuid()
+        const definition = await this.callExternalDefinitionsGenerator(text.lang_code, text.sentences)            
+        const conllu = await this.parseMultiline(definition.split("\n").filter(d => !!d ), text.lang_code)
+        await this.cdsRef.create(Import).entries({ 
+            ID: defId, createdBy: owner, input: definition, text: conllu,
+            name: `${text.name} (definitions)`, lang_code: text.lang_code
+        })
+        return defId
+    }
+
     async massCreateImportsFrom(source, owner){
         const { Import } = this.cdsRef.entities("cc.slova.model")
         const { INSERT, UPSERT, UPDATE} = this.cdsRef.ql
         return this.cdsRef.run(source.map( s => INSERT.into(Import).entries({ 
-                ID: cds.utils.uuid(), createdBy: owner, 
+                ID: this.cdsRef.utils.uuid(), createdBy: owner, 
                 name: `generated-${s.form} - ${s.topic}`, lang_code: s.lang, input: s.input.join("\n")
             })
         ))

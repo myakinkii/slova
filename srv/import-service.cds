@@ -31,7 +31,8 @@ service ImportService {
             grant: [
                 'READ',
                 'WRITE',
-                'mergeResults'
+                'mergeResults',
+                'generateDefinitions'
             ],
             to   : 'admin-user'
         }
@@ -61,6 +62,9 @@ service ImportService {
                 }
             )
             action parseText();
+
+            @(Common.SideEffects: {TargetEntities: ['/ImportService.EntityContainer/Import']})
+            action generateDefinitions();
 
             action mergeResults();
 
