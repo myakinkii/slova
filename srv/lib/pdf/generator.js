@@ -13,7 +13,8 @@ const makeCardsFor = async (words) => {
 
     const mergedPdf = await PDFDocument.create()
 
-    await Promise.all(words.map( async(word) => {
+    // await Promise.all(words.map( async(word) => {
+    for (let word of words){ // one by one instead of parallel to use less ram
 
         const page = await browser.then( b => b.newPage())
         await page.setContent(template(word))
@@ -23,7 +24,7 @@ const makeCardsFor = async (words) => {
         const pdf = await PDFDocument.load(pdfBytes) // can be multipage theoretically
         const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices()) // from this stuff
         copiedPages.forEach(page => mergedPdf.addPage(page)) // to this stuff
-    }))
+    }
 
     const mergedPdfBytes = await mergedPdf.save()
     return Buffer.from(mergedPdfBytes).toString('base64')
