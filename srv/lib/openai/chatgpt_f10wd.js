@@ -57,6 +57,13 @@ const generateDefinitions = async (langCode, sentences, apiKey) => {
     return all.map( d => d.split("\n").filter( s => !!s ).join("\n") ).join("\n\n")
 }
 
+const generateDefinitionsPerWord = async(words, apiKey) => {
+    return Promise.all(words.map( async (w)=> {
+        const def = await callChatGpt(generatePromptDefinitionPerWord(w.lang, w.morphem, w.text), apiKey)
+        w.definition = def.split(" - ")[1]
+    }))
+}
+
 const langs = {
     en: "English",
     cs: "Czech",
@@ -110,9 +117,18 @@ const generatePromptDefinition = (langCode, words, sentence) => {
     // still it sometimes cannot properly use context regarding the part of speech of a word in a sentence (
 }
 
+const generatePromptDefinitionPerWord = (langCode, word, sentence) => {
+    return `Imagine you are a dictionary. Your language is ${langs[langCode]}.\
+    Please, define word ${word} in one short sentence, \
+    using simple lexicon in context of the following sentence: '${sentence}'.\
+    Please, respond in a form of a dictionary article: "word - definition".\
+    For example, "to read - to look at and comprehend the meaning of written text".`
+}
+
 module.exports = {
     getLangs,
     getTopics,
     generateTexts,
-    generateDefinitions
+    generateDefinitions,
+    generateDefinitionsPerWord
 }

@@ -6,7 +6,8 @@
     xmlns:core="sap.ui.core"
     xmlns:f="sap.ui.layout.form"
     xmlns:l="sap.ui.layout"
-    xmlns:macros="sap.fe.macros">
+    xmlns:macros="sap.fe.macros"
+	xmlns:macrosTable="sap.fe.macros.table">
     <Page title="{createdBy} / {name} [{lang_code}]">
         <customHeader>
             <Toolbar>
@@ -51,7 +52,11 @@
                         </Panel>
                         <Panel headerText="Words" expandable="true" expanded="false" class="sapUiMediumMarginTop">
                             <macros:FilterBar metaPath="words/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBarWord" liveMode="true" />
-                            <macros:Table metaPath="words/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableWord" filterBar="FilterBarWord" />
+                            <macros:Table metaPath="words/@com.sap.vocabularies.UI.v1.LineItem" id="macroTableWord" filterBar="FilterBarWord">
+                                <macros:actions>
+                                    <macrosTable:Action key="printPdf" press="onPrintWords" text="{i18n>printWordsAction}" />
+                                </macros:actions>
+                            </macros:Table>
                         </Panel>
                     </IconTabFilter>
                     </items>

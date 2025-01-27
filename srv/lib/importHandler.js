@@ -38,6 +38,10 @@ class ImportHandler {
         }) )) // can have gaps sentence indices (or does it just stat with 1?)
     }
 
+    async callExternalDefinitionsGeneratorForPrint(words){
+        return externalGenerator.getDefinitionsPerWord(words)
+    }
+
     async createDefinitionsFor(ID, owner){
         const { Import } = this.cdsRef.entities("cc.slova.model")
         const text = await this.cdsRef.read(Import, ID).columns( i => { 

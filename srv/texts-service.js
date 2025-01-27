@@ -2,6 +2,7 @@ const cds = require('@sap/cds')
 const ImportHandler = require('./lib/importHandler')
 const speechRecognition = require('./lib/externalSpeechRecognition')
 const speechGenerator = require('./lib/externalSpeechGenerator')
+const pdfGenerator = require('./lib/pdf/generator')
 
 const { BaseService } = require('./baseService')
 
@@ -25,6 +26,7 @@ class TextsService extends BaseService {
         this.on('generateDefinition', this.generateDefinitionHandler)
         this.on('generateText', this.generateTextHandler)
         this.on('createText', this.createTextHandler)
+        this.on('printWords', this.printWordsHandler)
         this.on('toggleSkip', this.skipWordToggleHandler)
         this.on('getDefinition', this.getDefinitionUrl)
         this.before('READ', 'Texts', async (req) => {
@@ -100,12 +102,12 @@ class TextsService extends BaseService {
         const ID = req.params[0]
         const targetId = req.data.text
         if (targetId == ID) throw new Error('FORBIDDEN')
-        const { Import:Texts } = cds.entities("cc.slova.model")
-        const source = await cds.read(Texts, {ID})
-        const target = await cds.read(Texts, {ID: targetId })
-        await cds.update(Texts, {ID:targetId}).with({ input: target.input + '\n' + source.input })
-        if (source.status != 9) await cds.delete(Texts, {ID}) // delete unpublished import
-        return {ID}
+        const { Import: Texts } = cds.entities("cc.slova.model")
+        const source = await cds.read(Texts, { ID })
+        const target = await cds.read(Texts, { ID: targetId })
+        await cds.update(Texts, { ID: targetId }).with({ input: target.input + '\n' + source.input })
+        if (source.status != 9) await cds.delete(Texts, { ID }) // delete unpublished import
+        return { ID }
     }
 
     async getDefinitionUrl(req) {
@@ -137,6 +139,31 @@ class TextsService extends BaseService {
         return { ID: ID }
     }
 
+    async printWordsHandler(req, next) {
+        const { ID, morphem, pos, tier } = req.data
+        // const { ImportWords } = cds.entities("cc.slova.model")
+        const { Slova } = cds.entities("TextsService")
+        const q = cds.read(Slova).columns(w => {
+            w.morphem,
+            w.lang,
+            w.pos,
+            w.tier,
+            w.sentences(sc => { sc.sent(s => s.text) })
+        }).where({ import_ID: ID })
+        if (morphem) q.where({ morphem })
+        if (pos) q.where({ pos })
+        if (tier) q.where({ tier })
+        const words = await q.then(res => res.map(w => {
+            w.text = w.sentences[0].sent.text
+            delete w.sentences
+            return w
+        }))
+        if (!words.length) return pdfGenerator.getEmptyPdf()
+        await this.importHandler.callExternalDefinitionsGeneratorForPrint(words) // just modify words with def property
+        const cardsPdf = await pdfGenerator.makeCardsFor(words)
+        return cardsPdf
+    }
+
     async textToSpeechHandler(req, next) {
         const ID = req.params[0]
         const { Import } = cds.entities("cc.slova.model")
@@ -157,10 +184,10 @@ class TextsService extends BaseService {
         const ID = req.params[0]
         const { Import } = cds.entities("cc.slova.model")
         const data = await cds.read(Import, ID).columns('input')
-        return cds.update(Import, ID).with({ input: ( data.input ? data.input + '\n' : '') + req.data.content })
+        return cds.update(Import, ID).with({ input: (data.input ? data.input + '\n' : '') + req.data.content })
     }
 
-    async getGoogleTranslateLinkHandler (req, next) {
+    async getGoogleTranslateLinkHandler(req, next) {
         const { lang, text } = req.data
         if (!text) return
         const profile = await this.getProfile(req.user.id)
@@ -187,10 +214,10 @@ class TextsService extends BaseService {
     async generateDefinitionHandler(req, next) {
         const { ID, hash } = req.data
         const { ImportSentences } = cds.entities("cc.slova.model")
-        const sentence = await cds.read(ImportSentences, {import_ID: ID, hash: hash }).columns( s => {
+        const sentence = await cds.read(ImportSentences, { import_ID: ID, hash: hash }).columns(s => {
             s.text,
-            s.lang,
-            s.tokens(  t => { t`.*` })
+                s.lang,
+                s.tokens(t => { t`.*` })
         })
         return this.importHandler.callExternalDefinitionsGenerator(sentence.lang_code, [sentence])
     }
@@ -205,9 +232,9 @@ class TextsService extends BaseService {
         // https://cap.cloud.sap/docs/node.js/cds-tx#srv-tx-fn
         let data, profile
         // await cds.tx(async (tx) => {
-            data = await cds.read(Import, ID)
-            if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
-            profile = await cds.read(Users, { id: req.user.id })
+        data = await cds.read(Import, ID)
+        if (req.user.id != data.createdBy) throw new Error('FORBIDDEN')
+        profile = await cds.read(Users, { id: req.user.id })
         // })
         const chatGptResponse = await this.importHandler.callExternalGenerator(data.lang_code, profile.gptSize, profile.gptType, profile.gptLocation, profile.gptModifier)
         return cds.update(Import, ID).with({ input: chatGptResponse.replaceAll('\n\n', '\n') })

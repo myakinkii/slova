@@ -1,5 +1,5 @@
 const { generatePrompt, callChatGpt } = require('./openai/chatgpt')
-const { getLangs, getTopics, generateTexts, generateDefinitions } = require('./openai/chatgpt_f10wd')
+const { getLangs, getTopics, generateTexts, generateDefinitions, generateDefinitionsPerWord } = require('./openai/chatgpt_f10wd')
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 
@@ -16,5 +16,9 @@ module.exports = {
     getDefinitions: async (lang, sentences) => {
         if (!OPENAI_API_KEY) return ''
         return  generateDefinitions(lang, sentences, OPENAI_API_KEY)
+    },
+    getDefinitionsPerWord: async (words) => {
+        if (!OPENAI_API_KEY) return ''
+        return  generateDefinitionsPerWord(words, OPENAI_API_KEY)
     }
 }

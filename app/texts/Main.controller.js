@@ -49,6 +49,38 @@ sap.ui.define([
             console.log(text)
         },
 
+        onPrintWords:function(e){
+            var selectedFilters = this.byId("FilterBarWord").getFilters()
+            // console.log(selectedFilters.search) // also have search
+            var realFiltersArray = selectedFilters.filters[0] && selectedFilters.filters[0].aFilters || selectedFilters.filters
+            var filterData = realFiltersArray.reduce( (prev,cur) => { // for now we support only basic AND case here
+                prev[cur.getPath()] = cur.getValue1()
+                return prev
+            },{})
+
+            var odata = this.getView().getModel()
+            var ID = e.getSource().getBindingContext().getProperty("ID")
+            
+            var action = odata.bindContext("/printWords(...)")
+
+            action.setParameter("ID", ID)
+            if (filterData.morphem) action.setParameter("morphem", filterData.morphem)
+            if (filterData.pos) action.setParameter("pos", filterData.pos)
+            if (filterData.tier) action.setParameter("tier", filterData.tier)
+
+            BusyIndicator.show(100)
+            action.execute().then(function(){
+                BusyIndicator.hide()
+                var result = action.getBoundContext().getObject()
+                var byteArray = Uint8Array.from(atob(result.value), c => c.charCodeAt(0))
+                var pdf = new Blob([byteArray], { type: "application/pdf" })
+                sap.m.URLHelper.redirect(window.URL.createObjectURL(pdf), true)
+            }).catch(function(err){
+                BusyIndicator.hide()
+                // console.log(err)
+            })
+        },
+
         captureAudio:function(e){
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                 console.log("getUserMedia not supported!")

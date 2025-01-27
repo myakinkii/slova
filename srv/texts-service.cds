@@ -9,7 +9,9 @@ service TextsService {
     }
 
     @(Common.SideEffects: {TargetEntities: ['/TextsService.EntityContainer/Decks']})
-    action createDeck(name : String)                    returns Decks;
+    action createDeck(name : String)                                            returns Decks;
+
+    action printWords(ID : UUID, morphem : String, pos : String, tier : String) returns LargeString;
 
     entity Decks @(restrict: [{
         grant: [
@@ -44,7 +46,7 @@ service TextsService {
                                 ) deck : UUID);
         };
 
-    action resolveDeckFilter(deck : UUID)               returns TextFilter;
+    action resolveDeckFilter(deck : UUID)                                       returns TextFilter;
 
     @readonly
     entity DecksFilter @(restrict: [{
@@ -165,7 +167,7 @@ service TextsService {
     }
 
     action syncToken(token : Token);
-    action getDefinition(lang : String, lemma : String) returns String;
+    action getDefinition(lang : String, lemma : String)                         returns String;
 
     @(Common.SideEffects: {TargetEntities: [
         '/TextsService.EntityContainer/Texts',
@@ -174,7 +176,7 @@ service TextsService {
         '/TextsService.EntityContainer/TextsFilter',
         '/TextsService.EntityContainer/AuthorsFilter'
     ]})
-    action createText(input : String)                   returns Texts;
+    action createText(input : String)                                           returns Texts;
 
     entity TextsVH @(restrict: [{
         grant: ['READ'],
