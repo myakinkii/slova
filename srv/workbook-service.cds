@@ -90,7 +90,7 @@ entity Workbook                         as
                 when
                     slovo.tier is null
                 then
-                    'C'
+                    'X'
                 else
                     slovo.tier
             end as tier       : String
