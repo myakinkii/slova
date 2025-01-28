@@ -18,17 +18,30 @@ module.exports = async (db) => {
     const { Stat, Slova, Sentences, Etymology, Users, Import } = db.entities('cc.slova.model')
 
     if (CONLLU_SETS.length) {
-        let sentences = {}, stat = [], words = [] // references to data
-        CONLLU_SETS.forEach(set => { ImportHandler.IMPORT_POS.reduce(getParser(set, sentences, stat), words) })
-        sentences = Object.values(sentences)
-        LOG.debug(`got ${words.length} words and ${sentences.length} sentences`)
+        for ( let setName of CONLLU_SETS) {
 
-        if (words.length > 0 && sentences.length > 0) {
+            const [lang, dir] = setName.split("_")
+            LOG.debug(`processing set ${setName} from ${lang}/${dir} `)
+
             await cds.run([
-                INSERT.into(Slova).entries(words),
-                INSERT.into(Sentences).entries(sentences),
-                INSERT.into(Stat).entries(stat)
+                DELETE.from(Slova).where({lang}),
+                DELETE.from(Sentences).where({lang_code:lang}),
+                DELETE.from(Stat).where({lang})
             ])
+
+            let sentences = {}, stat = [], words = [] // references to data
+            ImportHandler.IMPORT_POS.reduce(getParser(setName, sentences, stat), words)
+            sentences = Object.values(sentences)
+
+            LOG.debug(`got ${words.length} words and ${sentences.length} sentences`)
+    
+            if (words.length > 0 && sentences.length > 0) {
+                await cds.run([
+                    INSERT.into(Slova).entries(words),
+                    INSERT.into(Sentences).entries(sentences),
+                    INSERT.into(Stat).entries(stat)
+                ])
+            }
         }
     }
     if (CONLLU_DIRS.length) {
