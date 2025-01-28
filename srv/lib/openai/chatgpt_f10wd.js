@@ -36,7 +36,7 @@ const generateTexts = async (langCodes, topics, apiKey) => {
                 let inputLines = []
                 let langsCopy = Array.from(langCodes)
                 for (let i of cleanResponse){
-                    if (i == '---') { // flush
+                    if (i == '---' ||  i == '--- ' || i == '---  ') { // flush
                         flush(form, langsCopy.shift(), inputLines)
                         inputLines = []
                     } else { // accumulate
@@ -102,9 +102,10 @@ const topics = [
 ]
 
 const generatePromptTopic = (topic, form, langs) => {
-    return `Please generate text covering topic '${topic}' using simple lexicon 
-    in a form of ${form} in ${langs.join(", ")} with 15-20 sentences for each language. 
-    Please use plain text instead of formatting and add one line with three dashes '---' to separate languages.`
+    return `Please generate text covering topic '${topic}' using simple lexicon \
+    in a form of ${form} in ${langs.join(", ")} with 15-20 sentences for each language. \
+    Please use plain text instead of formatting and add one line with three dashes '---' to separate languages. \
+    Respond with just texts without your comments or replies.`
 }
 
 const generatePromptDefinition = (langCode, words, sentence) => {
