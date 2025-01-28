@@ -125,6 +125,16 @@ annotate ImportService.Import with @UI: {
         },
         {
             $Type : 'UI.DataFieldForAction',
+            Action: 'ImportService.EntityContainer/generateAll',
+            Label : '{i18n>generateAll}',
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'ImportService.EntityContainer/parseAll',
+            Label : '{i18n>parseAll}',
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
             Action: 'ImportService.EntityContainer/exportAll',
             Label : '{i18n>exportAll}',
         },
