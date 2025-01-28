@@ -115,7 +115,7 @@ module.exports = async (db) => {
         const input = data.split('\n').filter( s => s.startsWith("#")).map( s => s.replace("# text = ","")).join("\n")
         const exists = await cds.read(Import,{ lang_code:lang, name: name, createdBy: owner }).columns('ID')
         if (exists){
-            await cds.update(Import,{ ID: exists.ID }).with({ input, text: data })
+            await cds.update(Import,{ ID: exists.ID }).with({ input, text: data, complexity: '' })
             return exists.ID
         } else {
             const ID = cds.utils.uuid()
