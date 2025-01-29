@@ -12,6 +12,10 @@ sap.ui.define([
 
     return PageController.extend("cc.slova.textEditor.Main", {
 
+        onExit: function () {
+            this.sentenceDialogPromise.then(function(dlg){ dlg.destroy() })
+        },
+
         onInit: function () {
             PageController.prototype.onInit.apply(this);
             var uiModel = new JSONModel()
