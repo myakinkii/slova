@@ -4,6 +4,21 @@ using {cc.slova.model as db} from '../db/schema';
 @requires: ['authenticated-user']
 service WorkBookService {
 
+    entity ProgressByTiers @(restrict: [{
+        grant: ['READ'],
+        to   : 'authenticated-user',
+        where: 'owner = $user'
+    }])                 as
+        select from Workbook {
+            key owner,
+            key tier,
+                count(tier) as total   : Integer,
+                sum(skip)   as learned : Integer,
+        }
+        group by
+            owner,
+            tier;
+
     @readonly
     entity Slova @(restrict: [{
         grant: [
@@ -19,28 +34,21 @@ service WorkBookService {
                                on  translations.slovo.morphem = morphem
                                and translations.slovo.lang    = lang
                                and translations.slovo.pos     = pos;
-            skip         : Association to db.Skips
-                               on  skip.slovo.morphem = morphem
-                               and skip.slovo.lang    = lang
-                               and skip.slovo.pos     = pos
-                               and skip.user.id       = $user
         }
         into {
             *,
-            translations,
-            case
-                when
-                    skip.user.id is null
-                then
-                    false
-                else
-                    true
-            end as skip : Boolean
+            translations
         }
         actions {
             @(
                 cds.odata.bindingparameter.name: '_it',
-                Common.SideEffects             : {TargetProperties: ['_it/skip']}
+                Common.SideEffects             : {
+                    TargetEntities  : [
+                        '/WorkBookService.EntityContainer/Slova',
+                        '/WorkBookService.EntityContainer/ProgressByTiers'
+                    ],
+                    TargetProperties: ['_it/skip']
+                }
             )
             action toggleSkip() returns Boolean;
         };
@@ -74,7 +82,12 @@ entity Workbook                         as
         slovo     : Association to db.Slova
                         on  slovo.morphem = morphem
                         and slovo.lang    = lang
-                        and slovo.pos     = pos
+                        and slovo.pos     = pos;
+        skip      : Association to db.Skips
+                        on  skip.slovo.morphem = morphem
+                        and skip.slovo.lang    = lang
+                        and skip.slovo.pos     = pos
+                        and skip.user.id       = $user
     }
     into {
         key owner,
@@ -85,6 +98,14 @@ entity Workbook                         as
             count,
             countTexts,
             forms,
+            case
+                when
+                    skip.user.id is null
+                then
+                    false
+                else
+                    true
+            end as skip       : Boolean,
             sentences,
             case
                 when

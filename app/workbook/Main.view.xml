@@ -1,0 +1,50 @@
+<mvc:View
+    height="100%"
+    controllerName="cc.slova.workbook.Main"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:l="sap.ui.layout"
+    xmlns:suite="sap.suite.ui.microchart"
+    xmlns:macros="sap.fe.macros">
+    <Page>
+    <content>
+        <Panel class="sapUiSmallMarginTop">
+            <headerToolbar>
+                <Toolbar>
+                    <ToolbarSpacer/>
+                    <Title text="{i18n>progressPanelTitle}" />
+                    <ToolbarSpacer/>
+                </Toolbar>
+            </headerToolbar>
+            <l:HorizontalLayout content="{/ProgressByTiers}" >
+                <TileContent footer="{tier}: {learned} / {total}">
+                    <content>
+                        <suite:RadialMicroChart size="M" class="sapUiSmallMargin" 
+                            valueColor="{ parts:[
+                                {path:'learned', targetType:'any'},
+                                {path:'total', targetType:'any'}
+                            ], formatter:'.calcColor'}"
+                            percentage="{ parts:[
+                                {path:'learned', targetType:'any'},
+                                {path:'total', targetType:'any'}
+                            ], formatter:'.calcRatio'}" />
+                    </content>
+                </TileContent>
+            </l:HorizontalLayout>
+        </Panel>
+        <Panel class="sapUiSmallMarginTop">
+            <headerToolbar>
+                <Toolbar>
+                    <ToolbarSpacer/>
+                    <Title text="{i18n>wordsPanelTitle}" />
+                    <ToolbarSpacer/>
+                </Toolbar>
+            </headerToolbar>
+            <macros:FilterBar metaPath="/Slova/@com.sap.vocabularies.UI.v1.SelectionFields" id="FilterBar" liveMode="true" />
+            <macros:Table metaPath="/Slova/@com.sap.vocabularies.UI.v1.LineItem" id="macroTable" filterBar="FilterBar" />
+        </Panel>
+    </content>
+    <footer>
+    </footer>
+    </Page>
+</mvc:View>
